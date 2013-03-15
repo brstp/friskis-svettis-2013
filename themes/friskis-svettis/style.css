@@ -4,7 +4,7 @@
 	Description: Theme for Friskis&Svettis
 	Author: Strop Digital Studio
 	Author URI: http://www.strop.se/
-	Version: 1.0.0 2013
+	Version: 1.0.0p1 2013
 	Copyright 2013
 */
 
@@ -713,6 +713,12 @@ float: left;
 	width:66%;
 	float:right;	
 }
+
+#mainContentNoSidebarWhatSoEver{
+	width:auto;
+	float:none;	
+}
+
 #footerLeft{
 	width:50%;
 	float:left;
