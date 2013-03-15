@@ -62,7 +62,7 @@
 	<header>
 		<div id="logo">
 			<a href="<?php bloginfo('home'); ?>"><img src="<?php echo THEME_IMAGES; ?>/logo.jpg" alt="logotyp"></a>
-			<?php the_field('city', 136); ?>
+			<?php the_field('city', 4057); ?>
 		</div>
 		<div id="search">
 		<?php get_search_form(); ?>
