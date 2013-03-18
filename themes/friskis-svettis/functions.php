@@ -31,7 +31,7 @@ function load_theme_js() {
 }
 
 add_action('init', 'init_jquery');
-add_action('init', load_theme_js); //hook
+add_action('init', 'load_theme_js'); //hook
 
 // Add Post Thumbnail Theme Support
 if ( function_exists( 'add_theme_support' ) ) {
