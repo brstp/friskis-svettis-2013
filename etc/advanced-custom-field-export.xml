@@ -16,7 +16,7 @@
 <!-- 7. WordPress will then import each of the posts, pages, comments, categories, etc. -->
 <!--    contained in this file into your site. -->
 
-<!-- generator="WordPress/3.5.1" created="2013-03-15 11:45" -->
+<!-- generator="WordPress/3.5.1" created="2013-03-19 15:14" -->
 <rss version="2.0"
 	xmlns:excerpt="http://wordpress.org/export/1.1/excerpt/"
 	xmlns:content="http://purl.org/rss/1.0/modules/content/"
@@ -29,7 +29,7 @@
 	<title>Friskis&#38;Svettis Jonsered</title>
 	<link>http://friskis.stropdev.se</link>
 	<description></description>
-	<pubDate>Fri, 15 Mar 2013 11:45:17 +0000</pubDate>
+	<pubDate>Tue, 19 Mar 2013 15:14:25 +0000</pubDate>
 	<language></language>
 	<wp:wxr_version>1.1</wp:wxr_version>
 	<wp:base_site_url>http://friskis.stropdev.se</wp:base_site_url>
