@@ -157,7 +157,6 @@ class Facebook extends WP_Widget
  
   function widget($args, $instance)
   {
-	// Freddie, detta uppdaterar inte utan bara lägger till, så man kan ha 100 facebook-rutor tillslut. FIX!
 	$facebookPage = substr( $instance['facebookPageId'], strrpos( $instance['facebookPageId'], '/' )+1 );		
 	echo '<iframe src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2F'.$facebookPage.'&amp;width=290&amp;height=258&amp;show_faces=true&amp;colorscheme=light&amp;stream=false&amp;border_color=%23fff&amp;header=false" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:290px; height:290px;" allowTransparency="true"></iframe>';
   }
@@ -585,6 +584,69 @@ function load_widgets() {
 // WP-Admin style
 
 add_editor_style('custom-editor-style.css');
+
+
+
+function register_settings() {
+	register_setting( 'fs_settings', 'association' ); 
+	register_setting( 'fs_settings', 'facebookAccount' ); 
+	register_setting( 'fs_settings', 'twitterAccount' ); 
+} 
+add_action( 'admin_init', 'register_settings' );
+
+function fs_settings() {
+	add_options_page( 'Inställningar Friskis & Svettis', 'Inställningar Friskis & Svettis', 'manage_options', 'my-unique-identifier', 'fs_options' );
+}
+add_action( 'admin_menu', 'fs_settings' );
+
+function fs_options() {
+
+	if ( !current_user_can( 'manage_options' ) )  {
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+	echo '<div class="wrap">';
+		echo '<div id="icon-options-general" class="icon32"><br></div>';
+		echo '<h2>Inställningar Friskis & Svettis</h2>';
+		echo '<form name="form" method="post" action="options.php">';
+			settings_fields( 'fs_settings' );
+
+				$association 		= get_option('association');
+				$facebookAccount 	= get_option('facebookAccount');
+				$twitterAccount		= get_option('twitterAccount');
+			
+			echo '<table class="form-table">';
+				echo '<tbody>';
+					echo '<tr>';
+						echo '<th scope="row"><label for="association">Förening</label></th>';
+						echo '<td>
+								<input type="text" name="association" value="'. $association .'" class="regular-text">
+								<p class="description">Vilken Friskis&Svettis-förening?</p>
+							</td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<th scope="row"><label for="association">Facebook-konto</label></th>';
+						echo '<td>
+								<input type="text" name="facebookAccount" value="'. $facebookAccount .'" class="regular-text">
+								<p class="description">Vilket Facebook-konto? (användarnamnet)</p>
+							</td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<th scope="row"><label for="association">Twitter-konto</label></th>';
+						echo '<td>
+								<input type="text" name="twitterAccount" value="'. $twitterAccount .'" class="regular-text">
+								<p class="description">Vilket Twitter-konto? (användarnamnet)</p>
+							</td>';
+					echo '</tr>';
+				echo '</tbody>';
+			echo '</table>';
+			
+				submit_button( 'Spara ändringar' );		
+		echo '</form>';
+	echo '</div>';
+
+}
+
+
 
 // Function written to work with ACF and the way the theme "Friskis & Svettis" is built
 // with the setting page "Inställningar". 

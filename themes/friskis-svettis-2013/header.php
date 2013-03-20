@@ -62,10 +62,7 @@
 	<header>
 		<div id="logo">
 			<a href="<?php bloginfo('home'); ?>"><img src="<?php echo THEME_IMAGES; ?>/logo.jpg" alt="logotyp"></a>
-			<?php
-				$settings = fetchSettings();
-				echo $settings['city'];
-			?>
+			<?php echo get_option('association'); ?>
 		</div>
 		<div id="search">
 		<?php get_search_form(); ?>
