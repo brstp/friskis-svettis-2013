@@ -9,7 +9,7 @@
 				<?php
 				$news_query = new WP_Query(array(
 						"post_type" => 'post',
-						"cat" => 11
+						"category_name" => 'Nyheter'
 					));
 				while ($news_query->have_posts()) : $news_query->the_post();
 					?>

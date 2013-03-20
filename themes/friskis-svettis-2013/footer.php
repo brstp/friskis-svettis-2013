@@ -13,11 +13,18 @@
 				echo '</div>';
 			?>
 			<div id="social">
-			<?php if(get_field('facebook-user', 4057)): ?>
-				<a href="http://www.facebook.com/<?php the_field('facebook-user', 4057); ?>" title="Följ oss på Facebook!"><img src="<?php echo THEME_IMAGES; ?>/facebook.png" alt="facebook"></a>
+			<?php
+				$settings 		= fetchSettings();
+				$facebooUser 	= $settings['facebookUser'];
+				$twitterUser	= $settings['twitterUser'];
+			?>
+			
+			
+			<?php if(isset($facebooUser)): ?>
+				<a href="http://www.facebook.com/<?php echo $facebooUser; ?>" title="Följ oss på Facebook!"><img src="<?php echo THEME_IMAGES; ?>/facebook.png" alt="facebook"></a>
 				<?php endif; ?>
-				<?php if(get_field('twitter-user', 4057)): ?>
-				<a href="http://www.twitter.com/<?php the_field('twitter-user', 4057); ?>" title="Följ oss på Twitter!"><img src="<?php echo THEME_IMAGES; ?>/twitter.png" alt="twitter"></a>
+				<?php if(isset($twitterUser)): ?>
+				<a href="http://www.twitter.com/<?php echo $twitterUser; ?>" title="Följ oss på Twitter!"><img src="<?php echo THEME_IMAGES; ?>/twitter.png" alt="twitter"></a>
 				<?php endif; ?>
 			</div>	
 	</div>

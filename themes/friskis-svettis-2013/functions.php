@@ -31,7 +31,7 @@ function load_theme_js() {
 }
 
 add_action('init', 'init_jquery');
-add_action('init', 'load_theme_js'); //hook
+add_action('init', 'load_theme_js');
 
 // Add Post Thumbnail Theme Support
 if ( function_exists( 'add_theme_support' ) ) {
@@ -585,3 +585,54 @@ function load_widgets() {
 // WP-Admin style
 
 add_editor_style('custom-editor-style.css');
+
+// Function written to work with ACF and the way the theme "Friskis & Svettis" is built
+// with the setting page "Inställningar". 
+function fetchSettings() {
+	
+	global $wpdb;
+	
+	$posts 		= $wpdb->base_prefix . 'posts';	
+	$postmeta	= $wpdb->base_prefix . 'postmeta';	
+	$pageName 	= 'Inställningar';
+		
+	$rows = $wpdb->get_results($wpdb->prepare(
+			"
+			SELECT
+			*
+			FROM
+			$postmeta
+			WHERE
+			post_id LIKE
+				(SELECT 
+				id 
+				FROM 
+				$posts 
+				WHERE 
+				post_title LIKE '$pageName' 
+				AND 
+				post_status = 'publish')
+			"
+		));
+		
+	foreach($rows as $res)
+	{
+		if($res->meta_key == 'city')
+		{
+			$city = $res->meta_value;
+		}
+		
+		if($res->meta_key == 'facebook-user')
+		{
+			$facebookUser = $res->meta_value;
+		}
+		
+		if($res->meta_key == 'twitter-user')
+		{
+			$twitterUser = $res->meta_value;
+		}
+	}
+	
+	return array('city' => $city, 'facebookUser' => $facebookUser, 'twitterUser' => $twitterUser);
+}
+

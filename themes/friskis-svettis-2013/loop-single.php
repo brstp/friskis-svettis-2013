@@ -17,7 +17,7 @@ if ($posttags) {
 ?></em></h4>
 
 	<?php the_content(); 
-	if(in_category('11')):
+	if(in_category('Nyheter')):
 		
 	else:
 		comments_template();
