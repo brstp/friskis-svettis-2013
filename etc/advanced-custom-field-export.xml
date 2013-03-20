@@ -34,14 +34,11 @@
 	<wp:wxr_version>1.1</wp:wxr_version>
 	<wp:base_site_url>http://friskis.stropdev.se</wp:base_site_url>
 	<wp:base_blog_url>http://friskis.stropdev.se</wp:base_blog_url>
-	<wp:author><wp:author_id>1</wp:author_id><wp:author_login>strop</wp:author_login><wp:author_email>dev@strop.se</wp:author_email><wp:author_display_name><![CDATA[strop]]></wp:author_display_name><wp:author_first_name><![CDATA[]]></wp:author_first_name><wp:author_last_name><![CDATA[]]></wp:author_last_name></wp:author>
-	<wp:author><wp:author_id>3</wp:author_id><wp:author_login>stefanpettersson</wp:author_login><wp:author_email>stefan.pettersson@lumano.se</wp:author_email><wp:author_display_name><![CDATA[Stefan Pettersson]]></wp:author_display_name><wp:author_first_name><![CDATA[Stefan]]></wp:author_first_name><wp:author_last_name><![CDATA[Pettersson]]></wp:author_last_name></wp:author>
-	<wp:author><wp:author_id>4</wp:author_id><wp:author_login>redaktor-stefanpettersson</wp:author_login><wp:author_email>stefan@lumano.se</wp:author_email><wp:author_display_name><![CDATA[redaktor-stefanpettersson]]></wp:author_display_name><wp:author_first_name><![CDATA[]]></wp:author_first_name><wp:author_last_name><![CDATA[]]></wp:author_last_name></wp:author>
+	
 	<item>
 		<title>Bildspel</title>
 		<link></link>
 		<pubDate></pubDate>
-		<dc:creator>strop</dc:creator>
 		<guid isPermaLink="false"></guid>
 		<wp:post_id>60</wp:post_id>
 		<wp:post_date>2013-02-04 11:04:06</wp:post_date>
@@ -87,7 +84,6 @@
 		<title>Puffar startsida</title>
 		<link></link>
 		<pubDate></pubDate>
-		<dc:creator>strop</dc:creator>
 		<guid isPermaLink="false"></guid>
 		<wp:post_id>66</wp:post_id>
 		<wp:post_date>2013-02-04 11:34:24</wp:post_date>
@@ -133,7 +129,6 @@
 		<title>Högerspalt</title>
 		<link></link>
 		<pubDate></pubDate>
-		<dc:creator>strop</dc:creator>
 		<guid isPermaLink="false"></guid>
 		<wp:post_id>94</wp:post_id>
 		<wp:post_date>2013-02-08 10:02:34</wp:post_date>
@@ -183,7 +178,6 @@
 		<title>Allmänt</title>
 		<link></link>
 		<pubDate></pubDate>
-		<dc:creator>strop</dc:creator>
 		<guid isPermaLink="false"></guid>
 		<wp:post_id>135</wp:post_id>
 		<wp:post_date>2013-02-11 10:13:04</wp:post_date>

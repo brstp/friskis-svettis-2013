@@ -35,18 +35,13 @@
 	<wp:base_site_url>http://friskis.stropdev.se</wp:base_site_url>
 	<wp:base_blog_url>http://friskis.stropdev.se</wp:base_blog_url>
 
-	<wp:author><wp:author_id>1</wp:author_id><wp:author_login>strop</wp:author_login><wp:author_email>dev@strop.se</wp:author_email><wp:author_display_name><![CDATA[strop]]></wp:author_display_name><wp:author_first_name><![CDATA[]]></wp:author_first_name><wp:author_last_name><![CDATA[]]></wp:author_last_name></wp:author>
-	<wp:author><wp:author_id>3</wp:author_id><wp:author_login>stefanpettersson</wp:author_login><wp:author_email>stefan.pettersson@lumano.se</wp:author_email><wp:author_display_name><![CDATA[Stefan Pettersson]]></wp:author_display_name><wp:author_first_name><![CDATA[Stefan]]></wp:author_first_name><wp:author_last_name><![CDATA[Pettersson]]></wp:author_last_name></wp:author>
-	<wp:author><wp:author_id>4</wp:author_id><wp:author_login>redaktor-stefanpettersson</wp:author_login><wp:author_email>stefan@lumano.se</wp:author_email><wp:author_display_name><![CDATA[redaktor-stefanpettersson]]></wp:author_display_name><wp:author_first_name><![CDATA[]]></wp:author_first_name><wp:author_last_name><![CDATA[]]></wp:author_last_name></wp:author>
-
-
+	
 	<generator>http://wordpress.org/?v=3.5.1</generator>
 
 	<item>
 		<title>Hem</title>
 		<link>http://friskis.stropdev.se/</link>
 		<pubDate>Wed, 15 Feb 2012 12:26:16 +0000</pubDate>
-		<dc:creator>strop</dc:creator>
 		<guid isPermaLink="false">http://friskis.stropdev.se/?page_id=2</guid>
 		<description></description>
 		<content:encoded><![CDATA[]]></content:encoded>
