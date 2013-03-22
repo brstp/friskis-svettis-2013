@@ -9,3 +9,20 @@ body#tinymce.wp-editor h1,h2,h3,h4,h5 {
 body#tinymce.wp-editor a {
 	color: #bc2327;
 }
+
+body#tinymce.wp-editor hr {
+	display: block;
+	width: 130px;
+	height: 8px;
+	background: #bc2327;
+	margin-left: 0;
+}	
+
+body#tinymce.wp-editor.redline {
+	display: block;
+	width: 130px;
+	height: 8px;
+	background: #bc2327;
+	margin-left: 0;
+	border-style: none;
+}	

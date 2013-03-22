@@ -358,7 +358,16 @@ nav#mainMenu {
 			height: 8px;
 			background: #bc2327;
 		}
-		
+
+		#mainContent hr {
+			display: block;
+			width: 130px;
+			height: 8px;
+			background: #bc2327;
+			margin-left: 0;
+			border-style: none;
+		}	
+			
 		#sidebar {
 			float: left; 
 			width: 240px;
@@ -1561,4 +1570,14 @@ width: 100%;
 }
 	
 /* end mobile */
+}
+
+
+/* patch */
+#mainContent h3 {
+	font-family: 'Georgia', serif;
+	background-color: #fff;  
+	font-weight: bold;
+	margin-left: 0;
+	padding-left: 0;
 }
