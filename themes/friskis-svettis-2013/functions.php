@@ -369,6 +369,9 @@ class OpeningHours extends WP_Widget
 		$gymClosingSunday 		= $instance['gymClosingSunday'];
 		$localClosingSunday 	= $instance['localClosingSunday'];
 		
+		
+		//Allow iFrames
+    add_filter('tiny_mce_before_init', create_function( '$a', '$a["extended_valid_elements"] = "iframe[id|class|title|style|align|frameborder|height|longdesc|marginheight|marginwidth|name|scrolling|src|width]"; return $a;') );
 ?>
 		<p>
 			<label for="<?php echo $this->get_field_id('facility'); ?>">Namn på anläggningen: 
