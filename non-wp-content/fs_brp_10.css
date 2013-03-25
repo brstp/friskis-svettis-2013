@@ -29,7 +29,7 @@ b { font-family: Verdana, Helvetica, Arial; color: #333; background-color: #fff;
 
 .groupActivityHeadTime, .groupActivityListTime { padding-left: 5px; }
 .groupActivityListTime, .groupActivityListNumberOfParticipants, 
-.groupActivityListBookable, .groupActivityListAvailable, .groupActivityListWaitingListSize { text-align: left !important;}
+.groupActivityListBookable, .groupActivityListAvailable { text-align: left !important;}
 .groupActivityHeadResource, .groupActivityListLokal { display: none; }
 .groupActivityListAction a { display: block; height: 18px; text-decoration: none; color: #fff; font-size: 11px; text-align: center; line-height: 16px; background: url(images/green_button_bg.gif) no-repeat; width: 76px;}
 .groupActivityListAction a[href*="bookWaitingList"] { line-height: 8px !important; } 
@@ -106,3 +106,4 @@ table#trainingStatisticsTable td.sumColumn, table#trainingStatisticsTable td.sum
 #newCustomerLink { margin-top: 20px; }
 .ctop { display:none; }
 .cbottom { display:none; }
+th.groupActivityHeadStatus, th.groupActivityHeadWaitinglist, td.groupActivityListFull, td.groupActivityListWaitingListSize, td.groupActivityHeadAction { display:none; }

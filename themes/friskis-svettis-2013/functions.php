@@ -384,7 +384,7 @@ class OpeningHours extends WP_Widget
 				<td></td>
 				<td>Öppnar</td>
 				<td>Sista inpassering</td>
-				<td>Lokal stänger</td>
+				<td>Stänger</td>
 			</tr>
 			<tr>
 				<td>Måndag</td>
@@ -480,7 +480,7 @@ class OpeningHours extends WP_Widget
 					echo '<td><strong>Sön</strong></td>';
 				echo '</tr>';
 				echo '<tr>';
-					echo '<td>Öppnar</td>';
+					echo '<th>Öppnar</th>';
 					echo '<td>'.$instance['openingMonday'].'</td>';
 					echo '<td>'.$instance['openingTuesday'].'</td>';
 					echo '<td>'.$instance['openingWednesday'].'</td>';
@@ -492,7 +492,7 @@ class OpeningHours extends WP_Widget
         if ( strlen( trim( $instance['gymClosingMonday'].$instance['gymClosingTuesday'].$instance['gymClosingWednesday'].$instance['gymClosingThursday'].$instance['gymClosingFriday'].$instance['gymClosingSaturday'].$instance['gymClosingSunday'])) > 0 )
           {
     				echo '<tr>';
-    					echo '<td>Sista inpassering</td>';
+    					echo '<th>Sista inpassering</th>';
     					echo '<td>'.$instance['gymClosingMonday'].'</td>';
     					echo '<td>'.$instance['gymClosingTuesday'].'</td>';
     					echo '<td>'.$instance['gymClosingWednesday'].'</td>';
@@ -503,7 +503,7 @@ class OpeningHours extends WP_Widget
     				echo '</tr>';
   				}
 				echo '<tr>';
-					echo '<td>Stänger</td>';
+					echo '<th>Stänger</th>';
 					echo '<td>'.$instance['localClosingMonday'].'</td>';
 					echo '<td>'.$instance['localClosingTuesday'].'</td>';
 					echo '<td>'.$instance['localClosingWednesday'].'</td>';
@@ -601,7 +601,7 @@ function register_settings() {
 add_action( 'admin_init', 'register_settings' );
 
 function fs_settings() {
-	add_options_page( 'Inställningar Friskis & Svettis', 'Inställningar Friskis & Svettis', 'manage_options', 'my-unique-identifier', 'fs_options' );
+	add_options_page( 'Friskis&Svettis', 'Friskis&Svettis', 'manage_options', 'my-unique-identifier', 'fs_options' );
 }
 add_action( 'admin_menu', 'fs_settings' );
 
@@ -612,7 +612,7 @@ function fs_options() {
 	}
 	echo '<div class="wrap">';
 		echo '<div id="icon-options-general" class="icon32"><br></div>';
-		echo '<h2>Inställningar Friskis & Svettis</h2>';
+		echo '<h2>Friskis&Svettis</h2>';
 		echo '<form name="form" method="post" action="options.php">';
 			settings_fields( 'fs_settings' );
 
