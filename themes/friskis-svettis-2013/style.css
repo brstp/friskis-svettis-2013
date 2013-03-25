@@ -365,6 +365,8 @@ nav#mainMenu {
 			height: 8px;
 			background: #bc2327;
 			margin-left: 0;
+			margin-right: auto;
+			text-align: left;
 			border-style: none;
 		}	
 			
