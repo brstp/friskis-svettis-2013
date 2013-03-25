@@ -104,3 +104,4 @@ table#trainingStatisticsTable td.sumColumn, table#trainingStatisticsTable td.sum
 .tools td+td+td { position: absolute; left: 700px; }
 
 #newCustomerLink { margin-top: 20px; }
+.ctop { display:none; }
