@@ -383,7 +383,7 @@ class OpeningHours extends WP_Widget
 			<tr>
 				<td></td>
 				<td>Öppnar</td>
-				<td>K/G stänger</td>
+				<td>Sista inpassering</td>
 				<td>Lokal stänger</td>
 			</tr>
 			<tr>
@@ -411,7 +411,7 @@ class OpeningHours extends WP_Widget
 				<td><input type="text" class="openingHoursInput" value="<?php echo attribute_escape($localClosingThursday); ?>" name="<?php echo $this->get_field_name('localClosingThursday'); ?>"></td>
 			</tr>
 			<tr>
-				<td>Fredrag</td>
+				<td>Fredag</td>
 				<td><input type="text" class="openingHoursInput" value="<?php echo attribute_escape($openingFriday); ?>" name="<?php echo $this->get_field_name('openingFriday'); ?>"></td>
 				<td><input type="text" class="openingHoursInput" value="<?php echo attribute_escape($gymClosingFriday); ?>" name="<?php echo $this->get_field_name('gymClosingFriday'); ?>"></td>
 				<td><input type="text" class="openingHoursInput" value="<?php echo attribute_escape($localClosingFriday); ?>" name="<?php echo $this->get_field_name('localClosingFriday'); ?>"></td>
@@ -489,18 +489,21 @@ class OpeningHours extends WP_Widget
 					echo '<td>'.$instance['openingSaturday'].'</td>';
 					echo '<td>'.$instance['openingSunday'].'</td>';
 				echo '</tr>';
+        if ( strlen( trim( $instance['gymClosingMonday'].$instance['gymClosingTuesday'].$instance['gymClosingWednesday'].$instance['gymClosingThursday'].$instance['gymClosingFriday'].$instance['gymClosingSaturday'].$instance['gymClosingSunday'])) > 0 )
+          {
+    				echo '<tr>';
+    					echo '<td>Sista inpassering</td>';
+    					echo '<td>'.$instance['gymClosingMonday'].'</td>';
+    					echo '<td>'.$instance['gymClosingTuesday'].'</td>';
+    					echo '<td>'.$instance['gymClosingWednesday'].'</td>';
+    					echo '<td>'.$instance['gymClosingThursday'].'</td>';
+    					echo '<td>'.$instance['gymClosingFriday'].'</td>';
+    					echo '<td>'.$instance['gymClosingSaturday'].'</td>';
+    					echo '<td>'.$instance['gymClosingSunday'].'</td>';
+    				echo '</tr>';
+  				}
 				echo '<tr>';
-					echo '<td>Kassa/gym stänger</td>';
-					echo '<td>'.$instance['gymClosingMonday'].'</td>';
-					echo '<td>'.$instance['gymClosingTuesday'].'</td>';
-					echo '<td>'.$instance['gymClosingWednesday'].'</td>';
-					echo '<td>'.$instance['gymClosingThursday'].'</td>';
-					echo '<td>'.$instance['gymClosingFriday'].'</td>';
-					echo '<td>'.$instance['gymClosingSaturday'].'</td>';
-					echo '<td>'.$instance['gymClosingSunday'].'</td>';
-				echo '</tr>';
-				echo '<tr>';
-					echo '<td>Lokalen stänger</td>';
+					echo '<td>Stänger</td>';
 					echo '<td>'.$instance['localClosingMonday'].'</td>';
 					echo '<td>'.$instance['localClosingTuesday'].'</td>';
 					echo '<td>'.$instance['localClosingWednesday'].'</td>';
