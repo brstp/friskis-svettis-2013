@@ -16,11 +16,11 @@ p { font-family: Verdana, Helvetica, Arial; font-size: 12px; line-height: 19px; 
 b { font-family: Verdana, Helvetica, Arial; color: #333; background-color: #fff;}
 .wp-caption-text { font-size: 10px; font-style: italic; }
 
-.wrapper { position: relative; width: 800px; margin: 0px auto 0px auto; }
+.wrapper { position: relative; width: 700px; margin: 0px auto 0px auto; }
 
-.centercontenttext table { width: 800px; }
+.centercontenttext table { width: 700px; }
 .centercontenttext table table { width: inherit; }
-.centercontenttext table.schedule { border-collapse: collapse; width: 800px;}
+.centercontenttext table.schedule { border-collapse: collapse; width: 700px;}
 .centercontenttext table.schedule tr.head th { height: 26px; background: url(images/schema_header_row_bg.gif ) repeat-x; color: #000; text-align: left;}
 .centercontenttext table.schedule tr.date td { font-size: 15px; line-height: 24px; padding-bottom: 6px; text-transform: uppercase; }
 .ccenter span.rubrik { font-size: 18px; line-height: 24px; padding-bottom: 6px; text-transform: uppercase;  }
@@ -69,7 +69,7 @@ form[name="selectUnitForm"] .wwFormTable input[type="submit"]  { margin: 0px 0px
 .cright table a[href="http://brp.netono.se/fsnacka/mesh/showSubscriptions.action"] { display: block; height: 18px; text-decoration: none; color: #fff; font-size: 11px; text-align: center; line-height: 16px; background: url(images/red_button_bg.gif) no-repeat; width: 76px; position: relative; left: -5px; margin: 10px 0px;}
 
 
-.cleft { width: 800px; border-right: none; }
+.cleft { width: 700px; border-right: none; }
 .ccenter { padding: 0px !important; border: none; padding-right: 0px !important; clear: both;}
 .ccentercontent { border: none !important; padding: 0px; }
 .centercontenttext { padding: 0px; }
@@ -91,7 +91,7 @@ form[name="selectUnitForm"] .wwFormTable input[type="submit"]  { margin: 0px 0px
 table.bookingsList tr th:first-child, table.bookingsList tr td:first-child,
 table#trainingStatisticsTable tr th:first-child, table#trainingStatisticsTable tr td:first-child,
 .centercontenttext table tr th:first-child, .centercontenttext table tr td:first-child { padding-left: 5px; }
-table.bookingsList  { border-collapse: collapse; width: 800px; }
+table.bookingsList  { border-collapse: collapse; width: 700px; }
 .debook a { display: block; height: 18px; text-decoration: none; color: #fff; font-size: 11px; text-align: center; line-height: 16px; background: url(images/red_button_bg.gif) no-repeat; width: 76px;}
 
 .centercontenttext #trainingStatisticsPageTable { float: left; }
@@ -101,9 +101,12 @@ table#trainingStatisticsTable td.sumColumn, table#trainingStatisticsTable td.sum
 .tools  { position: relative; }
 .tools td  {padding: 0px 0px 10px 0px; }
 .tools a  { display: block; height: 18px; text-decoration: none; color: #fff; font-size: 11px; text-align: center; line-height: 16px; background: url(images/green_button_bg.gif) no-repeat; width: 76px;}
-.tools td+td+td { position: absolute; left: 700px; }
+.tools td+td+td { position: absolute; left: 616px; }
 
 #newCustomerLink { margin-top: 20px; }
 .ctop { display:none; }
 .cbottom { display:none; }
-th.groupActivityHeadStatus, th.groupActivityHeadWaitinglist, td.groupActivityListFull, td.groupActivityListWaitingListSize, td.groupActivityHeadAction { display:none; }
+th.groupActivityHeadStatus, th.groupActivityHeadWaitinglist, td.groupActivityHeadAction { display:none; }
+/* td.groupActivityListFull, td.groupActivityListWaitingListSize,*/
+
+table.schedule td:nth-child(7), table.schedule td:nth-child(6) {display:none;}
