@@ -359,7 +359,7 @@ nav#mainMenu {
 			background: #bc2327;
 		}
 
-		#mainContent hr {
+		#mainContent hr, #mainContentNoSidebar hr {
 			display: block;
 			width: 130px;
 			height: 8px;
@@ -1258,6 +1258,7 @@ footer {
 		text-align:center;
 		display: block;
 		overflow:hidden;
+		margin-top: 20px;
 	}
 }
 
@@ -1583,7 +1584,7 @@ width: 100%;
 
 
 /* patch */
-#mainContent h3 {
+#mainContent h3, #mainContentNoSidebar h3 {
 	font-family: 'Georgia', serif;
 	background-color: #fff;  
 	font-weight: bold;

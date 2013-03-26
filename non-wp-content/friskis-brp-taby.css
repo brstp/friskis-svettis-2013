@@ -29,9 +29,9 @@ b { font-family: Verdana, Helvetica, Arial; color: #333; background-color: #fff;
 
 .groupActivityHeadTime, .groupActivityListTime { padding-left: 5px; }
 .groupActivityListTime, .groupActivityListNumberOfParticipants, 
-.groupActivityListBookable, .groupActivityListAvailable { text-align: left !important;}
-.groupActivityHeadResource, .groupActivityListLokal { display: none; }
-.groupActivityListAction a { display: block; height: 18px; text-decoration: none; color: #fff; font-size: 11px; text-align: center; line-height: 16px; background: url(images/green_button_bg.gif) no-repeat; width: 76px;}
+.groupActivityListBookable, .groupActivityListAvailable { text-align: left ;}
+.groupActivityHeadResource, /*.groupActivityListLokal*/ { display: none; }
+.groupActivityListAction a { display: block; height: 18px; text-decoration: none; color: #fff; font-size: 11px; text-align: center; line-height: 16px; background: url(images/green_button_bg.gif) no-repeat; width: 76px; margin-left: 10px;}
 .groupActivityListAction a[href*="bookWaitingList"] { line-height: 8px !important; } 
 table.schedule tr.bookedRow td.groupActivityListAction a { background: url(images/red_button_bg.gif) }
 
@@ -106,7 +106,8 @@ table#trainingStatisticsTable td.sumColumn, table#trainingStatisticsTable td.sum
 #newCustomerLink { margin-top: 20px; }
 .ctop { display:none; }
 .cbottom { display:none; }
-th.groupActivityHeadStatus, th.groupActivityHeadWaitinglist, td.groupActivityHeadAction { display:none; }
+/* th.groupActivityHeadStatus, th.groupActivityHeadWaitinglist, td.groupActivityHeadAction { display:none; } */
 /* td.groupActivityListFull, td.groupActivityListWaitingListSize,*/
 
-table.schedule td:nth-child(7), table.schedule td:nth-child(6) {display:none;}
+/* table.schedule td:nth-child(7), table.schedule td:nth-child(6) {display:none;} */
+table.schedule td:nth-child(5), table.schedule td:nth-child(6) {text-align: center;} 
