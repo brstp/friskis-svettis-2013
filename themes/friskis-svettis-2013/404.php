@@ -13,7 +13,7 @@ get_header();
 				$news_query = new WP_Query(array(
 						"post_type" => 'post',
 						"posts_per_page" => 4,
-						"cat" => 11
+						"category_name" => 'Nyheter'
 					));
 				while ($news_query->have_posts()) : $news_query->the_post();
 					?>
