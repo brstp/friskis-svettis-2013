@@ -106,7 +106,8 @@ table#trainingStatisticsTable td.sumColumn, table#trainingStatisticsTable td.sum
 #newCustomerLink { margin-top: 20px; }
 .ctop { display:none; }
 .cbottom { display:none; }
-th.groupActivityHeadStatus, th.groupActivityHeadWaitinglist, td.groupActivityHeadAction { display:none; }
+th.groupActivityHeadStatus, td.groupActivityHeadAction { display:none; }
 /* td.groupActivityListFull, td.groupActivityListWaitingListSize,*/
 
-table.schedule td:nth-child(7), table.schedule td:nth-child(6) {display:none;}
+table.schedule td:nth-child(7) {display:none;}
+table.schedule td:nth-child(6)  {text-align: center;}
