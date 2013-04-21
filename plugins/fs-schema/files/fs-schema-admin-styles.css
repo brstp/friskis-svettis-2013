@@ -1,0 +1,19 @@
+/*/////////////////////////////////////////////////////////////////
+
+	FS SCHEMA, CSS for public WP-admin
+
+	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	This program is not free software.
+
+//////////////////////////////////////////////////////////////////*/
+
+
+.brp_businessunitslist					{ border: 1px solid #DFDFDF; padding: 5px; width: 25em; background-color: #fafafa; }
+
+.brp_businessunitslist label				{ position: relative; }
+
+.brp_businessunitslist label input			{ position: relative; top: -2px; }
+
+.brp_businessunitslist label .buid			{ position: absolute; left: 255px; top: -3px; width: 30px; font-weight: bold; font-size: 90%; }
+
+div.fs_shema_shortcode_help				{ display: none; }
