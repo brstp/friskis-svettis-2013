@@ -79,9 +79,9 @@ class fs_schema_admin {
 			
 				if ( get_option( 'fs_schema_profit_server_url' ) == '' ) 		array_push ( $admin_notice_details, 'Sökväg till PROFIT-servern' );
 				
-				if ( get_option( 'fs_booking_profit_contract_name' ) == '' ) 	array_push ( $admin_notice_details, 'PROFIT Kontraktsnamn' );
+				if ( get_option( 'fs_booking_profit_3part_licence_key' ) == '' ) 	array_push ( $admin_notice_details, 'PROFIT Kontraktsnamn' );
 				
-				if ( get_option( 'fs_booking_profit_license_key' ) == '' ) 		array_push ( $admin_notice_details, 'PROFIT Licensnyckel' );
+				if ( get_option( 'fs_booking_profit_organization_unit' ) == '' ) 		array_push ( $admin_notice_details, 'PROFIT Licensnyckel' );
 				
 				if ( count ( $admin_notice_details ) > 0 ) 					array_push ( $this->admin_notices, $fs_schema_link . ': Du har angivit PROFIT som bokningssystem men måste fylla i följande fält för att schemat ska fungera: ' . implode ( $admin_notice_details, ', ' ) );
 					
@@ -154,9 +154,9 @@ class fs_schema_admin {
 			
 			$this->update_option_from_form ( 'fs_booking_bpi_businessunitids' );
 			
-			$this->update_option_from_form ( 'fs_booking_profit_contract_name' );
+			$this->update_option_from_form ( 'fs_booking_profit_3part_licence_key' );
 			
-			$this->update_option_from_form ( 'fs_booking_profit_license_key' );
+			$this->update_option_from_form ( 'fs_booking_profit_organization_unit' );
 			
 			$this->update_option_from_form ( 'fs_schema_extra_column' );
 			
@@ -190,16 +190,16 @@ class fs_schema_admin {
 		
 		$fs_booking_bpi_businessunitids		= $settings[ 'fs_booking_bpi_businessunitids' ];
 		
-		$fs_booking_profit_contract_name 		= $settings[ 'fs_booking_profit_contract_name' ];
+		$fs_booking_profit_3part_licence_key 	= $settings[ 'fs_booking_profit_3part_licence_key' ];
 		
-		$fs_booking_profit_license_key 		= $settings[ 'fs_booking_profit_license_key' ];
+		$fs_booking_profit_organization_unit 	= $settings[ 'fs_booking_profit_organization_unit' ];
 		
 		$fs_schema_extra_column				= $settings[ 'fs_schema_extra_column' ];
 		
 		$fs_schema_update_inteval			= $settings[ 'fs_schema_update_inteval' ];
 		
 		
-		$fs_booking_bpi_businessunitids_html 	= $fs_schema->data->get_businessunits ( 'BRP' );
+		$fs_booking_bpi_businessunitids_html 	= $fs_schema->data->brp->get_businessunits ( 'BRP' );
 		
 	
 		echo 	'<div class="wrap"><form method="post" action=""><input type="hidden" name="submit_options_hidden" value="Y" />';
@@ -285,18 +285,18 @@ class fs_schema_admin {
 					</tr>
 					
 					<tr valign="top" class="fs_schema_profit"' . ( $fs_schema_integration != 'PROFIT' ? ' style="display: none;"' : '' ) . '>
-						<th scope="row"><label for="fs_booking_profit_contract_name">Profit "3-Party Kontraktsnamn"</label></th>
+						<th scope="row"><label for="fs_booking_profit_3part_licence_key">Profit "Tredje part Licensnyckel"</label></th>
 						<td>
-							<input name="fs_booking_profit_contract_name" type="text" id="fs_booking_profit_contract_name" value="' . $fs_booking_profit_contract_name . '" class="regular-text" />
-							<p class="description">Ange det kontraktnamn som Profit har tillhandahållit din förening.</p>
+							<input name="fs_booking_profit_3part_licence_key" type="text" id="fs_booking_profit_3part_licence_key" value="' . $fs_booking_profit_3part_licence_key . '" class="regular-text" />
+							<p class="description">Ange den tredjeparts licensnyckel som ProFit har givit din förening.</p>
 						</td>
 					</tr>
 					
 					<tr valign="top" class="fs_schema_profit"' . ( $fs_schema_integration != 'PROFIT' ? ' style="display: none;"' : '' ) . '>
-						<th scope="row"><label for="fs_booking_profit_license_key">Profit Licensnyckel</label></th>
+						<th scope="row"><label for="fs_booking_profit_organization_unit">Anläggnings-id</label></th>
 						<td>
-							<input name="fs_booking_profit_license_key" type="text" id="fs_booking_profit_license_key" value="' . $fs_booking_profit_license_key . '" class="regular-text" />
-							<p class="description">Ange den licensnyckel som Profit har tillhandahållit din förening.</p>
+							<input name="fs_booking_profit_organization_unit" type="text" id="fs_booking_profit_organization_unit" value="' . $fs_booking_profit_organization_unit . '" class="regular-text" />
+							<p class="description">Ange det anläggnings-id som Profit har tillhandahållit din förening.</p>
 						</td>
 					</tr>
 					
@@ -314,7 +314,7 @@ class fs_schema_admin {
 					</tr>-->
 					
 					<tr valign="top">
-						<th scope="row"><label for="fs_booking_profit_license_key">Uppdateingsintervall</label></th>
+						<th scope="row"><label for="fs_booking_profit_organization_unit">Uppdateingsintervall</label></th>
 						<td>
 							<input name="fs_schema_update_inteval" type="text" id="fs_schema_update_inteval" value="' . $fs_schema_update_inteval . '" class="small-text" /> minuter
 							<p class="description">Ange hur ofta Wordpress ska uppdatera schemat från bokningssystemet. 60 minuter är ganska rimligt.<br>När användaren är inloggad hämtas informationen alltid direkt, utan mellanlagring.</p>

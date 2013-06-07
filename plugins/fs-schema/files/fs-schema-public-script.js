@@ -423,7 +423,11 @@ fs_schema_public = {
 	
 			event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
 			
-			event_target_y = jQuery( event_el ).parent().parent().position().top;
+			//event_target_y = jQuery( event_el ).parent().parent().position().top;
+			
+			event_el_position_top = jQuery( event_el ).position().top;
+			
+			event_target_y = event_el_position_top > 30 ? event_el_position_top - 150 : 0;
 			
 			event_current_x = ( (jQuery( event_el ).parent().parent().attr('data-day') -1 ) * fs_schema_public.day_width ) + jQuery( event_el ).position().left - ( fs_schema_public.day_width / 2);
 			

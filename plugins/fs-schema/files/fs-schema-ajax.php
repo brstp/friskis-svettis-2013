@@ -85,7 +85,7 @@ class fs_schema_ajax {
 		
 		$server_url 		= isset( $_POST[ 'server_url' ] )? $_POST[ 'server_url' ] : 0;
 		
-		echo $fs_schema->data->get_businessunits( 'BRP', $server_url, $api_key );
+		echo $fs_schema->data->brp->get_businessunits( $server_url, $api_key );
 		
 		die();
 		

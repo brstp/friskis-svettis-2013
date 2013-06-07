@@ -10,6 +10,24 @@
 	
 	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
+	
+	BRP Demo 
+	http://leverans1.brpsystems.se:8080/demo04gog/api/ver2/
+	5772b1953b6548539bdeacab90f95e24
+	Login: klas@ehnemark.com/gurka7394
+	
+	FS Södertälje
+	http://brp.netono.se/fssodtgog/api/ver2/
+	1a07fce1ac224a669dcae02412bcd084
+	
+	FS Danderyd
+	http://brp2.netono.se/fsdanderydgog/api/ver2/
+	6a8aa4c1c6d84e3f9d17ced2ae5bec93
+	
+	Profit
+	http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?op=processUnsafe
+	Txx3453HgbPWW132
+	1437
 
 //////////////////////////////////////////////////////////////////*/
 
@@ -35,6 +53,10 @@ require_once ( "files/fs-schema-public.php" );
 require_once ( "files/fs-schema-shortcodes.php" );
 
 require_once ( "files/fs-schema-static.php" );
+
+require_once ( "files/fs-schema-brp.php" );
+
+require_once ( "files/fs-schema-profit.php" );
 
 
 

@@ -181,6 +181,8 @@ class fs_schema_public {
 					
 					$day_hour_info					= array();
 					
+					$max_entry_width_per_hour		= 2;
+					
 					$earliest_hour 				= 10;
 					
 					$latest_hour 					= 12;
@@ -195,7 +197,7 @@ class fs_schema_public {
 					
 					$day_header_height_px			= 27;
 					
-					$hour_height_px				= 45;
+					$hour_height_px				= 75;
 					
 					$min_hour_height_px				= 20;
 					
@@ -226,11 +228,7 @@ class fs_schema_public {
 						
 						$output 					.= '<div class="' . $class_name . '" data-day-width="' . $day_width_px . '" data-hours-width="' . $hours_width_px . '" >';
 						
-						$output					.= '<div class="navigation"><div class="fs_button previous">&lt;&nbsp;Föregående vecka</div>';
-						
-						if ( $r['bokning'] == '1' )	$output .= '<div class="login_info fs_button">Logga in...</div>';
-						
-						$output					.= '<div class="fs_button next">Nästa vecka&nbsp;&gt;</div></div>';
+						$output					.= '<div class="navigation"><div class="fs_button previous">&lt;&nbsp;Föregående vecka</div><div class="login_info fs_button">Logga in...</div><div class="fs_button next">Nästa vecka&nbsp;&gt;</div></div>';
 						
 						$output					.= '<div class="weeks">';
 					
@@ -257,9 +255,13 @@ class fs_schema_public {
 						
 						$end_minute				= (int) date ('i', $end_time );
 						
-						$before_now				= $start_time < $today_this_hour; 
+						$start_quarter				= $start_minute == 0 ? 0 : ( $start_minute < 23 ? 1 	: ( $start_minute < 37 ? 2 	: 3 ));
 						
-						if ( $end_hour == $start_hour  )			$end_hour++;
+						$end_quarter				= $end_minute == 0 ? 0 	: ( $end_minute < 23 ? 1 	: ( $end_minute < 37 ? 2 	: 3 ));
+						
+						$quarter_length			= (( $end_hour * 4 ) + $end_quarter ) - (( $start_hour * 4 ) + $start_quarter );
+						
+						$before_now				= $start_time < $today_this_hour; 
 						
 						if ( $start_hour < $earliest_hour ) 		$earliest_hour = $start_hour;
 						
@@ -272,9 +274,13 @@ class fs_schema_public {
 							
 							$entry['_end_hour'] 				= $end_hour;
 							
-							$entry['_start_minute']				= $start_minute;
+							$entry['_start_quarter']				= $start_quarter;
+							
+							$entry['_quarter_length'] 			= $quarter_length;
 							
 							$entry['_before_now']				= $before_now;
+							
+							$entry['_hpos'] = $entry['_vpos']		= 1;
 							
 							if ( isset ( $week_activities[$start_day][$start_hour] )) array_push( $week_activities[$start_day][$start_hour], $entry );
 								
@@ -282,17 +288,18 @@ class fs_schema_public {
 
 							
 							// add the number of entries that occupy the same hours
-							for ( $hour = $start_hour; $hour < $end_hour; $hour++ ) {
+							for ( $hour = $start_hour; $hour <= $end_hour; $hour++ ) {
 							
 								if ( isset ( $week_hour_info[$start_day][$hour]['num_entries'] )) $week_hour_info[$start_day][$hour]['num_entries']++;
 								
 								else $week_hour_info[$start_day][$hour]['num_entries'] = 1;
 								
-								if ( !isset ( $day_hour_info[$hour]['max_entries'] )) $day_hour_info[$hour]['max_entries'] = 1;
+								if ( ( isset ( $day_hour_info[$hour]['max_entries'] ) && 
+									  $day_hour_info[$hour]['max_entries'] < $week_hour_info[$start_day][$hour]['num_entries'] 
+									) || !isset ( $day_hour_info[$hour]['max_entries'] ) ) 
 								
-								if ( $day_hour_info[$hour]['max_entries'] < $week_hour_info[$start_day][$hour]['num_entries'] ) 
-								
-									$day_hour_info[$hour]['max_entries'] = $week_hour_info[$start_day][$hour]['num_entries'];
+									 $day_hour_info[$hour]['max_entries'] = $week_hour_info[$start_day][$hour]['num_entries'];
+							
 							}
 						}
 						
@@ -307,19 +314,55 @@ class fs_schema_public {
 						// calculate hour height
 						if ( isset ( $day_hour_info[ $h ]['max_entries'] ) && $day_hour_info[ $h ]['max_entries'] > 0 ) {
 						
-							$day_hour_info[ $h ]['height'] 		= $day_hour_info[ $h ]['max_entries']  * $hour_height_px; // hour height
+							$hour_times_heigh = $day_hour_info[ $h ]['max_entries'] % $max_entry_width_per_hour;
+						
+							if ( $day_hour_info[ $h ]['max_entries'] > ( $hour_times_heigh * $max_entry_width_per_hour )) $hour_times_heigh++;
+						
+							$day_hour_info[ $h ]['height'] 	= $hour_times_heigh * $hour_height_px; 	// hour height
 							
 						} else {
 						
-							$day_hour_info[ $h ]['max_entries'] 	= 0;
-						
-							$day_hour_info[ $h ]['height'] 		= $min_hour_height_px;	// default, min hour height
+							$day_hour_info[ $h ]['height'] 	= $min_hour_height_px;	// default, min hour height
 						}
 						
 						
 						// accumulated hour height
-						$day_hour_info[ $h ]['acc_height']  		= $h > $earliest_hour ? $day_hour_info[ $h - 1 ]['acc_height'] + $day_hour_info[ $h -1 ]['height'] + 5 : 0;  
+						$day_hour_info[ $h ]['acc_height']  	= $h > $earliest_hour ? $day_hour_info[ $h - 1 ]['acc_height'] + $day_hour_info[ $h -1 ]['height'] + 5 : 0;  
 
+
+						// loop thru every day and event and make some changes to the positions and size of them
+						for ( $d = 1; $d <= 7; $d++) {
+						
+							$week_hour_info[$d][$h]['hpos_counter'] 	= 0;
+							
+							$week_hour_info[$d][$h]['vpos_counter'] 	= 0;
+							
+							$week_hour_info[$d][$h]['hcount'] 			= 0;
+							
+							if ( isset( $week_activities[$d][$h] ) && is_array( $week_activities[$d][$h] )) {
+								
+								foreach ( $week_activities[$d][$h] as &$entry ) {
+								
+									$week_hour_info[$d][$h]['hpos_counter']++;
+									
+									$week_hour_info[$d][$h]['hcount']++;
+									
+									if ( $week_hour_info[$d][$h]['hcount'] > $max_entry_width_per_hour ) $week_hour_info[$d][$h]['hcount'] = $max_entry_width_per_hour;
+	
+									if ( $week_hour_info[$d][$h]['hpos_counter'] > $max_entry_width_per_hour ) {
+									
+										$week_hour_info[$d][$h]['vpos_counter']++;
+										
+										$week_hour_info[$d][$h]['hpos_counter'] = 0;
+									
+									}
+	
+									$entry['_hpos'] 		= $week_hour_info[$d][$h]['hpos_counter'];
+									
+									$entry['_vpos'] 		= $week_hour_info[$d][$h]['vpos_counter'];
+								}
+							}
+						}
 					}
 					
 					
@@ -331,7 +374,7 @@ class fs_schema_public {
 						
 						$today_class		= $today_date == $day_date ? ' today' : '';
 					
-						$output 			.= '<div class="day day' . $d . ' ' . $today_class . '" data-day="' . $d . '" style="height: ' . ( $day_hour_info[ $latest_hour ]['acc_height'] + $day_header_height_px + $day_hour_info[ $latest_hour]['height'] + 5 ). 'px; width: ' . $day_width_px . 'px; "><div class="head">' . $weekdays[ $d ] . ' ' . date('j/n', $day_date) . '</div>';
+						$output 			.= '<div class="day day' . $d . ' ' . $today_class . '" data-day="' . $d . '" style="height: ' . ( $day_hour_info[ $latest_hour ]['acc_height'] + $day_header_height_px ). 'px; width: ' . $day_width_px . 'px; "><div class="head">' . $weekdays[ $d ] . ' ' . date('j/n', $day_date) . '</div>';
 						
 						$hours_field		= '';
 						
@@ -343,24 +386,21 @@ class fs_schema_public {
 						
 							$this_hour_class	= $this_hour_num == $h && $today_week == $this_week ? ' this_hour' : '' ;
 						
-							$hours_field 		.= '<div class="clock" style="height: ' . $day_hour_info[ $h ]['height']. 'px; width: ' . ( $day_width_px - 2 ) . 'px; "><div class="day_clock' . $this_hour_class . '">' . $h . ':00' . '</div></div>'; 
-
+							$hours_field 		.= '<div class="clock" style="height: ' . $day_hour_info[ $h ]['height']. 'px; width: ' . ( $day_width_px - 2 ) . 'px; "><div class="day_clock' . $this_hour_class . '">' .  $h . ':00' . '</div></div>'; 
+						
 							if ( isset( $week_activities[$d][$h] ) && is_array( $week_activities[$d][$h] )) {
 							
-								$entry_count = 0;
+								foreach ( $week_activities[$d][$h] as $entry ) {
 								
-								$hour_entries = $week_activities[$d][$h];
-								
-								usort( $hour_entries, 'fs_schema_public::sort_hour_activities' );
-							
-								foreach ( $hour_entries as $entry ) {	
-						
-									$entry_count++; 
 								
 									// entry data
 									$entry_class 				= $products = '';
 									
 									foreach ( $entry['products']  as $product ) { $products .= $product['name'] . ' '; }
+									
+									$deb = ( $entry['_vpos'] * ( $day_hour_info[ $h ]['height'] / $hour_height_px ));
+									
+									$deb = $day_hour_info[ $h ]['height'];
 									
 									$entry_data 				= ' data-id="' . $entry['id'] . '" data-start="' . $entry['starttime'] . '" data-end="' . $entry['endtime'] . '" data-product="' . $products . '"';
 									
@@ -368,19 +408,41 @@ class fs_schema_public {
 									
 									$entry_data 			    .= ' data-bookableslots="' . $entry['bookableslots'] . '" data-startdate="' . $weekdays[ $d ] . ' ' . date('j/n Y', $day_date)  . '"';
 									
-									$entry_data 			    .= ' data-bookingid="' . $entry['bookingid'] . '" data-h="' . $h . '"';
+									$entry_data 			    .= ' data-bookingid="' . $entry['bookingid'] . '" data-deb="' . $deb . '" data-vpos="' . $entry['_vpos'] . '" data-h="' . $h . '"';
 									
 									
 									// calculate entry height based on duration
-									$entry_height 				= ' height: ' . ( $hour_height_px - 5 ) . 'px;';
+									$entry_height 				= ' height: ' . (int)(( $entry['_quarter_length'] * $hour_height_px / 4 ) - $entry_padding_px ) . 'px;';
 									
-									$entry_width 				= ' width: ' . ( $entry_width_px - 8 ) . 'px; ';
-	
-	
+									
+									
+									// set entry width based on how many entries occupy the same time slot
+									if ( $week_hour_info[$d][$h]['hcount'] > 1 ) {
+									
+										$entry_width 			= ' width: ' . ( ( $entry_width_px - ( $entry_padding_px * 4 ) ) / $week_hour_info[$d][$h]['hcount'] ) . 'px;';
+										
+										$entry_class			.= ' multiple';									
+									
+									} else {
+									
+										$entry_width 			= ' width: ' . ( $entry_width_px - 8 ) . 'px; ';
+									
+									}
+									
+									
+									
+									// set entry left pos
+									$entry_left 				= '';
+									
+									//if ( $entry['_hpos'] > 1 ) 	$entry_left 			= ' left: ' . ( ( $entry['_hpos'] - 1 ) * ( ( $entry_width_px + $entry_padding_px ) / $week_hour_info[$d][$h]['hcount'] )) . 'px;';
+
+									if ( $entry['_hpos'] > 1 ) 	$entry_left 			= ' left: ' . ( ( $entry['_hpos'] - 1 ) * ( ( $entry_width_px - ( $entry_padding_px -4) ) / $week_hour_info[$d][$h]['hcount'] ))  . 'px;';
+									
 									// calculate entry position from top, based on what time it starts
 									$entry_top				= '';
 									
-									if ( $h > $earliest_hour ) 	$entry_top = 'top: ' . (int)((($day_hour_info[ $h ]['acc_height']) + ( $entry_count -1) * $hour_height_px ) + $entry_count  ) . 'px;'; //  
+									//if ( $h > $earliest_hour ) 	$entry_top = 'top: ' . (int)($day_hour_info[ $h ]['acc_height'] + ( $entry['_start_quarter'] * ( $hour_height_px / 4 ) )) . 'px;';
+									if ( $h > $earliest_hour ) 	$entry_top = 'top: ' . (int)(($day_hour_info[ $h ]['acc_height']) + $deb ) . 'px;'; //  
 									
 									// is this entry before now, add a before now class
 									if ( $entry['_before_now'] === true ) {
@@ -404,7 +466,7 @@ class fs_schema_public {
 									
 									
 									// create the entry html object
-									$entries_field 			.= '<div class="entry' . $entry_class . '" style="' . $entry_top . $entry_width . $entry_height . '"' . $entry_data . $tooltip . '>';
+									$entries_field 			.= '<div class="entry' . $entry_class . '" style="' . $entry_top . $entry_left . $entry_width . $entry_height . '"' . $entry_data . $tooltip . '>';
 									
 									$entries_field 			.= '<div class="time">' . $entry['starttime'] . '-' . $entry['endtime']  . '</div>';
 									
@@ -443,8 +505,8 @@ class fs_schema_public {
 											<div class="header">Logga in</div>
 											<div class="loggedin"></div>
 											<div class="loginform">
-												<div class="username">Användarnamn:<span><input type="text" value="" /></span></div>
-												<div class="password">Lösenord:<span><input type="password" value="" /></span></div>
+												<div class="username">Användarnamn:<span><input type="text" value="klas@ehnemark.com" /></span></div>
+												<div class="password">Lösenord:<span><input type="password" value="gurka7394" /></span></div>
 												<div class="save_me_cookie"><label for="save_me"><input type="checkbox" id="save_me" disabled> Förbli inloggad på den här datorn</label></div>
 											</div>
 											<div class="buttons">
@@ -471,8 +533,8 @@ class fs_schema_public {
 							$output 	 .= '<div class="loggedin"></div>
 										<div class="booked_info">Du är inbokad på denna aktivitet.</div>
 										<div class="loginform">
-											<div class="username">Användarnamn:<span><input type="text" value="" /></span></div>
-											<div class="password">Lösenord:<span><input type="password" value="" /></span></div>
+											<div class="username">Användarnamn:<span><input type="text" value="klas@ehnemark.com" /></span></div>
+											<div class="password">Lösenord:<span><input type="password" value="gurka7394" /></span></div>
 										</div>
 										<div class="buttons">
 											<div class="fs_button logout">Logga ut</div>
@@ -647,8 +709,6 @@ class fs_schema_public {
 		
 		$output = '<pre class="about">Schema av <a href="http://klasehnemark.com">Klas Ehnemark</a>, kopplat till ';
 		
-		$output = '<pre class="about">Schema BETA-version 0.9, kopplat till ';
-		
 		switch ( $settings[ 'fs_schema_integration' ] ) {
 		
 			default:
@@ -663,21 +723,34 @@ class fs_schema_public {
 				break;	
 		}
 		
-		$output .= '</pre>';
-		
-		//$output .= '<span class="cache_status">' . $fs_schema->data->last_cache_status . '</span>. <span class="show_debug" style="text-decoration: underline; cursor: pointer; ">Visa Debug</span></pre>';
+		$output .= '<span class="cache_status">' . $fs_schema->data->last_cache_status . '</span>. <span class="show_debug" style="text-decoration: underline; cursor: pointer; ">Visa Debug</span></pre>';
 		
 		return $output;	
 	}
-
+	
+	
 	
 	////////////////////////////////////////////////////////////////////////////////
-	// Private function: sort_hour_activities
-	////////////////////////////////////////////////////////////////////////////////	
+	// Private function: filter array
+	////////////////////////////////////////////////////////////////////////////////
 	
-	static function sort_hour_activities ($a, $b) { return strcmp( $a["_start_minute"], $b["_start_minute"] ); }
+	private function filter_array_by_value ( $array, $index, $value ){
 	
-	
+		if( is_array( $array ) && count( $array ) > 0 ) {
+		
+			foreach( array_keys($array) as $key ){
+			
+				$temp[$key] = $array[$key][$index];
+				
+				if ($temp[$key] == $value) {
+				
+					$newarray[ $key ] = $array[ $key ];
 
+				}
+			}
+		}
+		
+		return $newarray;
+	} 
 } //End Class
 ?>

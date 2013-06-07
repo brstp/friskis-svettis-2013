@@ -39,7 +39,7 @@ class fs_schema_shortcodes {
 		$defaults = array(
 			'typ'			=> 'vecka', 		// vecka, pass
 			'anlaggning'		=> '',			// id, eller kommaseparerad id
-			'datum'			=> '2013-04-18',  	// format: YYYY-MM-DD
+			'datum'			=> '',  	// format: YYYY-MM-DD
 			'bokning'			=> '1'
 		);
 		
