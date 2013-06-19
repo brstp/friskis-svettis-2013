@@ -202,7 +202,7 @@
 
 .fs_schema .navigation .login_info.resized		{ -webkit-transform: scale(1.1); -moz-transform: scale(1.1); transform: scale(1.1); }
 
-.fs_schema .about							{ color: #9A9A9A; padding: 20px 0px; }
+.fs_schema .about, .cache_status, .show_debug	{ color: #9A9A9A; padding: 20px 0px; }
 
 .fs_schema .week_overlay						{ position: absolute; top: 180px; left: 450px; background-color: rgba(99,99,99,0.3); color: #fff; font-size: 40px; font-weight: bold; padding: 15px 10px; width: 200px; text-align: center; z-index: 999;
 										  border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; box-shadow: 1px 2px 5px #999; -moz-box-shadow: 1px 2px 5px #999; -webkit-box-shadow: 1px 2px 5px #999; }

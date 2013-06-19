@@ -5,7 +5,15 @@
 
 	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
-
+	
+	
+	In all xml for sprint is:
+	
+	%1$s	= session key
+	
+	username: klas@klas.se
+	password: 20898
+	
 //////////////////////////////////////////////////////////////////*/
 
 
@@ -49,6 +57,13 @@ class fs_schema_profit {
 		$sub_cache_name			= 'schema_' . $r['typ'] . '_' . $r['anlaggning'] . '_' . $r['datum'];
 
 
+		//$r['username'] 			= 'klas@klas.se';
+		//$r['password']				= '20898';
+
+		return $this->update_schema( $r );
+		 
+		
+
 		// if username and password, don't cache this schema
 		if ( $r['username'] != '' || $r['password'] != '' ) {
 		
@@ -71,253 +86,6 @@ class fs_schema_profit {
 			
 	}
 	
-	
-	
-	//////////////////////////////////////////////////////////////////////////////
-	//
-	// LOGIN
-	//
-	//////////////////////////////////////////////////////////////////////////////
-	
-	public function login ( $username, $password ) {	
-	
-		global $fs_schema;
-		
-		$result['debug'] = $this->debug . print_r($result, true);
-		
-		return $result;
-	
-	}
-	
-	
-	//////////////////////////////////////////////////////////////////////////////
-	//
-	// UPDATE SCHEMA INTO CACHE, return a serialized object
-	//
-	//////////////////////////////////////////////////////////////////////////////
-	
-	
-	public function update_schema ( $r ) {
-	
-		global $fs_schema;
-		
-		$settings = $fs_schema->data->settings();
-		
-		
-		$r['url']	 			= $settings[ 'fs_schema_profit_server_url' ];
-		$r['url']				= 'http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?wsdl';		
-		
-		
-		$xmls = '<ProfitAndroid command="UsualAuthenticate"><globalunit>1437</globalunit><type>GUEST</type><PartyName>KlasEhnemark</PartyName><Licenskey>Txx3453HgbPWW132</Licenskey></ProfitAndroid>';				
-
-		// Create the client instance
-		$client = new soapclient( $r['url'] );
-
-		$result = $client->processUnsafe( array('xml' => $xmls ));
-		
-		echo '<h2>Result</h2><pre>' .  print_r ( $result, true ) . '</pre>';
-
-		die();
-	
-		
-		// 
-
-			
-				$post_xdata			= '<ProfitAndroid command="UsualAuthenticate"><globalunit>1437</globalunit><type>GUEST</type><PartyName>KlasEhnemark</PartyName><Licenskey>Txx3453HgbPWW132</Licenskey></ProfitAndroid>';
-			
-				//$post_xdata			= '<ProfitAndroid command="UsualAuthenticate"><type>GUEST</type></ProfitAndroid>';
-			
-				$post_data			= '<?xml version="1.0" encoding="utf-8"?>
-										<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-										  <soap:Body>
-										    <processUnsafe xmlns="http://tempuri.org/">
-											 <xml>' . $post_xdata . '</xml>
-										    </processUnsafe>
-										  </soap:Body>
-										</soap:Envelope>';
-			
-				$r['url']	 			= $settings[ 'fs_schema_profit_server_url' ];
-				$r['url']				= 'http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?op=version';
-				//$post_data			= false;
-				
-				
-				/*if ( $r['username'] != '' && $r['password'] != '' ) {
-				
-					//$r['url']			.= '&includebooking=true';
-					
-					//$result 			= $this->get_xml_file ( $r['url'], $post_data, $r['username'], $r['password'] );
-				
-				} else {
-				
-					$result			= $this->get_xml_file ( $r['url'], $post_data );
-				
-				}
-				
-				$headers = array(
-				    "Content-type: text/xml;charset=utf-8",
-				    "Cache-Control: no-cache",
-				    "Pragma: no-cache",
-				    "SOAPAction: http://tempuri.org/processUnsafe",
-				    "Content-length: ".strlen($post_data),
-				);*/
-				
-		
-		
-				//$result			= $this->get_xml_file ( $r['url'], $post_data, '', '', false, $headers );
-				
-				
-				
-
-        // xml post structure
-
-       /* $xml_post_string = '<?xml version="1.0" encoding="utf-8"?>
-                            <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-                              <soap:Body>
-                                <version xmlns="http://tempuri.org/">
-                                  <xml>string test</xml> 
-                                </version>
-                              </soap:Body>
-                            </soap:Envelope>';
- 		$xml_post_string = $post_data;*/
-          
-          
-          
-          
-		// den här ger fel 500: soap:ServerServer was unable to process request. ---> Root element is missing.
-		$post_data_500			= '<?xml version="1.0" encoding="utf-8"?>
-								<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-								  <soap:Body>
-								    <processUnsafe xmlns="http://tempuri.org/">
-									 <xml></xml>
-								    </processUnsafe>
-								  </soap:Body>
-								</soap:Envelope>';
-								
-								
-		$xmls = '<ProfitAndroid command="UsualAuthenticate"><globalunit>1437</globalunit><type>GUEST</type><PartyName>KlasEhnemark</PartyName><Licenskey>Txx3453HgbPWW132</Licenskey></ProfitAndroid>';				
-						
-		// den här ger fel http code 400 Bad Request
-		$post_data_400			= '<?xml version="1.0" encoding="utf-8"?>';
-		$post_data_400			.= '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">';
-		$post_data_400			.= '<soap:Body>';
-		$post_data_400			.= '<processUnsafe xmlns="http://tempuri.org/">';
-		$post_data_400			.= '<xml><ProfitAndroid command="UsualAuthenticate"><globalunit>1437</globalunit><type>GUEST</type><PartyName>KlasEhnemark</PartyName><Licenskey>Txx3453HgbPWW132</Licenskey></ProfitAndroid></xml>';
-		$post_data_400			.= '</processUnsafe>';
-		$post_data_400			.= '</soap:Body>';
-		$post_data_400			.= '</soap:Envelope>';
-			
-		$current_post	= $post_data_400;
-
-		$headers = array(
-		
-			"Content-type: text/xml;charset=\"utf-8\"",	
-			
-			"Accept: text/xml",
-			
-			"Cache-Control: no-cache",
-			
-			"Pragma: no-cache",
-			
-			"SOAPAction: http://tempuri.org/processUnsafe", 
-			
-			"Content-length: " . strlen($current_post)
-		);
-
-		$url = 'http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?op=processUnsafe';
-		$url = 'http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?wsdl';
-		
-		
-
-		
-
-
-
-		
-		
-		
-		echo '<h2>Headers</h2><pre>' . print_r ( $headers, true ) . '</pre>';
-		
-		echo '<h2>Post data</h2><pre>' . print_r ( htmlspecialchars ($current_post), true ) . '</pre>';
-		
-		$ch = curl_init();
-		
-		curl_setopt($ch, CURLOPT_URL, $url);
-		
-		$cookiePath = tempnam('/tmp', 'cookie');
-		
-		curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiePath);
-		
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		
-	  	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
-		
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		
-		curl_setopt($ch, CURLOPT_POST, true);
-		
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $current_post);
-		
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		
-		$curl_output 	= curl_exec($ch); 
-		
-		$curl_info 	= curl_getinfo($ch);
-
-		echo '<h2>Error</h2><pre>' . print_r ( curl_error($ch), true ) . '</pre>';
-
-		curl_close($ch);
-		
-		echo '<h2>Output</h2><pre>' . print_r ( $curl_output, true ) . '</pre>';
-		
-		echo '<h2>Curl info</h2><pre>' . print_r ( $curl_info, true ) . '</pre>';
-		
-		die();
-		
-		
-		
-		
-		// converting
-		$response1 = str_replace("<soap:Body>","",$response);
-		$response2 = str_replace("</soap:Body>","",$response1);
-		
-		// convertingc to XML
-		$parser = simplexml_load_string($response2);
-		// user $parser to get your data out of XML response and to display it.
-		
-		stereotype::debug ( $parser, true);
-				
-				
-				
-				
-				
-				
-				
-				//stereotype::debug( $result );
-				
-				
-				/*$result				= $this->check_brp_xml_errors ( $result );
-				
-				if ( $result['error'] 	== '' && !isset ( $result['xml']->activity )) {
-					
-					$r['error'] 		= 'YES';
-					
-					$r['message'] 		= 'Schemat för aktuell period är tomt.';							
-					
-				} else if ( $result['error'] != '' ) {
-				
-					$r = $result;
-				
-				} else {
-
-				}*/
-
-		return $r;
-	}
-	
-
-
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
@@ -325,57 +93,52 @@ class fs_schema_profit {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 		
-	public function book_activity ( $username, $password, $activity_id ) {
-		
-		$result = array( 'error' => '', 'message' => '' );
-		
-		$server_url			= $settings[ 'fs_schema_brp_server_url' ];
-		
-		$api_key				= $settings[ 'fs_booking_bpi_api_key' ];
-		
-		$url 				= $settings[ 'fs_schema_brp_server_url' ] . 'activitybookings.xml';
-		
-		$post_data			= array (
-		
-			'apikey'			=> $settings[ 'fs_booking_bpi_api_key' ],
-			
-			'type'			=> 'ordinary',
-			
-			'activityid'		=> $activity_id
-		
-		);
-		
-		$result				= $this->get_xml_file( $url, $post_data, $username, $password );
-		
-		$result				= $this->check_brp_xml_errors ( $result );
-		
-		$activity_booking		= $result['xml']->xpath('/activitybooking' );
-		
-		if ( $result['error'] 	== '' && !isset ( $activity_booking[0] )) {
-			
-			$result['error'] 	= 'YES';
-			
-			$result['message'] 	= 'Bokningen har skickats iväg, men det gick inte att få bekräftat från bokningssystemet att bokningen lyckats.';							
-			
-		} else {
-		
-			$result['message'] 		= 'Bokningen är genomförd och har fått id ' . $activity_booking[0]->id . ' i bokningssystemet.';
-			
-			$result['bookingid']	= (string)$activity_booking[0]->id;
+	public function book_activity ( $username, $password, $activity_id, $session_key ) {
 
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+
+		$xmls = '<ProfitAndroid command="FetchBookings">
+			<GUID>%1$s</GUID>
+			<BOID>' . $activity_id . '</BOID>
+			<User>' . $username . '</User>
+			<Password>' . $password . '</Password>
+		</ProfitAndroid>';
+		
+		$this->debug 				.= '<br>Påbörjar bokning av aktivitet hos Profit som inloggad användare ' . $username;
+		
+		$result 					= $this->make_soap_call ( $xmls, $session_key, $username, $password );
+		
+		if ( $result['error'] 		== '' && !isset ( $result['xml']['status'] )) {
+		
+			$result['error'] 		= 'YES';
+				
+			$result['message'] 		= 'Det gick inte att boka. Profit Bokningssystem svarade inte.';		
 		}
 		
-		$result['debug'] = $this->debug;
+		if ( $result['error'] 		== '' && $result['xml']['status'] != 'OK' ) {
+		
+			$result['error'] 		= 'YES';
+			
+			$result['message'] 		= 'Det gick inte att boka. ' . $result['xml']['status'];	
+		}
+		
+		if ( $result['error'] 		== '' ) {
+			
+			$result['bookingid'] 	= '';
+		
+			$result['message'] 		= 'Bokningen är genomförd. Tyvärr kan inte Profit bokningssystem visa bokningar i veckovy.';
+		
+		}
+		
+		$result['debug'] 			= $this->debug . print_r($result, true);
 		
 		return $result;
 
 	}	
-	
-	
-
-
-
-
+		
+		
 	////////////////////////////////////////////////////////////////////////////////
 	//
 	// UNBOOK ACTIVITY
@@ -397,6 +160,414 @@ class fs_schema_profit {
 		return $result;
 
 	}		
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// LOGIN
+	// 20898
+	//////////////////////////////////////////////////////////////////////////////
+	
+	public function login ( $username, $password ) {	
+	
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+
+		$xmls = '<ProfitAndroid command="UsualAuthenticate">
+			<globalunit>' . $settings['fs_booking_profit_organization_unit'] . '</globalunit>
+			<type>ANDROID</type>
+			<User>' .  $username . '</User>
+			<Password>' . $password . '</Password>
+			<PartyName>KlasEhnemark</PartyName>
+			<Licenskey>' . $settings['fs_booking_profit_3part_licence_key'] . '</Licenskey>
+		</ProfitAndroid>';
+		
+		$this->debug 			.= '<br>Påbörjar anrop till Profit som inloggad användare ' . $username;
+		
+		$result 				= $this->make_soap_call( $xmls );
+		
+		if ( $result['error'] 	== '' ) {
+		
+			if ( isset ( $result['xml']['status'] ) && $result['xml']['status'] == 'EpicFail' ) {
+			
+				$result['error'] 		= 'YES';
+				
+				$result['message'] 		= 'Det gick inte att logga in. Är användarnamnet och lösenordet korrekt? Försök igen.';					
+			
+			} 
+		}
+		
+		if ( $result['error'] 			== '' ) {
+		
+			$result['personid'] 		= $result['xml']->person->id;
+			
+			$result['session_key'] 		= (string) $result['xml']->GUID;
+			
+			$result['name'] 			= $result['xml']->user->firstname . ' ' . $result['xml']->user->lastname;
+		
+		}
+		
+		$result['debug'] 				= $this->debug . print_r($result, true);
+		
+		return $result;
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// UPDATE SCHEMA INTO CACHE, return a serialized object
+	//
+	// %1$s in xml is session key
+	//
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	public function update_schema ( $r ) {
+			
+		// if no username, get schema as guest
+		if ( $r['username'] == '' || $r['password'] == '' || $r['session_key'] == '' ) {
+		
+			$this->debug 		.= '<br>Påbörjar anrop till Profit som Gäst';
+			
+			$xmls = '<ProfitAndroid command="FetchBookableObjectsFiltered">
+				<GUID>%1$s</GUID>
+				<START>' . $r['date_stamp'] . '</START>
+				<END>' . $r['date_stamp_end'] . '</END>
+				<GLOBALUNITID>-1</GLOBALUNITID>
+				<ACTIVITYID>-1</ACTIVITYID>
+				<ACTIVITYCATEGORYID>-1</ACTIVITYCATEGORYID>
+				<LEADERFREETEXT></LEADERFREETEXT>
+			</ProfitAndroid>';
+			
+			$result 			= $this->make_soap_call( $xmls );
+		
+		} else {
+		
+			$this->debug 		.= '<br>Påbörjar anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'];
+			
+			$xmls = '<ProfitAndroid command="FetchBookableObjects">
+				<GUID>%1$s</GUID>
+				<Date>' . $r['date_stamp'] . '</Date>
+				<User>' . $r['username'] . '</User>
+				<Password>' . $r['password'] . '</Password>
+			</ProfitAndroid>';
+		
+			$result 			= $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
+		}
+
+		if ( $result['error'] 	== '' && !isset ( $result['xml']->AndroidBookableObjects->bo )) {
+			
+			$r['error'] 		= 'YES';
+			
+			$r['message'] 		= 'Schemat för aktuell period är tomt.';							
+			
+		} else if ( $result['error'] != '' ) {
+		
+			$r = $result;
+		
+		} else {
+
+			// loop thru xml and store data into array
+			//$schema = array();
+			
+			foreach ( $result['xml']->AndroidBookableObjects->bo as $activity ){
+
+				
+				// fix dates
+				$start_time_stamp			= strtotime ( (string) $activity->start );
+				
+				$startdate 				= date( 'Y-m-d', $start_time_stamp );
+				
+				$starttime 				= date( 'G:i', $start_time_stamp );
+				
+				$end_time_stamp			= strtotime ( (string) $activity->e );
+				
+				$enddate 					= date( 'Y-m-d', $start_time_stamp );
+				
+				$endtime 					= date( 'G:i', $start_time_stamp );
+				
+				
+				// put it together
+				array_push( $r['schema'],
+				
+					array(
+					
+						'id'				=> (string) $activity->aid,
+						
+						'products'		=> (string) $activity->desc,
+						
+						'resources'		=> '',
+						
+						'staff'			=> (string) $activity->l,
+						
+						'room'			=> (string) $activity->r,
+						
+						'businessuniidt'	=> '',
+						
+						'businessunit'		=> '',
+						
+						'startdate'		=> $startdate,
+						
+						'starttime'		=> $starttime,
+						
+						'startdatetime'	=> (string) $activity->start,
+						
+						'enddate'			=> $enddate,
+						
+						'endtime'			=> $endtime,
+						
+						'enddatetime'		=> (string) $activity->e,
+						
+						'freeslots'		=> (string) $activity->sl,
+						
+						'bookableslots'	=> (string) $activity->rsl,
+						
+						'bookingid'		=> '',
+						
+						'cancelled'		=> (string) $activity->ca == '1' ? true : false
+					)
+				);
+			}
+		}
+		
+		return $r;
+	}
+	
+
+	
+
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// MAKE A SOAP CALL
+	// Make GUID in xml_command look like %1$s
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
+	private function make_soap_call ( $xml_command, $session_key = '', $username = '', $password = '', $num_retry = 0 ) {
+	
+		$this->debug .= '<br>Make soap call, session_key: ' . $session_key . ', username: ' . $username . ', password:' . $password;
+	
+		$output = array( 'error' => '', 'message' => '', 'xml' => false, 'new_session_key' => '' );
+	
+		// login as guest, get current session_guid from database
+		if ( $username == '' && $password == '' ) {
+		
+			$session_key = get_option('profit_session_key');
+			
+			$this->debug .= '<br>Get key from option: ' . $session_key;
+
+			// if no session guid has been stored, login and get a new one and store it in the database
+			if ( $session_key == '' ) {
+			
+				$session_key  = $this->soap_guest_login ();
+				
+				if ( is_wp_error ( $session_key )) {
+					
+					$output['error'] 	= 'YES';
+				
+					$output['message'] 	= 'Det gick inte att logga in på Profit bokningssystem.';
+					
+					return $output;
+					
+				} else {
+				
+					$this->debug .= '<br>Getting new key from login: ' . $session_key;
+					
+					update_option( 'profit_session_key', $session_key );
+					
+					update_option( 'profit_session_key_timestamp', time() );
+					
+					$output['new_session_key'] = $session_key;
+				}
+			}
+		
+		// login as user
+		} else {
+		
+			if ( $session_key == '' ) {
+			
+				$user_login =  $this->login ( $username, $password );
+				
+				if ( $user_login['error'] != '' ) {
+				
+					$output['error'] 	= 'YES';
+			
+					$output['message'] 	= 'Det gick inte att logga in på Profit bokningssystem. ' . $user_login['message'];
+					
+					return $output;				
+				
+				} else {
+				
+					$session_key = $user_login['session_key'];
+				
+					$this->debug .= '<br>Getting new key from login: ' . $session_key;
+				
+					$output['new_session_key'] = $session_key;				
+				}
+			}
+		}
+		
+		$final_xml_command = sprintf ( $xml_command, $session_key );
+
+		$result = $this->exec_soap_call( $final_xml_command );
+		
+		if ( is_wp_error ( $result )) {
+		
+			if ( $result->get_error_message() == 'session maybe has expired' && $num_retry == 0 ) {
+			
+				if ( $username == '' && $password == '' ) update_option( 'profit_session_key', '' ); // empty guest session key
+				
+				$this->debug .= '<br>Session maybe has expired, going back in and try again';
+				
+				$output = $this->make_soap_call (  $xml_command, '', $username, $password, 1 );
+			
+			} else {
+		
+				$this->debug .= '<br>Felmeddelande från profit: ' . $result->get_error_message();
+			
+				$output['error'] 	= 'YES';
+			
+				$output['message'] 	= 'Detta är felmeddelandet från Profit Bokningssystem: ' . $result->get_error_message();
+				
+			}
+		
+		} else {
+			
+			$output['xml']		= $result;
+		
+		}
+		
+		return $output;
+	}
+	
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// EXECUTE SOAP CALL
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
+	private function exec_soap_call ( $xml_command ) {
+
+		$this->debug .= '<br>exec_soap_call: ' . $xml_command;
+		
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+
+		$r['url']	 			= $settings[ 'fs_schema_profit_server_url' ];
+		$r['url']				= 'http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?wsdl';	
+		
+		
+		// Create the client instance
+		$client = new soapclient( $r['url'] );
+
+		try  { 
+		
+			$result = $client->processUnsafe( array('xml' => $xml_command )); 
+		} 
+		
+		catch (SoapFault $exception) { 
+		
+			//$this->debug .= '<br>Soap Exception: ' . print_r( $exception, true);
+			
+			switch ( $exception->getMessage() ) {
+			
+				case 'Server was unable to process request. ---> Object reference not set to an instance of an object.':
+				
+					return new WP_Error('exec_soap_call_error', 'session maybe has expired' );
+					break;
+			
+				default:
+					
+					$this->debug .= '<br>Felet orsakades av anropet: ' . $client->__getLastRequest();
+					return new WP_Error('exec_soap_call_error', $exception->getMessage() );
+					break;
+					
+			}
+		} 
+		
+		$this->debug .= '<br>Resultat från servern: ' . $result->processUnsafeResult;
+		
+		$xml_doc = simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $result->processUnsafeResult ) );
+
+		//if ( $xml_doc == '' ) return new WP_Error('exec_soap_call_error', 'Det gick inte att ladda xml-data.' );
+		
+		return $xml_doc;	
+	
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// LOGIN AS GUEST
+	// Return av valid session_key, and set login properties
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	private function soap_guest_login () {
+
+		// login as guest
+		
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+
+		$this->debug .= '<br>Soap_Login as guest';
+	
+		$xml_command = '<ProfitAndroid command="UsualAuthenticate">
+						<globalunit>' . $settings['fs_booking_profit_organization_unit'] . '</globalunit>
+						<type>GUEST</type>
+						<PartyName>KlasEhnemark</PartyName>
+						<Licenskey>' . $settings['fs_booking_profit_3part_licence_key'] . '</Licenskey>
+					 </ProfitAndroid>';
+
+		$result = $this->exec_soap_call( $xml_command );
+	
+		if ( is_wp_error ( $result )) {
+		
+			$this->debug .= '<br>Det går inte att logga in på Profit bokingssystem: ' .  $result->get_error_message();
+			
+			return new WP_Error('soap_login_error', 'Det går inte att logga in på Profit bokingssystem: ' .  $result->get_error_message() );
+		
+		} else {
+		
+			$guid = (string) $result->GUID;
+			
+			return $guid;
+		}
+	}
+	
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// ENCRYPT AND DECRYPT XOR
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public static function encrypt_decrypt_xor ( $text_to_encrypt ) {
+	
+		$output = '';
+		
+		$key = 129;
+		
+		for ( $i = 0; $i < strlen($text_to_encrypt); $i++ ) {
+		
+			$char = $text_to_encrypt[ $i ];
+		
+			$char = chr(ord($char) ^ $key);
+			
+			$output .= $char;
+		}
+	
+		return $output;
+	
+	}
+
+
 } //End Class
 
 ?>

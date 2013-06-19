@@ -162,6 +162,8 @@ class fs_schema_admin {
 			
 			$this->update_option_from_form ( 'fs_schema_update_inteval' );
 			
+			$this->update_option_from_form ( 'fs_schema_show_debug' );
+			
 			
 			// remove any spaces in businessunitids
 			$fs_booking_bpi_businessunitids 	=  get_option( '$fs_booking_bpi_businessunitids' );
@@ -197,6 +199,8 @@ class fs_schema_admin {
 		$fs_schema_extra_column				= $settings[ 'fs_schema_extra_column' ];
 		
 		$fs_schema_update_inteval			= $settings[ 'fs_schema_update_inteval' ];
+		
+		$fs_schema_show_debug				= $settings[ 'fs_schema_show_debug' ];
 		
 		
 		$fs_booking_bpi_businessunitids_html 	= $fs_schema->data->brp->get_businessunits ( 'BRP' );
@@ -319,8 +323,17 @@ class fs_schema_admin {
 							<input name="fs_schema_update_inteval" type="text" id="fs_schema_update_inteval" value="' . $fs_schema_update_inteval . '" class="small-text" /> minuter
 							<p class="description">Ange hur ofta Wordpress ska uppdatera schemat från bokningssystemet. 60 minuter är ganska rimligt.<br>När användaren är inloggad hämtas informationen alltid direkt, utan mellanlagring.</p>
 						</td>
-					</tr>										
+					</tr>
 
+					<tr valign="top">
+						<th scope="row"><label>Övrigt</label></th>
+						<td>
+							<label for="fs_schema_show_debug">
+						  	<input type="checkbox" name="fs_schema_show_debug" id="fs_schema_show_debug" 
+						 	value="YES"' . ( $fs_schema_show_debug == 'YES' ? 'checked="checked"' : '' ) . '> <span style="position: relative; top: 2px; ">Visa debug-information</span>
+						</td>
+					</tr>
+					
 				</table>
 				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Spara inställningarna" /></p></div></form></div>';
 		
@@ -342,7 +355,7 @@ class fs_schema_admin {
 				update_option( $option_name, implode ( ',', $_POST[ $option_name ] ));
 				
 			else 
-				
+			
 				update_option( $option_name, $_POST[ $option_name ] );
 			
 		}

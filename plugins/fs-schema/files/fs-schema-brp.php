@@ -274,7 +274,7 @@ class fs_schema_brp {
 				
 				$output['message'] 	= 'Inloggning lyckades, men du har inte behörighet att boka denna aktivitet.';
 				
-				$output['xml']		= @simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $curl_output ) );
+				$output['xml']		= @simplexml_load_string( iconv( "windows-1252", "UTF-8//IGNORE",  $curl_output ) );
 				
 				break;
 				
@@ -284,13 +284,13 @@ class fs_schema_brp {
 				
 				$output['message'] 	= 'Bad Request';
 				
-				$output['xml']		= @simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $curl_output ) );
+				$output['xml']		= @simplexml_load_string( iconv( "windows-1252", "UTF-8//IGNORE",  $curl_output ) );
 				
 				break;
 		
 			case '200':
 		
-				$output['xml']		= @simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $curl_output ) );
+				$output['xml']		= @simplexml_load_string( iconv( "windows-1252", "UTF-8//IGNORE",  $curl_output ) );
 				
 				break;
 				
@@ -418,47 +418,14 @@ class fs_schema_brp {
 		
 			$r['businessunitids'] 	= $settings[ 'fs_booking_bpi_businessunitids' ];
 		
-		
-		
-		// fix start date
-		$date_from_string 			= fs_schema::get_date_from_string ( $r['datum'] );
-		
-		if ( $date_from_string === false ) 
-		
-			$r['date_stamp'] 		= date('Y-m-d'); // today
-		
-		else $r['date_stamp'] 		= $r['datum'];
-		
-		$r['start_date '] 			= fs_schema::get_date_from_string ( $r['date_stamp'] );
-		
-		
-		
-		// fix week dates
-		if ( $r['typ'] == 'vecka' ) {
-		
-			$date_week_start 		= mktime( 0, 0, 0, date( "m", $r['start_date '] ), date( "d", $r['start_date '] ) - date( 'N', $r['start_date '] )+1, date( "Y", $r['start_date '] ));
-		
-			$r['date_stamp'] 		= date( 'Y-m-d', $date_week_start );
-			
-			$r['date_stamp_end'] 	= date( 'Y-m-d', mktime( 0, 0, 0, date( "m", $date_week_start ), date( "d", $date_week_start ) + 6, date( "Y", $date_week_start )));
-		
-			$r['start_date'] 		= fs_schema::get_date_from_string ( $r['date_stamp'] );
-		
-		} else {
-		
-			$r['date_stamp_end'] 	= $r['date_stamp'];
-			
-		}
-			
-		$r['end_date'] 			= fs_schema::get_date_from_string ( $r['date_stamp_end']  );
 
-			
+		//http://brp2.netono.se/fsdanderydgog/api/ver2/activities.xml?apikey=6a8aa4c1c6d84e3f9d17ced2ae5bec93&businessunitids=1&startdate=2013-06-17&enddate=2013-06-17	
 		
 		// 
 		$r['url']	 			= $settings[ 'fs_schema_brp_server_url' ] . 'activities.xml?apikey=' . $settings[ 'fs_booking_bpi_api_key' ] . '&businessunitids=' . $r['businessunitids'] . '&startdate=' . $r['date_stamp'] . '&enddate=' . $r['date_stamp_end']; //&product=12,23
 		
 		if ( $r['username'] != '' && $r['password'] != '' ) {
-		
+			
 			$r['url']			.= '&includebooking=true';
 			
 			$result 			= $this->get_xml_file ( $r['url'], false, $r['username'], $r['password'] );
@@ -557,7 +524,9 @@ class fs_schema_brp {
 						
 						'bookableslots'	=> (string) $activity->bookableslots,
 						
-						'bookingid'		=> (string) $activity->bookingid
+						'bookingid'		=> (string) $activity->bookingid,
+						
+						'cancelled'		=> false
 					)
 				);
 			}
@@ -638,7 +607,9 @@ class fs_schema_brp {
 			
 		} else {
 		
-			$stored_units				= explode ( ',', $settings[ 'fs_booking_bpi_businessunitids' ]);
+			if ( is_array ( $settings[ 'fs_booking_bpi_businessunitids' ] )) $stored_units = $settings[ 'fs_booking_bpi_businessunitids' ];
+		
+			else $stored_units			= explode ( ',', $settings[ 'fs_booking_bpi_businessunitids' ]);
 			
 			$count					= 0;
 		

@@ -103,13 +103,15 @@ class fs_schema_ajax {
 	
 		global $fs_schema;
 		
-		$username 		= isset( $_POST[ 'username' ] )? $_POST[ 'username' ] : '';
+		$username 		= isset( $_POST[ 'username' ] )? $_POST[ 'username' ] 		: '';
 		
-		$password 		= isset( $_POST[ 'password' ] )? $_POST[ 'password' ] : '';
+		$password 		= isset( $_POST[ 'password' ] )? $_POST[ 'password' ] 		: '';
 		
-		$activity_id 		= isset( $_POST[ 'activityid' ] )? $_POST[ 'activityid' ] : '';
+		$activity_id 		= isset( $_POST[ 'activityid' ] )? $_POST[ 'activityid' ] 	: '';
 		
-		echo json_encode( $fs_schema->public->book_activity ( $username, $password, $activity_id ));
+		$session_key 		= isset( $_POST[ 'session_key' ] )	? $_POST[ 'session_key' ] : '';
+		
+		echo json_encode( $fs_schema->public->book_activity ( $username, $password, $activity_id, $session_key ));
 		
 		die();
 	}
@@ -126,13 +128,15 @@ class fs_schema_ajax {
 	
 		global $fs_schema;
 		
-		$username 		= isset( $_POST[ 'username' ] )? $_POST[ 'username' ] : '';
+		$username 		= isset( $_POST[ 'username' ] )? $_POST[ 'username' ] 		: '';
 		
-		$password 		= isset( $_POST[ 'password' ] )? $_POST[ 'password' ] : '';
+		$password 		= isset( $_POST[ 'password' ] )? $_POST[ 'password' ] 		: '';
 		
-		$bookingid 		= isset( $_POST[ 'bookingid' ] )? $_POST[ 'bookingid' ] : '';
+		$bookingid 		= isset( $_POST[ 'bookingid' ] )? $_POST[ 'bookingid' ] 	: '';
 		
-		echo json_encode( $fs_schema->public->unbook_activity ( $username, $password, $bookingid ));
+		$session_key 		= isset( $_POST[ 'session_key' ] )	? $_POST[ 'session_key' ] : '';
+		
+		echo json_encode( $fs_schema->public->unbook_activity ( $username, $password, $bookingid, $session_key ));
 		
 		//echo fs_schema::debug ( $fs_schema->public->unbook_activity ( $username, $password, $bookingid ));
 		
@@ -159,8 +163,10 @@ class fs_schema_ajax {
 		$username 		= isset( $_POST[ 'username' ] )	? $_POST[ 'username' ] 	: '';
 		
 		$password 		= isset( $_POST[ 'password' ] )	? $_POST[ 'password' ] 	: '';
+		
+		$session_key 		= isset( $_POST[ 'session_key' ] )	? $_POST[ 'session_key' ] : '';
 
-		echo $fs_schema->public->walk_schema ( $date_info, $step, $username, $password );
+		echo $fs_schema->public->walk_schema ( $date_info, $step, $username, $password, $session_key );
 		
 		die();
 	}
@@ -183,6 +189,8 @@ class fs_schema_ajax {
 		$password 		= isset( $_POST[ 'password' ] )? $_POST[ 'password' ] : '';
 
 		echo json_encode( $fs_schema->public->login ( $username, $password ));
+		
+		//echo stereotype::debug ( $fs_schema->public->login ( $username, $password ));
 		
 		die();
 	}	

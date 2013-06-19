@@ -81,7 +81,7 @@ class fs_schema_public {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 	
-	public function walk_schema ( $date_info, $step, $username = '', $password = '' ) {
+	public function walk_schema ( $date_info, $step, $username = '', $password = '', $session_key = '' ) {
 	
 		if ( $date_info ) {
 		
@@ -119,6 +119,8 @@ class fs_schema_public {
 		
 		$r['password']			= $password;
 		
+		$r['session_key']		= $session_key;
+		
 		return $this->render_schema ( $r );
 	
 	}
@@ -140,23 +142,48 @@ class fs_schema_public {
 			'bokning'			=> '1',			// 0 = no booking
 			'no_wrapper'		=> false,			// true = no wrapper div with fs_schema, used in ajax
 			'username'		=> '',
-			'password'		=> ''
+			'password'		=> '',
+			'session_key'		=> ''
 		);
 		
 		$r = wp_parse_args( $args, $defaults );
 		
 		global $fs_schema;
 		
+		$settings 			= $fs_schema->data->settings();
+		
 		$output 				= '';
 		
-		//echo fs_schema::debug( $r );
+		
 		// get data
 		$s = $fs_schema->data->get_schema( $r );
 		
 		
 		if ( $s['error'] != '' ) {
+		
+			if ( $r['no_wrapper'] === false ) 	{
 			
-			$output 			= '<div class="fs_schema_error">Fel. ' . $s['message'] . '</div>'; // . ' ' . print_r( $r, true );
+				$output  		.= '<div class="fs_schema">';
+			
+				$output 		.= '<div class="fs_schema_error">Fel. ' . $s['message'] . '</div>';
+			
+				$output 		.= $this->about_html();
+				
+				if ( $settings['fs_schema_show_debug'] == 'YES' ) 
+			
+					$output 	.= '<div class="debug"></div><div class="week_debug">' . $fs_schema->data->debug . '</div>';
+				
+				$output		.= '</div>';
+				
+			} else {
+			
+				$output 		.= '<div class="fs_schema_error">Fel. ' . $s['message'] . '</div>';
+				
+				if ( $settings['fs_schema_show_debug'] == 'YES' )
+				
+					$output 	.= '<div class="week_debug">' . $fs_schema->data->debug . '</div>';
+			
+			}
 		
 		} else {
 		
@@ -181,9 +208,9 @@ class fs_schema_public {
 					
 					$day_hour_info					= array();
 					
-					$earliest_hour 				= 10;
+					$earliest_hour 				= 16;
 					
-					$latest_hour 					= 12;
+					$latest_hour 					= 17;
 					
 					$day_width_px					= $r['day_width'];
 					
@@ -243,7 +270,7 @@ class fs_schema_public {
 					// loop thru every schema entry and store the entry in the right position of a multidimensional array
 					foreach ( $s['schema'] as $entry ) {
 						
-						$start_time 				= fs_schema::get_date_from_string ( $entry['startdatetime'] );
+						$start_time 				= fs_schema::get_date_from_string ( $entry['startdatetime'], true );
 						
 						$end_time 				= fs_schema::get_date_from_string ( $entry['enddatetime'] );
 						
@@ -297,7 +324,7 @@ class fs_schema_public {
 						}
 						
 					}
-
+					
 
 
 					// loop thru every hour in the week and change hour height if there are to many/few entries in one hour
@@ -360,7 +387,14 @@ class fs_schema_public {
 									// entry data
 									$entry_class 				= $products = '';
 									
-									foreach ( $entry['products']  as $product ) { $products .= $product['name'] . ' '; }
+									if ( is_Array ( $entry['products']  )) {
+									
+										foreach ( $entry['products']  as $product ) { $products .= $product['name'] . ' '; }
+										
+									} else {
+									
+										$products				= $entry['products'];
+									}
 									
 									$entry_data 				= ' data-id="' . $entry['id'] . '" data-start="' . $entry['starttime'] . '" data-end="' . $entry['endtime'] . '" data-product="' . $products . '"';
 									
@@ -423,7 +457,9 @@ class fs_schema_public {
 						$output 		.= '<div class="hours" style="width: ' . ( $day_width_px) . 'px; ">' . $hours_field . '</div><div class="entries">' . $entries_field . '</div></div>';
 					}
 					
-					$output 			.= '<div class="week_debug">' . $fs_schema->data->debug . '</div>';
+					if ( $settings['fs_schema_show_debug'] == 'YES' )
+					
+						$output 		.= '<div class="week_debug">' . $fs_schema->data->debug . '</div>';
 					 
 					$output 			.= '<div class="clearfix"></div></div></div>';
 					
@@ -433,7 +469,9 @@ class fs_schema_public {
 						
 						$output 		.= $this->about_html();
 						
-						$output 		.= '<pre class="debug"></pre>';
+						if ( $settings['fs_schema_show_debug'] == 'YES' )
+						
+							$output 	.= '<pre class="debug"></pre>';
 						
 						$output 		.= '<div class="week_overlay">v52, 2013</div>';
 						
@@ -443,8 +481,8 @@ class fs_schema_public {
 											<div class="header">Logga in</div>
 											<div class="loggedin"></div>
 											<div class="loginform">
-												<div class="username">Användarnamn:<span><input type="text" value="" /></span></div>
-												<div class="password">Lösenord:<span><input type="password" value="" /></span></div>
+												<div class="username">Användarnamn:<span><input type="text" value="klas@klas.se" /></span></div>
+												<div class="password">Lösenord:<span><input type="password" value="20898" /></span></div>
 												<div class="save_me_cookie"><label for="save_me"><input type="checkbox" id="save_me" disabled> Förbli inloggad på den här datorn</label></div>
 											</div>
 											<div class="buttons">
@@ -563,7 +601,7 @@ class fs_schema_public {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 		
-	public function book_activity ( $username, $password, $activity_id ) {
+	public function book_activity ( $username, $password, $activity_id, $session_key ) {
 
 		global $fs_schema;
 		
@@ -585,7 +623,7 @@ class fs_schema_public {
 			
 		} else {
 		
-			$return = $fs_schema->data->book_activity ( $username, $password, $activity_id );
+			$return = $fs_schema->data->book_activity ( $username, $password, $activity_id, $session_key );
 			
 		}
 		
@@ -601,7 +639,7 @@ class fs_schema_public {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 		
-	public function unbook_activity ( $username, $password, $bookingid ) {
+	public function unbook_activity ( $username, $password, $bookingid, $session_key ) {
 
 		global $fs_schema;
 		
@@ -623,7 +661,7 @@ class fs_schema_public {
 			
 		} else {
 		
-			$return = $fs_schema->data->unbook_activity ( $username, $password, $bookingid );
+			$return = $fs_schema->data->unbook_activity ( $username, $password, $bookingid, $session_key );
 			
 		}
 		
@@ -647,7 +685,7 @@ class fs_schema_public {
 		
 		$output = '<pre class="about">Schema av <a href="http://klasehnemark.com">Klas Ehnemark</a>, kopplat till ';
 		
-		$output = '<pre class="about">Schema BETA-version 0.9, kopplat till ';
+		$output = '<pre class="about">FS-Schema BETA-version 0.92, kopplat till ';
 		
 		switch ( $settings[ 'fs_schema_integration' ] ) {
 		
@@ -665,7 +703,9 @@ class fs_schema_public {
 		
 		$output .= '</pre>';
 		
-		//$output .= '<span class="cache_status">' . $fs_schema->data->last_cache_status . '</span>. <span class="show_debug" style="text-decoration: underline; cursor: pointer; ">Visa Debug</span></pre>';
+		if ( $settings['fs_schema_show_debug'] == 'YES' )
+		
+			$output .= '<span class="cache_status">' . $fs_schema->data->last_cache_status . '</span>. <span class="show_debug" style="text-decoration: underline; cursor: pointer; ">Visa Debug</span></pre>';
 		
 		return $output;	
 	}

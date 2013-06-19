@@ -14,6 +14,8 @@ fs_schema_public = {
 	
 	password : '',
 	
+	session_key : '',
+	
 	schema_width : 0,
 	
 	day_width : 0,
@@ -193,6 +195,8 @@ fs_schema_public = {
 						fs_schema_public.password = password;
 								
 						fs_schema_public.personid = data.personid;
+						
+						fs_schema_public.session_key = data.session_key;
 					
 						fs_schema_public.close_login();
 						
@@ -308,7 +312,7 @@ fs_schema_public = {
 			
 			fs_schema_public.ajax (
 			
-				{ action : 'walk_schema', date_info : date_info, step: 0, username: fs_schema_public.username, password: fs_schema_public.password }, 'html', function ( data ) {
+				{ action : 'walk_schema', date_info : date_info, step: 0, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
 				
 					jQuery( '.fs_schema .weeks' ).html(data);
 					
@@ -331,7 +335,7 @@ fs_schema_public = {
 			
 			fs_schema_public.ajax (
 			
-				{ action : 'walk_schema', date_info : date_info, step: step, username: fs_schema_public.username, password: fs_schema_public.password }, 'html', function ( data ) {
+				{ action : 'walk_schema', date_info : date_info, step: step, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
 				
 					weeks = jQuery( '.fs_schema .weeks' );
 					
@@ -580,7 +584,7 @@ fs_schema_public = {
 		
 		fs_schema_public.ajax (
 		
-			{ action : 'book_activity', username : fs_schema_public.username, password: fs_schema_public.password, activityid: fs_schema_public.open_event_id }, 'json', function ( data ) { 
+			{ action : 'book_activity', username : fs_schema_public.username, password: fs_schema_public.password, activityid: fs_schema_public.open_event_id, session_key: fs_schema_public.session_key }, 'json', function ( data ) { 
 			
 				//jQuery( '.fs_schema .debug').html( data );
 				
@@ -632,7 +636,7 @@ fs_schema_public = {
 				
 				fs_schema_public.ajax (
 				
-					{ action : 'unbook_activity', bookingid: fs_schema_public.open_bookingid, username: fs_schema_public.username, password: fs_schema_public.password }, 'json', function ( data ) { 
+					{ action : 'unbook_activity', bookingid: fs_schema_public.open_bookingid, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'json', function ( data ) { 
 					
 						//jQuery( '.fs_schema .debug').html( data );
 						

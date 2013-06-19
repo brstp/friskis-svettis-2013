@@ -57,6 +57,7 @@ class fs_schema_data {
 			'datum'				=> '', 			// format: YYYY-MM-DD
 			'username'			=> '',
 			'password'			=> '',
+			'session_key'			=> '',
 			'integration'			=> $settings[ 'fs_schema_integration' ]
 		);
 		
@@ -70,13 +71,13 @@ class fs_schema_data {
 			
 
 		// fix business units ids
-		if ( $r[ 'anlaggning' ] != '' )
+		/*if ( $r[ 'anlaggning' ] != '' )
 		
 			$r['businessunitids'] 	= $r[ 'anlaggning' ];
 		
 		else 
 		
-			$r['businessunitids'] 	= $settings[ 'fs_booking_bpi_businessunitids' ];
+			$r['businessunitids'] 	= $settings[ 'fs_booking_bpi_businessunitids' ];*/
 		
 		
 		// fix start date
@@ -116,16 +117,24 @@ class fs_schema_data {
 		
 			case 'BRP':
 			
-				return $this->brp->get_schema( $r );
+				$schema = $this->brp->get_schema( $r );
+				
+				$this->debug .= $this->brp->debug;
+				
 				break;
 				
 				
 			case 'PROFIT':
 			
-				return $this->profit->get_schema( $r );
+				$schema = $this->profit->get_schema( $r );
+				
+				$this->debug .= $this->profit->debug;
+				
 				break;
 				
-		}			
+		}
+		
+		return $schema;
 	}
 	
 	
@@ -166,7 +175,7 @@ class fs_schema_data {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 		
-	public function book_activity ( $username, $password, $activity_id ) {
+	public function book_activity ( $username, $password, $activity_id, $session_key ) {
 
 		$settings = $this->settings();
 		
@@ -180,7 +189,7 @@ class fs_schema_data {
 				
 			case 'PROFIT':
 			
-				return $this->profit->book_activity( $username, $password, $activity_id );
+				return $this->profit->book_activity( $username, $password, $activity_id, $session_key );
 				break;
 		
 		}
@@ -197,7 +206,7 @@ class fs_schema_data {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 		
-	public function unbook_activity ( $username, $password, $bookingid ) {
+	public function unbook_activity ( $username, $password, $bookingid, $session_key ) {
 
 		$settings = $this->settings();
 		
@@ -211,7 +220,7 @@ class fs_schema_data {
 				
 			case 'PROFIT':
 			
-				return $this->profit->unbook_activity( $username, $password, $bookingid );
+				return $this->profit->unbook_activity( $username, $password, $bookingid, $session_key );
 				break;
 		
 		}
@@ -334,6 +343,8 @@ class fs_schema_data {
 			$this->settings_array[ 'fs_schema_extra_column' ]				= get_option( 'fs_schema_extra_column' );
 			
 			$this->settings_array[ 'fs_schema_update_inteval' ]			= get_option( 'fs_schema_update_inteval' ) 	== '' ? '60' 	:  get_option( 'fs_schema_update_inteval' );
+			
+			$this->settings_array[ 'fs_schema_show_debug' ]				= get_option( 'fs_schema_show_debug' );
 			
 			if ( substr( $this->settings_array[ 'fs_schema_brp_server_url' ] , -1 ) != '/' ) $this->settings_array[ 'fs_schema_brp_server_url' ] .= '/';
 		
