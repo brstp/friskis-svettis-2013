@@ -2,7 +2,7 @@
 /*
 	Template name: Utan högerspalt eller vänsterspalt
 */
-
+update_option('current_page_template','page-no-sidebar-what-so-ever');
 get_header(); 
 ?>
 	<div id="gap"></div>

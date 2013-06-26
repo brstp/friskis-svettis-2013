@@ -23,15 +23,15 @@ $(document).ready(function()
 			$('nav#mainMenu').slideToggle(400).css('display', 'block');
 		}
 	);
-	$('h2.widgettitle, h2.widget_recent_comments, h2.widget_text, h2.widget_recent_comments, h2.widget_categories, h2.widget_calendar, h2.widget_links, h2.widget_archive, h2.recent_entries, h2.widget_pages, h2.widget_rss,h3#reply-title,h3#comments-title').wrapInner('<span></span>'); 
-	$('.widget_text, .widget_recent_comments, .widget_categories, .widget_calendar, .widget_links, .widget_archive, .recent_entries, .widget_pages, .widget_rss,.widget_meta,.widget_recent_entries,#sidebar div#latestPost,.widget_tag_cloud').prepend('<img alt="tape" src="http://friskis.stropdev.se/wp-content/themes/friskis-svettis/images/yellow.png" class="yellow" />');
+	$('h2.widgettitle, h2.widget_recent_comments, h2.widget_text, h2.widget_recent_comments, h2.widget_categories, h2.widget_calendar, h2.widget_links, h2.widget_archive, h2.recent_entries, h2.widget_pages, h2.widget_rss,h3#reply-title,h3#comments-title, table#wp-calendar caption').wrapInner('<span></span>'); 
+	$('#sidebar li.widget_text, #sidebar li.widget_recent_comments, #sidebar li.widget_categories, #sidebar li.widget_calendar, #sidebar li.widget_links, #sidebar li.widget_archive, .recent_entries, #sidebar li.widget_pages, #sidebar li.widget_rss, #sidebar li.widget_meta,#sidebar li.widget_recent_entries,#sidebar div#latestPost, #sidebar li.widget_tag_cloud, #sidebar li.widget_search').prepend('<div class="yellowWidget"></div>');
 	$('p.comm span').click(function() 
 	{
 		$('div#respond').toggle();
 	});
 
 	$('#footerLeft iframe, #footerRight iframe').before('<h3><span>Följ oss på Facebook!</span></h3>');
-
+	
 });
 
 

@@ -1,4 +1,5 @@
 <?php
+update_option('current_page_template','404');
 get_header(); 
 ?>
 	<div id="gap"></div>
@@ -11,9 +12,8 @@ get_header();
 				<ul>
 				<?php
 				$news_query = new WP_Query(array(
-						"post_type" => 'post',
+						"post_type" => 'fs_news',
 						"posts_per_page" => 4,
-						"category_name" => 'Nyheter'
 					));
 				while ($news_query->have_posts()) : $news_query->the_post();
 					?>
@@ -35,22 +35,6 @@ get_header();
 	
 		
 	</div>
-			<style>
-	@media screen and (max-width: 960px) {
-		#footerRight {
-			float: right;
-			width: 50%;
-		}
-	}
-	
-	@media screen and (max-width: 480px) {
-		#footerRight {
-			float: none;
-			width: 100%;
-		}
-	}
-</style>
-	
 	<div id="mainContent">
 		<h1>Error 404</h1>
 		<h2>Sidan du försökte nå kan inte hittas.</h2>

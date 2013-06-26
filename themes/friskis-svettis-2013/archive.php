@@ -1,36 +1,13 @@
 <?php
 /*
-	Template name: Utan högerspalt
+Template Name: Archives
 */
-update_option('current_page_template','page-no-sidebar');
+update_option('current_page_template','archive');
 get_header(); 
 ?>
 	<div id="gap"></div>
 	<div id="content" class="clearfix">
 	<div id="sidebar">
-	<div class="subSidebarBox">
-		<img class="yellow" src="<?php echo THEME_IMAGES; ?>/yellow.png" alt="tape">
-		<h3><span><?php
-			$parent_title = get_the_title($post->post_parent);
-			echo $parent_title;
-		?></span></h3>
-		<nav class="sidebarMenu">
-			<ul>
-					<?php
-			if($post->post_parent){
-				$children .= wp_list_pages("title_li=&child_of=".$post->post_parent."&echo=0");
-			} else {
-				$children = wp_list_pages("title_li=&child_of=".$post->ID."&echo=0");
-			}
-			if ($children) { ?>
-				<ul class="submenu">
-					<?php echo $children; ?>
-				</ul>
-			<?php } ?>
-			</ul>
-			
-		</nav>
-	</div>
 	
 		<div class="subSidebarBox news">
 			<img class="yellow" src="<?php echo THEME_IMAGES; ?>/yellow.png" alt="tape">
@@ -60,12 +37,31 @@ get_header();
 			?>
 	
 		
-	</div>	
-	<div id="mainContentNoSidebar">
-		<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
-			<?php the_content(); 
-		endwhile;?>
+	</div>
+			<style>
+	@media screen and (max-width: 960px) {
+		#footerRight {
+			float: right;
+			width: 50%;
+		}
+	}
+	
+	@media screen and (max-width: 480px) {
+		#footerRight {
+			float: none;
+			width: 100%;
+		}
+	}
+</style>
+	
+	<div id="mainContent">
+		<h1>Error 404</h1>
+		<h2>Sidan du försökte nå kan inte hittas.</h2>
+		<p>Gå tillbaks till <a href="<?php echo HOME_URI; ?>">startsidan</a> eller använd sökformuläret högst upp på sidan för att försöka hitta rätt.</p>
 	</div>
 	
+	<div id="sidebarRight">
+		<?php the_field('sidebar-right'); ?>
+	</div>
 	<div class="clearfix"></div>
 <?php get_footer(); ?>

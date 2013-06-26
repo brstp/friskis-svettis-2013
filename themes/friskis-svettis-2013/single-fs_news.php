@@ -1,6 +1,12 @@
-<?php 
-update_option('current_page_template','single');
+<?php
+/**
+ * The start page template file.
+ * Template Name: fs-news
+*/
+update_option('current_page_template','single-fs_news');
+
 get_header(); ?>
+  
 <div id="gap"></div>
 	<div id="content" class="clearfix">
 	<div id="sidebar">
@@ -23,11 +29,13 @@ get_header(); ?>
 				?>
 				</ul>
 		</div>
+		<ul>
 		<?php
 				if ( !function_exists( 'Sidbar' ) || !dynamic_sidebar() ) : 
 					dynamic_sidebar( 'Sidbar' );
 				endif; 
 			?>
+		</ul>
 	</div>
 	<div id="mainContent" style="margin-bottom: 50px;">
              <?php

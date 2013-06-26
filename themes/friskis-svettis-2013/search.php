@@ -6,7 +6,7 @@
  * @subpackage Twenty_Ten
  * @since Twenty Ten 1.0
  */
-
+update_option('current_page_template','search');
 get_header(); ?>
 
 	<div id="gap"></div>
@@ -18,8 +18,8 @@ get_header(); ?>
 				<ul>
 				<?php
 				$news_query = new WP_Query(array(
-						"post_type" => 'post',
-						"category_name" => 'Nyheter'						
+						"post_type" => 'fs_news',
+						"posts_per_page" => 4,
 					));
 				while ($news_query->have_posts()) : $news_query->the_post();
 					?>
@@ -46,20 +46,5 @@ get_header(); ?>
 		<img src="<?php echo THEME_IMAGES; ?>/villdubli.jpg" alt="Vill du bli"><br><br>
 		<img src="<?php echo THEME_IMAGES; ?>/miniroris.jpg" alt="MiniRöris">
 	</div>
-		<style>
-	@media screen and (max-width: 960px) {
-		#footerRight {
-			float: right;
-			width: 50%;
-		}
-	}
-	
-	@media screen and (max-width: 480px) {
-		#footerRight {
-			float: none;
-			width: 100%;
-		}
-	}
-</style>
 <div class="clearfix"></div>
 <?php get_footer(); ?>

@@ -1,0 +1,13 @@
+@media screen and (max-width: 960px) {
+	#footerRight {
+		float: right !important;
+		width: 50% !important;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	#footerRight {
+		float: none !important;
+		width: 100% !important;
+	}
+}

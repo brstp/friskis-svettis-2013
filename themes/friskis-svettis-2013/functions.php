@@ -26,7 +26,7 @@ function init_jquery() {
 
 function load_theme_js() {
     if (!is_admin()) {
-        wp_enqueue_script('functions', THEME_JS .'/functions.js', array('jquery'));
+        wp_enqueue_script('functions', THEME_JS .'/functions.js?ver=2', array('jquery'));
     }
 }
 
@@ -105,22 +105,25 @@ function mytheme_add_init() {
 
 add_action( 'admin_head', 'mytheme_add_init' );
 
+
 //Widgets
 //Adds two Footer widgets
 if ( function_exists('register_sidebar') )
 { 
 	register_sidebar(
 		array(
-			'name'=>'Sidbar'
+			'name'			=> 'Sidbar',			
+			'before_title' 	=> '<h3><span>',
+			'after_title' 	=> '</span></h3>',
 		)
 	);
 		
 	register_sidebars(
 		2, 
 		array(
-			'name'=>'Sidfot %d',
-			'before_title'	=> '',
-			'after_title'	=> ''			
+			'name'			=>'Sidfot %d',
+			'before_title'	=> '<div class="blockTitle"><h3><span>',
+			'after_title'	=> '</span></h3></div>'			
 		)
 	);
 }
@@ -158,96 +161,8 @@ class Facebook extends WP_Widget
   function widget($args, $instance)
   {
 	$facebookPage = substr( $instance['facebookPageId'], strrpos( $instance['facebookPageId'], '/' )+1 );		
-	echo '<iframe src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2F'.$facebookPage.'&amp;width=290&amp;height=258&amp;show_faces=true&amp;colorscheme=light&amp;stream=false&amp;border_color=%23fff&amp;header=false" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:290px; height:290px;" allowTransparency="true"></iframe>';
+	echo '</ul><iframe class="facebookIframe" src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2F'.$facebookPage.'&amp;width=290&amp;height=258&amp;show_faces=true&amp;colorscheme=light&amp;stream=false&amp;border_color=%23fff&amp;header=false"></iframe><ul>';
   }
-}
-
-class Twitter extends WP_Widget
-{
-	function twitter()
-	{
-		$widget_ops = array('classname' => 'twitter', 'description' => 'Visar Twitter-flöde med fyra inlägg. Lägg till URL för Twitter-kontot.' );
-		$this->WP_Widget('twitter', 'Twitter', $widget_ops);
-	}
- 
-	function form($instance)
-	{
-		$instance = wp_parse_args( (array) $instance, array( 'twitterId' => '' ) );  
-		$twitterId   = $instance['twitterId'];
-?>
-		<p><label for="<?php echo $this->get_field_id('twitterId'); ?>">Lägg till URL för Twitter-kontot: <input class="widefat" id="<?php echo $this->get_field_id('twitterId'); ?>" name="<?php echo $this->get_field_name('twitterId'); ?>" type="text" value="<?php echo attribute_escape($twitterId); ?>" /></label></p>
-        
-<?php
-	}
- 
-	function update($new_instance, $old_instance)
-	{
-		$instance = $old_instance;
-		
-		// Retrieve Fields
-		$instance['twitterId']   = strip_tags($new_instance['twitterId']);
-		
-		return $instance;
-	}
- 
-	function widget($args, $instance)
-	{
-		// Gets the Twitter result and outputs it
-		echo '<div id="twitter"><h3><span>Twitter</span></h3>';
-		
-		$twitterId = $instance['twitterId'];
-		
-		if(strstr($twitterId, 'https://twitter.com'))
-		{
-			//Fetch the ID of the Twitter group
-			$twitterAccount = substr( $twitterId, strrpos( $twitterId, '/' )+1 );
-				
-			// Set array
-			$twitterStatus = array();
-		
-			for($i = 1; $i < 5; $i++)
-			{
-				$url = 'https://api.twitter.com/1/statuses/user_timeline/'.$twitterAccount.'.xml?count='.$i.'&include_rts=1callback=?';
-				$xml = simplexml_load_file($url) or die("could not connect");
-
-				foreach($xml->status as $status){
-					$created_at = $status->created_at;
-					$text = $status->text;
-				}
-					
-				// Fix date to right format
-				$date = explode(" ", $created_at);
-				$month = $date[1];
-				$day = $date[2];
-					
-				switch($month) {
-					case "Jan": $month = "Jan"; break;
-					case "Feb": $month = "Feb"; break;
-					case "Mar": $month = "Mar"; break;
-					case "Apr": $month = "Apr"; break;
-					case "May": $month = "Maj"; break;
-					case "Jun": $month = "Jun"; break;
-					case "Jul": $month = "Jul"; break;
-					case "Aug": $month = "Aug"; break;
-					case "Sep": $month = "Sep"; break;
-					case "Oct": $month = "Okt"; break;
-					case "Nov": $month = "Nov"; break;
-					case "Dec": $month = "Dec"; break;
-				}
-					
-				// Make URL "clickable" in text
-				$text = preg_replace('/https?:\/\/[\w\-\.!~?&+\*\'"(),\/]+/','<a rel="nofollow" href="$0">$0</a>',$text);
-					
-				// Make hashtag "clickable"
-				//https://twitter.com/search?q=%23
-				$text = preg_replace('/\#([a-z0-9]+)/i', '<a rel="nofollow" href="https://twitter.com/search?q=%23$1">#$1</a>', $text);
-										
-				echo '<div class="tweet clearfix"><div class="date">'.$day.' '.$month.'</div> <div class="excerpt">'.$text.'</div></div>';
-			}
-			$runOneTime++;		
-		}
-	echo '<br><a href="'.$instance['twitterId'].'" id="toTwitter" rel="nofollow">Till Twitter »</a></div>';
-	} 
 }
 
 class LatestPost extends WP_Widget
@@ -283,7 +198,7 @@ class LatestPost extends WP_Widget
 	
 	function widget($args, $instance)
 	{
-		echo '<div id="latestPost"><h3><span>'.$instance['blockTitle'].'</span></h3>';
+		echo '<li id="latestPost"><h3><span>'.$instance['blockTitle'].'</span></h3>';
 		
 		$args = array( 'numberposts' => '2', 'category' => '-11');
 		$recent_posts = wp_get_recent_posts( $args );
@@ -298,7 +213,7 @@ class LatestPost extends WP_Widget
 				echo '</div>';
 		}
 		
-		echo '</div>';
+		echo '</li>';
 	}
 }
 
@@ -467,10 +382,11 @@ class OpeningHours extends WP_Widget
  
 	function widget($args, $instance)
 	{
+		echo '<li>';
 		echo '<div class="openingHoursSingle">';
-			echo '<table width="100%" border-collapse: collapse;>';
+			echo '<table>';
 				echo '<tr>';
-					echo '<td><h4>'.$instance['facility'].'</h4></td>';
+					echo '<td class="openingHoursTitle"><h4>'.$instance['facility'].'</h4></td>';
 					echo '<td><strong>Mån</strong></td>';
 					echo '<td><strong>Tis</strong></td>';
 					echo '<td><strong>Ons</strong></td>';
@@ -480,7 +396,7 @@ class OpeningHours extends WP_Widget
 					echo '<td><strong>Sön</strong></td>';
 				echo '</tr>';
 				echo '<tr>';
-					echo '<th>Öppnar</th>';
+					echo '<th class="openingHoursTitle">Öppnar</th>';
 					echo '<td>'.$instance['openingMonday'].'</td>';
 					echo '<td>'.$instance['openingTuesday'].'</td>';
 					echo '<td>'.$instance['openingWednesday'].'</td>';
@@ -492,7 +408,7 @@ class OpeningHours extends WP_Widget
         if ( strlen( trim( $instance['gymClosingMonday'].$instance['gymClosingTuesday'].$instance['gymClosingWednesday'].$instance['gymClosingThursday'].$instance['gymClosingFriday'].$instance['gymClosingSaturday'].$instance['gymClosingSunday'])) > 0 )
           {
     				echo '<tr>';
-    					echo '<th>Sista inpassering</th>';
+    					echo '<th class="openingHoursTitle">Sista inpassering</th>';
     					echo '<td>'.$instance['gymClosingMonday'].'</td>';
     					echo '<td>'.$instance['gymClosingTuesday'].'</td>';
     					echo '<td>'.$instance['gymClosingWednesday'].'</td>';
@@ -503,7 +419,7 @@ class OpeningHours extends WP_Widget
     				echo '</tr>';
   				}
 				echo '<tr>';
-					echo '<th>Stänger</th>';
+					echo '<th class="openingHoursTitle">Stänger</th>';
 					echo '<td>'.$instance['localClosingMonday'].'</td>';
 					echo '<td>'.$instance['localClosingTuesday'].'</td>';
 					echo '<td>'.$instance['localClosingWednesday'].'</td>';
@@ -514,6 +430,7 @@ class OpeningHours extends WP_Widget
 				echo '</tr>';
 			echo '</table>';
 		echo '</div>';
+		echo '</li>';
 	} 
 }
 
@@ -572,7 +489,7 @@ class blockTitle extends WP_Widget
 			$idName .= ucfirst($idNameExploded[1]);
 		}
 
-		echo '<div class="blockTitle" id="'.$idName.'"><h3><span>'.$instance['blockTitle'].'</span></h3></div>';
+		echo '<li><div class="blockTitle" id="'.$idName.'"><h3><span>'.$instance['blockTitle'].'</span></h3></div></li>';
 	}
 }
 
@@ -581,7 +498,6 @@ add_action( 'widgets_init', 'load_widgets' );
 
 function load_widgets() {
 	register_widget( 'Facebook' );
-	register_widget( 'Twitter' );
 	register_widget( 'LatestPost' );
 	register_widget( 'OpeningHours' );
 	register_widget( 'blockTitle' );
@@ -704,3 +620,235 @@ function fetchSettings() {
 	return array('city' => $city, 'facebookUser' => $facebookUser, 'twitterUser' => $twitterUser);
 }
 
+add_action('init', 'portfolio_register');
+ 
+function news() {
+	register_post_type( 'fs_news',
+		array(
+			'labels' => array(
+				'name' => __( 'Nyheter' ),
+				'singular_name' => __( 'Nyhet' )
+			),
+			'category'		=> 'Nyheter',
+			'public' 		=> true,
+			'has_archive' 	=> true,
+			'rewrite' 		=> array('slug' => 'nyheter'),
+			//'supports'		=> array('title', 'editor', 'thumbnail', 'custom-fields', 'comments')
+		)
+	);
+}
+
+add_action( 'init', 'news' );
+
+/**
+ * Calendar widget class
+ *
+ * @since 2.8.0
+ */
+class WP_Widget_Calendar_Custom extends WP_Widget {
+
+	function __construct() {
+		$widget_ops = array('classname' => 'widget_calendar', 'description' => __( 'A calendar of your site&#8217;s posts') );
+		parent::__construct('calendar', __('Calendar'), $widget_ops);
+	}
+
+	function widget( $args, $instance ) {
+		extract($args);
+		$title = apply_filters('widget_title', empty($instance['title']) ? '' : $instance['title'], $instance, $this->id_base);
+		echo $before_widget;
+		if ( $title )
+			echo $before_title . $title . $after_title;
+		echo '<div class="calendar_wrap">';
+		get_calendar();
+		echo '</div>';
+		echo $after_widget;
+	}
+
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title'] = strip_tags($new_instance['title']);
+
+		return $instance;
+	}
+
+	function form( $instance ) {
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '' ) );
+		$title = strip_tags($instance['title']);
+?>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
+<?php
+	}
+}
+
+function custom_register_widget_calendar() {
+	register_widget( 'WP_Widget_Calendar_Custom' );
+}
+
+add_action( 'widgets_init', 'custom_register_widget_calendar' );
+
+/**
+ * Text widget class
+ *
+ * @since 2.8.0
+ */
+
+class WP_Widget_Text_Custom extends WP_Widget {
+
+	function __construct() {
+		$widget_ops = array('classname' => 'widget_text', 'description' => __('Arbitrary text or HTML'));
+		$control_ops = array('width' => 400, 'height' => 350);
+		parent::__construct('text', __('Text'), $widget_ops, $control_ops);
+	}
+
+	function widget( $args, $instance ) {
+		extract($args);
+		$title = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance, $this->id_base );
+		$text = apply_filters( 'widget_text', empty( $instance['text'] ) ? '' : $instance['text'], $instance );
+		echo $before_widget;
+		
+		add_filter( 'custom_no_wrap_filter', 'wpautop' );
+		if ( !empty( $title ) ) { echo $before_title . $title . $after_title; } ?>
+			<div class="textwidget test"><?php echo !empty( $instance['filter'] ) ? apply_filters('custom_no_wrap_filter', wpautop( $text )) : apply_filters('custom_no_wrap_filter', $text); ?></div>
+		<?php
+		echo $after_widget;
+	}
+
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title'] = strip_tags($new_instance['title']);
+		if ( current_user_can('unfiltered_html') )
+			$instance['text'] =  $new_instance['text'];
+		else
+			$instance['text'] = stripslashes( wp_filter_post_kses( addslashes($new_instance['text']) ) ); // wp_filter_post_kses() expects slashed
+		$instance['filter'] = isset($new_instance['filter']);
+		return $instance;
+	}
+
+	function form( $instance ) {
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'text' => '' ) );
+		$title = strip_tags($instance['title']);
+		$text = esc_textarea($instance['text']);
+?>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
+
+		<textarea class="widefat" rows="16" cols="20" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>"><?php echo $text; ?></textarea>
+
+		<p><input id="<?php echo $this->get_field_id('filter'); ?>" name="<?php echo $this->get_field_name('filter'); ?>" type="checkbox" <?php checked(isset($instance['filter']) ? $instance['filter'] : 0); ?> />&nbsp;<label for="<?php echo $this->get_field_id('filter'); ?>"><?php _e('Automatically add paragraphs'); ?></label></p>
+<?php
+	}
+}
+function custom_register_widgets_text() {
+	register_widget( 'WP_Widget_Text_Custom' );
+}
+
+add_action( 'widgets_init', 'custom_register_widgets_text' );
+
+// Recent comments
+class WP_Widget_Recent_Comments_Custom extends WP_Widget {
+
+	function __construct() {
+		$widget_ops = array('classname' => 'widget_recent_comments', 'description' => __( 'The most recent comments' ) );
+		parent::__construct('recent-comments', __('Recent Comments'), $widget_ops);
+		$this->alt_option_name = 'widget_recent_comments';
+
+		if ( is_active_widget(false, false, $this->id_base) )
+			add_action( 'wp_head', array($this, 'recent_comments_style') );
+
+		add_action( 'comment_post', array($this, 'flush_widget_cache') );
+		add_action( 'transition_comment_status', array($this, 'flush_widget_cache') );
+	}
+
+	function recent_comments_style() {
+		if ( ! current_theme_supports( 'widgets' ) // Temp hack #14876
+			|| ! apply_filters( 'show_recent_comments_widget_style', true, $this->id_base ) )
+			return;
+		?>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+<?php
+	}
+
+	function flush_widget_cache() {
+		wp_cache_delete('widget_recent_comments', 'widget');
+	}
+
+	function widget( $args, $instance ) {
+		global $comments, $comment;
+
+		$cache = wp_cache_get('widget_recent_comments', 'widget');
+
+		if ( ! is_array( $cache ) )
+			$cache = array();
+
+		if ( ! isset( $args['widget_id'] ) )
+			$args['widget_id'] = $this->id;
+
+		if ( isset( $cache[ $args['widget_id'] ] ) ) {
+			echo $cache[ $args['widget_id'] ];
+			return;
+		}
+
+ 		extract($args, EXTR_SKIP);
+ 		$output = '';
+		$title = apply_filters( 'widget_title', empty( $instance['title'] ) ? __( 'Recent Comments' ) : $instance['title'], $instance, $this->id_base );
+
+		if ( empty( $instance['number'] ) || ! $number = absint( $instance['number'] ) )
+ 			$number = 5;
+
+		$comments = get_comments( apply_filters( 'widget_comments_args', array( 'number' => $number, 'status' => 'approve', 'post_status' => 'publish' ) ) );
+		$output .= $before_widget;
+		if ( $title )
+			$output .= $before_title . $title . $after_title;
+
+		$output .= '<ul class="recentcommentsWrapper">';
+		if ( $comments ) {
+			// Prime cache for associated posts. (Prime post term cache if we need it for permalinks.)
+			$post_ids = array_unique( wp_list_pluck( $comments, 'comment_post_ID' ) );
+			_prime_post_caches( $post_ids, strpos( get_option( 'permalink_structure' ), '%category%' ), false );
+
+			foreach ( (array) $comments as $comment) {
+				$output .=  '<li class="recentcomments">' . /* translators: comments widget: 1: comment author, 2: post link */ sprintf(_x('%1$s on %2$s', 'widgets'), get_comment_author_link(), '<a href="' . esc_url( get_comment_link($comment->comment_ID) ) . '">' . get_the_title($comment->comment_post_ID) . '</a>') . '</li>';
+			}
+ 		}
+		$output .= '</ul>';
+		$output .= $after_widget;
+
+		echo $output;
+		$cache[$args['widget_id']] = $output;
+		wp_cache_set('widget_recent_comments', $cache, 'widget');
+	}
+
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['number'] = absint( $new_instance['number'] );
+		$this->flush_widget_cache();
+
+		$alloptions = wp_cache_get( 'alloptions', 'options' );
+		if ( isset($alloptions['widget_recent_comments']) )
+			delete_option('widget_recent_comments');
+
+		return $instance;
+	}
+
+	function form( $instance ) {
+		$title = isset($instance['title']) ? esc_attr($instance['title']) : '';
+		$number = isset($instance['number']) ? absint($instance['number']) : 5;
+?>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
+
+		<p><label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Number of comments to show:'); ?></label>
+		<input id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo $number; ?>" size="3" /></p>
+<?php
+	}
+}
+
+function custom_register_widget_recent_comments() {
+	register_widget( 'WP_Widget_Recent_Comments_Custom' );
+}
+
+add_action( 'widgets_init', 'custom_register_widget_recent_comments' );
+
+?>

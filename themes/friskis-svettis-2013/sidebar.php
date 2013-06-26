@@ -21,7 +21,7 @@
 
 	
 			<div class="subSidebarBox news">
-				<img class="yellow" src="<?php echo THEME_IMAGES; ?>/yellow.png" alt="tape">
+				<div class="yellowWidget"></div>
 				<h3><span><?php
 					$parent_title = get_the_title($post->post_parent);
 					echo $parent_title;
@@ -32,7 +32,7 @@
 						<ul>
 							<?php wp_get_archives( 'type=monthly' ); ?>
 						</ul>
-					
+
 			</div>
 
 			<li id="meta" class="widget-container">

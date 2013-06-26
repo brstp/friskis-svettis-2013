@@ -9,7 +9,7 @@
  * Learn more: http://codex.wordpress.org/Template_Hierarchy
  *
  */
-
+update_option('current_page_template','index');
 get_header();
 ?>
 <div class="masthead">

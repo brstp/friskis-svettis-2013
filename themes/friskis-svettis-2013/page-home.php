@@ -3,6 +3,7 @@
  * The start page template file.
  * Template Name: Start
 */
+update_option('current_page_template','page-home');
 get_header(); 
 ?>
 		<div id="slider" class="showcase">
@@ -12,7 +13,13 @@ get_header();
 				<div class="showcase-content">
 					<div class="showcase-content-wrapper">
 							<img src="<?php the_sub_field('image'); ?>" alt="<?php the_sub_field('alt'); ?>" title="<?php the_sub_field('title'); ?>">
-							<div id="readMore"><a href="<?php the_sub_field('page-link'); ?>"><img src="<?php echo THEME_IMAGES; ?>/read-more.png" alt="Pil" title="Läs mer"></a></div>
+							<?php
+								if(get_sub_field('page-link')):
+							?>
+								<div class="readMoreSlider"><a href="<?php the_sub_field('page-link'); ?>"><img src="<?php echo THEME_IMAGES; ?>/read-more.png" alt="Pil" title="Läs mer"></a></div>
+							<?php
+								endif;
+							?>
 					</div>
 				</div>
 			</div>
@@ -39,18 +46,15 @@ get_header();
 			<h3><span>Nyheter</span></h3>
 			<ul>
 				<?php
-				$news_query = new WP_Query(array(
-						"post_type" => 'post',
-						"posts_per_page" => 4,
-						"category_name" => 'Nyheter'
-					));
-				while ($news_query->have_posts()) : $news_query->the_post();
-					?>
+					$args = array( 'post_type' => 'fs_news', 'posts_per_page' => 10 );
+					$loop = new WP_Query( $args );
+					while ( $loop->have_posts() ) : $loop->the_post();
+				?>
 					<li>
 						<h4><a href="<?php the_permalink(); ?>#mainContent"><?php the_title(); ?></a></h4>
 						<p><a href="<?php the_permalink(); ?>#mainContent"><?php echo get_the_excerpt(); ?>...</a> <a class="readMore" href="<?php the_permalink(); ?>#mainContent">Läs mer »</a></p>
 					</li>
-				<?php	
+				<?php
 					endwhile;
 				?>
 			</ul>

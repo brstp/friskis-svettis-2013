@@ -35,8 +35,30 @@
 	?></title>
 <link rel="shortcut icon" href="<?php echo HOME_URI; ?>/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>?v=5" />
+<link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>?v=8" />
 <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
+
+<?php 
+	// Method for adding right responsiv css
+	if(get_option('current_page_template') == 'category'
+		|| get_option('current_page_template') == '404'
+		|| get_option('current_page_template') == 'search'
+		|| get_option('current_page_template') == 'single')
+	{
+		echo '<link rel="stylesheet" type="text/css" media="all" href="' . get_bloginfo( 'template_url' ) . '/responsive-footer-1.css" />';
+	}
+	
+	if(get_option('current_page_template') == 'page'
+		|| get_option('current_page_template') == 'page-no-sidebar'
+		|| get_option('current_page_template') == 'single-fs_news')
+	{
+		echo '<link rel="stylesheet" type="text/css" media="all" href="' . get_bloginfo( 'template_url' ) . '/responsive-footer-2.css" />';
+	}
+?>
+
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
 <?php
 	/* Always have wp_head() just before the closing </head>
 	 * tag of your theme, or you will break many plugins, which
@@ -47,7 +69,14 @@
 ?>
 </head>
 <body>
-
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/sv_SE/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 <div id="wrapper">
 	<header>
 		<div id="logo">

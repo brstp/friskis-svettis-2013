@@ -1,4 +1,6 @@
-<?php get_header(); ?>
+<?php 
+update_option('current_page_template','category');
+get_header(); ?>
 <div id="gap"></div>
 	<div id="content" class="clearfix">
 	<div id="sidebar">
@@ -8,8 +10,7 @@
 				<ul>
 				<?php
 				$news_query = new WP_Query(array(
-						"post_type" => 'post',
-						"category_name" => 'Nyheter'
+						"post_type" => 'fs_news',
 					));
 				while ($news_query->have_posts()) : $news_query->the_post();
 					?>
@@ -38,20 +39,5 @@
 	<div id="sidebarRight">
 		<?php the_field('sidebar-right');?>
 	</div>
-		<style>
-	@media screen and (max-width: 960px) {
-		#footerRight {
-			float: right;
-			width: 50%;
-		}
-	}
-	
-	@media screen and (max-width: 480px) {
-		#footerRight {
-			float: none;
-			width: 100%;
-		}
-	}
-</style>
 <div class="clearfix"></div>
 <?php get_footer(); ?>
