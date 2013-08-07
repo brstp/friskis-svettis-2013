@@ -39,17 +39,27 @@ class fs_schema_shortcodes {
 		$defaults = array(
 			'typ'			=> 'vecka', 		// vecka, pass
 			'anlaggning'		=> '',			// id, eller kommaseparerad id
-			'datum'			=> '',  	// format: YYYY-MM-DD
-			'bokning'			=> '1'
+			'datum'			=> '',  			// format: YYYY-MM-DD
+			'bokning'			=> '1',
+			'visavyknapp'		=> '1',
+			'dagsbredd'		=> '130'
 		);
 		
 		$r = wp_parse_args( $attr, $defaults );
-		
+
 		global $fs_schema;
 		
-		//return '<pre>' . print_r ($fs_schema->data->book_activity ( 'klas@ehnemark.com', 'gurka7394', '18646' ), true ) . '</pre>';
+		$args	= array (
+			'type'			=> $r['typ'] == 'dag' ? 'day' : 'week',
+			'facility'		=> $r['anlaggning'],
+			'date'			=> $r['datum'], 
+			'day_width'		=> $r['dagsbredd'],
+			'booking'			=> $r['bokning'],
+			'enableweek'		=> $r['visavyknapp'] == '0' ? false : true,
+			'enableday'		=> $r['visavyknapp'] == '0' ? false : true,
+		);
 		
-		return  $fs_schema->public->render_schema ( $r );
+		return  $fs_schema->public->render_schema ( $args );
 		
 	}
 

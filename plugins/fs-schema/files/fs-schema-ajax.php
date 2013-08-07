@@ -28,29 +28,36 @@ class fs_schema_ajax {
 		$this->data = new fs_schema_data ();
 		
 		// add ajax functions for admin
+		
 		add_action('wp_ajax_get_businessunits', 		array ( $this, 'get_businessunits' ));
 		
 		
 		// add ajax functions for public
+		
 		add_action('wp_ajax_get_bookings', 			array ( $this, 'get_bookings' ));
+		
 		add_action('wp_ajax_nopriv_get_bookings', 		array ( $this, 'get_bookings' ));
 		
+		
 		add_action('wp_ajax_book_activity', 			array ( $this, 'book_activity' ));
+		
 		add_action('wp_ajax_nopriv_book_activity', 		array ( $this, 'book_activity' ));
 		
+		
 		add_action('wp_ajax_unbook_activity', 			array ( $this, 'unbook_activity' ));
+		
 		add_action('wp_ajax_nopriv_unbook_activity', 	array ( $this, 'unbook_activity' ));
 
+
 		add_action('wp_ajax_walk_schema', 				array ( $this, 'walk_schema' ));
+		
 		add_action('wp_ajax_nopriv_walk_schema', 		array ( $this, 'walk_schema' ));
 
+
 		add_action('wp_ajax_login', 					array ( $this, 'login' ));
+		
 		add_action('wp_ajax_nopriv_login', 			array ( $this, 'login' ));
 		
-		
-		add_action('wp_ajax_test_post', 				array ( $this, 'test_post' ));
-		add_action('wp_ajax_nopriv_test_post', 			array ( $this, 'test_post' ));
-
 	}
 
 
@@ -90,8 +97,7 @@ class fs_schema_ajax {
 		die();
 		
 	}
-	
-	
+
 		
 	////////////////////////////////////////////////////////////////////////////////
 	//
@@ -156,6 +162,8 @@ class fs_schema_ajax {
 	
 		global $fs_schema;
 		
+		$num_days			= isset( $_POST[ 'num_days' ] )	? $_POST[ 'num_days' ] 	: '7';
+		
 		$date_info 		= isset( $_POST[ 'date_info' ] )	? $_POST[ 'date_info' ] 	: '';
 		
 		$step			= isset( $_POST[ 'step' ] )		? $_POST[ 'step' ] 		: '';
@@ -166,7 +174,7 @@ class fs_schema_ajax {
 		
 		$session_key 		= isset( $_POST[ 'session_key' ] )	? $_POST[ 'session_key' ] : '';
 
-		echo $fs_schema->public->walk_schema ( $date_info, $step, $username, $password, $session_key );
+		echo $fs_schema->public->walk_schema ( $num_days, $date_info, $step, $username, $password, $session_key );
 		
 		die();
 	}
@@ -190,30 +198,9 @@ class fs_schema_ajax {
 
 		echo json_encode( $fs_schema->public->login ( $username, $password ));
 		
-		//echo stereotype::debug ( $fs_schema->public->login ( $username, $password ));
-		
 		die();
 	}	
 	
-	
-	
-	
-	
-	function test_post () {
-	
-		$apikey 		= isset( $_POST[ 'apikey' ] )? $_POST[ 'apikey' ] : '';
-		
-		$type 		= isset( $_POST[ 'type' ] )? $_POST[ 'type' ] : '';
-		
-		$activityid 	= isset( $_POST[ 'activityid' ] )? $_POST[ 'activityid' ] : '';
-		
-		echo 'apikey=' . $apikey . ' type=' . $type . ' activityid=' . $activityid;
-		
-		die();
-	
-	}
-	
-
  	
 } //End Class
 ?>
