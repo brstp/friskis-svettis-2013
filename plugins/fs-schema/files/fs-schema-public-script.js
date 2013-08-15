@@ -48,6 +48,15 @@ fs_schema_public = {
 	
 	book_event_after_login : false,
 	
+	enableweek : false,
+	
+	enableday : false,
+	
+	forceday : false,
+	
+	after_refresh : function () {},
+	
+	after_book_event : function () {},
 	
 	init : function () {
 	
@@ -79,6 +88,10 @@ fs_schema_public = {
 		
 		jQuery('.fs_schema .logout_btn ').click( function() { fs_schema_public.logout (); });
 		
+		jQuery('.fs_schema .change_to_day').click( function() { fs_schema_public.change_to_day (); });
+		
+		jQuery('.fs_schema .change_to_week').click( function() { fs_schema_public.change_to_week (); });
+		
 		jQuery( '.fs_schema .debug').html( jQuery( '.fs_schema .week_debug' ).html() );
 		
 		jQuery('.fs_schema .show_debug').click( function() { jQuery( '.fs_schema .debug').show(); jQuery('.fs_schema .show_debug').hide(); });
@@ -87,6 +100,57 @@ fs_schema_public = {
 
 	},
 	
+	
+	change_to_day : function () {
+	
+		if ( fs_schema_public.num_days == 7 && fs_schema_public.enableday == true && jQuery('.fs_schema .change_to_day:not(.disabled) ').length > 0 ) {
+		
+			fs_schema_public.show_hud ( 'Växlar till dagsvy...' );
+			
+			fs_schema_public.num_days = 1;
+			
+			fs_schema_public.after_refresh = function() {
+			
+				jQuery('.fs_schema').removeClass('week').addClass('day');
+			
+				jQuery('.fs_button.change_to_week').css('display', 'inline');
+			
+				jQuery('.fs_button.change_to_day').css('display', 'none'); 
+				
+				jQuery('.fs_button.previous').html('&lt; Föregående dag');
+				
+				jQuery('.fs_button.next').html('Nästa dag &gt;');
+			}
+			
+			fs_schema_public.refresh();
+		}
+	},
+	
+	
+	change_to_week : function () {
+	
+		if ( fs_schema_public.num_days == 1 && fs_schema_public.enableweek == true && jQuery('.fs_schema .change_to_week:not(.disabled) ').length > 0 ) {
+	
+			fs_schema_public.show_hud ( 'Växlar till veckovy...' );
+			
+			fs_schema_public.num_days = 7;
+			
+			fs_schema_public.after_refresh = function() {
+			
+				jQuery('.fs_schema').removeClass('day').addClass('week');
+			
+				jQuery('.fs_button.change_to_week').css('display', 'none');
+			
+				jQuery('.fs_button.change_to_day').css('display', 'inline'); 
+				
+				jQuery('.fs_button.previous').html('&lt; Föregående vecka');
+				
+				jQuery('.fs_button.next').html('Nästa vecka &gt;');
+			}
+			
+			fs_schema_public.refresh();
+		}
+	},
 	
 	
 	show_login : function () {
@@ -197,6 +261,8 @@ fs_schema_public = {
 						fs_schema_public.personid = data.personid;
 						
 						fs_schema_public.session_key = data.session_key;
+						
+						fs_schema_public.forceday = data.forceday;
 					
 						fs_schema_public.close_login();
 						
@@ -222,15 +288,45 @@ fs_schema_public = {
 							
 						}, 500);
 						
-						if ( fs_schema_public.book_event_after_login == true ) 
+						if ( fs_schema_public.book_event_after_login == true ) {
+						
+							if ( data.forceday && fs_schema_public.num_days == 7 ) {
+							
+								fs_schema_public.after_book_event = function() {
+							
+									fs_schema_public.change_to_day();
+									
+									jQuery('.fs_schema .change_to_week').addClass('disabled').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
+								};
+								
+							} else {
+							
+								fs_schema_public.after_book_event = function() {
+								
+									fs_schema_public.refresh();
+									
+								};
+							
+							}
 						
 							fs_schema_public.book_event();
 							
-						else 
+						} else {
 					
 							fs_schema_public.is_busy = false;
-						
-						fs_schema_public.refresh();
+							
+							if ( data.forceday && fs_schema_public.num_days == 7 ) { 
+							
+								fs_schema_public.change_to_day();
+								
+								jQuery('.fs_schema .change_to_week').addClass('disabled').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
+								
+							} else {
+							
+								fs_schema_public.refresh();
+								
+							}
+						}
 						
 						if ( fs_schema_public.book_event_after_login == false ) fs_schema_public.show_hud ( 'Inloggad' );
 					}
@@ -275,6 +371,8 @@ fs_schema_public = {
 		jQuery('.fs_schema .book_event ').css( 'display', 'none' );
 		
 		jQuery('.fs_schema .login.dialogue .header').html('Logga in');
+		
+		jQuery('.fs_schema .change_to_week').removeClass('disabled').attr('title', '');
 	},
 	
 	
@@ -312,11 +410,17 @@ fs_schema_public = {
 			
 			fs_schema_public.ajax (
 			
-				{ action : 'walk_schema', date_info : date_info, step: 0, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
+				{ action : 'walk_schema', num_days: fs_schema_public.num_days, date_info : date_info, step: 0, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
 				
 					jQuery( '.fs_schema .weeks' ).html(data);
 					
 					jQuery('.fs_schema .week_progress').css('display', 'none');
+					
+					fs_schema_public.after_refresh();
+					
+					jQuery('.fs_schema .entry.openable').click( function( ev_data ) { fs_schema_public.open_event ( this ); });
+					
+					fs_schema_public.after_refresh = function() {};
 				});
 		}
 	
@@ -335,7 +439,7 @@ fs_schema_public = {
 			
 			fs_schema_public.ajax (
 			
-				{ action : 'walk_schema', date_info : date_info, step: step, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
+				{ action : 'walk_schema', num_days: fs_schema_public.num_days, date_info : date_info, step: step, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
 				
 					weeks = jQuery( '.fs_schema .weeks' );
 					
@@ -343,7 +447,7 @@ fs_schema_public = {
 					
 					new_days = jQuery( data );
 					
-					fs_schema_public.show_hud( jQuery( '.days',  jQuery( '<div>' + data + '</div>' ) ).attr('data-week') );
+					if ( jQuery( '.fs_schema.day' ).length == 0 ) fs_schema_public.show_hud( jQuery( '.days',  jQuery( '<div>' + data + '</div>' ) ).attr('data-week') );
 	
 					weeks_width = fs_schema_public.weeks_width = jQuery( weeks ).outerWidth(true);
 			
@@ -414,10 +518,6 @@ fs_schema_public = {
 		if (  fs_schema_public.is_busy == false ) {
 		
 			jQuery('.fs_schema .dialogue.open').hide().removeClass('open');
-			
-			if ( fs_schema_public.password != '' ) jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'inline' );
-				
-			else jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'inline' );
 		
 			fs_schema_public.animate_source_on_close_event = false;
 			
@@ -472,9 +572,49 @@ fs_schema_public = {
 			jQuery( '.fs_schema .open_event .room span' ).html( jQuery( event_el ).attr( 'data-room' ));
 			
 			jQuery( '.fs_schema .open_event .freeslots span' ).html(  jQuery( event_el ).attr( 'data-freeslots' ) + ' (' + bookable + ')' );
+			
+			
+			// adjust event on what status the event has got
+			entry_status = jQuery( event_el ).attr( 'data-status' );
+			
+			entry_info_dropin = jQuery( '.fs_schema .open_event .entry_info_dropin' );
+			
+			entry_info_full = jQuery( '.fs_schema .open_event .entry_info_full' );
+			
+			entry_info_cancelled = jQuery( '.fs_schema .open_event .entry_info_cancelled' );
+			
+			entry_info_not_bookable = jQuery( '.fs_schema .open_event .entry_info_not_bookable' );
+			
+			entry_info_dropin.css( 'display', 'none' );
+			
+			entry_info_full.css( 'display', 'none' );
+			
+			entry_info_cancelled.css( 'display', 'none' );
+			
+			entry_info_not_bookable.css( 'display', 'none' );
+			
+			entry_is_bookable = false;
+			
+			switch ( entry_status ) {
+			
+				default: entry_is_bookable = true; break;
+					
+				case 'dropin': entry_info_dropin.css( 'display', 'block' ); break;
+					
+				case 'reserve': break;
+					
+				case 'notbookable': entry_info_not_bookable.css( 'display', 'block' ); break;
+					
+				case 'full': entry_info_full.css( 'display', 'block' ); break;
+					
+				case 'closed': entry_info_not_bookable.css( 'display', 'block' ); break;
+				
+				case 'cancelled': entry_info_cancelled.css( 'display', 'block' ); break;
+			}
 									
 			fs_schema_public.open_bookingid = jQuery( event_el ).attr( 'data-bookingid' );
 			
+			// user has allready booked this event
 			if ( fs_schema_public.open_bookingid != '' ) {
 			
 				jQuery( '.fs_schema .open_event .booked_info' ).css( 'display', 'block' );
@@ -485,13 +625,47 @@ fs_schema_public = {
 				
 				jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
 
+			// user has not booked this event
 			} else {
 			
 				jQuery( '.fs_schema .open_event .booked_info' ).css( 'display', 'none' );
 			
 				jQuery( '.fs_schema .open_event .unbook_event' ).css( 'display', 'none' );
-			}
+				
+				// this event is not bookable
+				if ( entry_is_bookable == false ) {
+					
+					jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'none' );
+					
+					jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
+					
+					jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'none' );
+				
+					jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
+					
+					jQuery( '.fs_schema .open_event .loggedin' ).css( 'display', 'none' );
+				
+				// this event is bookable, and user has not booked it yet
+				} else {
 			
+					// user is logged in
+					if ( fs_schema_public.password != '' ) {
+					
+						jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'inline' );
+						
+						jQuery( '.fs_schema .open_event .loggedin' ).css( 'display', 'block' );
+						
+					// user is not logged in
+					} else {
+					
+						jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'block' );
+						
+						jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'inline' );
+						
+					}
+				}
+			}
+
 			window.setTimeout(function() {
 			
 				jQuery( '.fs_schema .open_event' )
@@ -590,6 +764,8 @@ fs_schema_public = {
 				
 				fs_schema_public.is_busy = false;
 				
+				refresh_after_booked = false;
+				
 				jQuery( '.fs_schema .open_event .progress').css( 'display', 'none' );
 				
 				if ( data.error != '' ) {
@@ -598,9 +774,15 @@ fs_schema_public = {
 				
 				} else {
 				
-					jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid',  data.bookingid );
+					if ( data.bookingid == '' ) {	// profit dont give us a booking id when booking, what kind of booking system is that?
+					
+						refresh_after_booked = true;
+					
+					} else {
 				
-					//fs_schema_public.display_dialogue_big_message ( 'Bokat.', data.message, false );
+						jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid',  data.bookingid );
+						
+					}
 					
 					fs_schema_public.animate_source_on_close_event = true;
 					
@@ -611,6 +793,28 @@ fs_schema_public = {
 					fs_schema_public.show_hud ( 'Bokat!' );
 				}
 				
+				if ( refresh_after_booked == true ) {
+				
+					if ( fs_schema_public.forceday && fs_schema_public.num_days == 7 ) {
+					
+						fs_schema_public.change_to_day();
+							
+						jQuery('.fs_schema .change_to_week').addClass('disabled').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
+						
+					} else {
+						
+						fs_schema_public.refresh();
+					
+					}
+				
+				} else {
+				
+					fs_schema_public.after_book_event ();
+						
+					fs_schema_public.after_book_event = function() {};
+					
+				}
+					
 				jQuery( '.fs_schema .debug').html( data.debug );
 			}
 		);
@@ -739,6 +943,12 @@ fs_schema_public = {
 		fs_schema_public.hours_width = jQuery('.fs_schema').attr('data-hours-width');
 		
 		jQuery( '.fs_schema .week_overlay' ).css('left', ((fs_schema_public.schema_width/2)-100));
+		
+		if ( jQuery('.fs_schema.enableday ').length > 0 ) fs_schema_public.enableday = true;
+		
+		if ( jQuery('.fs_schema.enableweek ').length > 0 ) fs_schema_public.enableweek = true;
+		
+		if ( jQuery('.fs_schema.day').length > 0 ) fs_schema_public.num_days = 1;
 		
 	},
 	

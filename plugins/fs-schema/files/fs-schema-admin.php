@@ -137,7 +137,7 @@ class fs_schema_admin {
 		// check previligies
 		if ( !current_user_can ( 'manage_options' )) wp_die( __('You do not have sufficient permissions to access this page.') ); 
 		
-		
+
 		
 		// See if the user has posted us some information. If they did, this hidden field will be set to 'Y'
 		if( isset ( $_POST [ 'submit_options_hidden' ] ) && $_POST [ 'submit_options_hidden' ] == 'Y' ) {
@@ -166,7 +166,7 @@ class fs_schema_admin {
 			
 			
 			// remove any spaces in businessunitids
-			$fs_booking_bpi_businessunitids 	=  get_option( '$fs_booking_bpi_businessunitids' );
+			$fs_booking_bpi_businessunitids 	=  get_option( 'fs_booking_bpi_businessunitids' );
 			
 			if ( strpos ( $fs_booking_bpi_businessunitids, ' ' ) ) update_option ( 'fs_booking_bpi_businessunitids', str_replace( ' ', '',  $fs_booking_bpi_businessunitids ));
 
@@ -220,13 +220,14 @@ class fs_schema_admin {
 							<div class="fs_shema_shortcode_help">
 								<p style="position: relative; top:10px; "><strong>Parametrar</strong></p>
 								<ul>
-									<li><code>typ</code> - anger typ av schema; <code>vecka</code> (förvalt) eller <code>pass</code>.</li>
+									<li><code>typ</code> - anger typ av schema; <code>vecka</code> (förvalt) eller <code>dag</code>.</li>
 									<li><code>anlaggning</code> - visar bara schemat för en specifik anläggning, anges med ID (se nedan).</li>
 									<li><code>bokning</code> - sätts till 0 (noll) om man vill stänga av bokningsfunktionen.</li>
+									<li><code>visavyknapp</code> - sätts till 0 (noll) om man vill dölja knappen som växlar mellan dagsvy och veckovy</li>
 								</ul>
 								<p style="position: relative; top:10px; "><strong>Exempel</strong></p>
 								<ul>
-									<li>Följande exempel visar ett pass-schema för anläggningen md ID 3 utan möjlighet till bokning: <code>[fs-schema typ=pass anlaggning=3 bokning=0]</code></li>
+									<li>Följande exempel visar ett dags-schema för anläggningen md ID 3 utan möjlighet till bokning: <code>[fs-schema typ=dag anlaggning=3 bokning=0]</code></li>
 								</ul>
 							</div>
 						</td>
@@ -304,19 +305,6 @@ class fs_schema_admin {
 						</td>
 					</tr>
 					
-					<!--<tr>
-						<th scope="row"><label for="fs_schema_extra_column">Ev. extrakolumn</label></th>
-						<td>
-							<select id="fs_schema_extra_column" name="fs_schema_extra_column">
-								<option value="">Ingen</option>
-								<option value="Anläggning" 	' . ( $fs_schema_extra_column == 'Anläggning' ? ' selected="selected"' : '' ) . '>Anläggning</option>
-								<option value="Lokal" 		' . ( $fs_schema_extra_column == 'Lokal' ? 	' selected="selected"' : '' ) . '>Lokal</option>
-							</select>
-							<p class="description">Ange om schemat på startsidan ska visa en extrakolumn, och i så fall vilken. Alla val kan eventuellt inte fungera med alla bokningssystem.</p>
-						</td>
-						
-					</tr>-->
-					
 					<tr valign="top">
 						<th scope="row"><label for="fs_booking_profit_organization_unit">Uppdateingsintervall</label></th>
 						<td>
@@ -329,16 +317,17 @@ class fs_schema_admin {
 						<th scope="row"><label>Övrigt</label></th>
 						<td>
 							<label for="fs_schema_show_debug">
-						  	<input type="checkbox" name="fs_schema_show_debug" id="fs_schema_show_debug" 
-						 	value="YES"' . ( $fs_schema_show_debug == 'YES' ? 'checked="checked"' : '' ) . '> <span style="position: relative; top: 2px; ">Visa debug-information</span>
+							<input type="checkbox" name="fs_schema_show_debug" id="fs_schema_show_debug" 
+							value="YES"' . ( $fs_schema_show_debug == 'YES' ? ' checked="checked"' : '' ) . '> <span style="position: relative; top: 2px; ">Visa debug-information</span>
+							</label>
+							<div></div>
 						</td>
 					</tr>
 					
 				</table>
-				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Spara inställningarna" /></p></div></form></div>';
+				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Spara inställningarna" /><a href="edit.php?post_type=fs_schema_log" id="fs_show_logs" class="button action">Visa fel-logg</a></p></div></form></div>';
 		
 	}
-	
 
 	////////////////////////////////////////////////////////////////////////////////
 	//

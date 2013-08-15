@@ -35,9 +35,9 @@ class fs_schema_brp {
 	public function get_schema ( $args ) {
 	
 		$defaults = array(
-			'typ'				=> 'vecka', 		// vecka, pass
-			'anlaggning'			=> '',			// id, eller kommaseparerad id
-			'datum'				=> '', 			// format: YYYY-MM-DD
+			'type'				=> 'week', 		// week, day
+			'facility'			=> '',			// id, eller kommaseparerad id
+			'date'				=> '', 			// format: YYYY-MM-DD
 			'username'			=> '',
 			'password'			=> ''
 		);
@@ -46,7 +46,7 @@ class fs_schema_brp {
 		
 		global $fs_schema;
 		
-		$sub_cache_name			= 'schema_' . $r['typ'] . '_' . $r['anlaggning'] . '_' . $r['datum'];
+		$sub_cache_name			= 'schema_' . $r['type'] . '_' . $r['facility'] . '_' . $r['date'];
 
 
 		// if username and password, don't cache this schema
@@ -82,7 +82,7 @@ class fs_schema_brp {
 
 		global $fs_schema;
 		
-		$settings = $this->settings();
+		$settings = $fs_schema->data->settings();
 		
 		$result = array( 'error' => '', 'message' => '' );
 		
@@ -112,9 +112,9 @@ class fs_schema_brp {
 			
 			$result['error'] 	= 'YES';
 			
-			$result['message'] 	= 'Bokningen har skickats iväg, men det gick inte att få bekräftat från bokningssystemet att bokningen lyckats.';							
+			$result['message'] 	= 'Bokningen har skickats iväg, men det gick inte att få bekräftat från bokningssystemet att bokningen lyckats.';
 			
-		} else {
+		} else if ( $result['error'] 	== '' ) {
 		
 			$result['message'] 		= 'Bokningen är genomförd och har fått id ' . $activity_booking[0]->id . ' i bokningssystemet.';
 			
@@ -139,7 +139,7 @@ class fs_schema_brp {
 
 		global $fs_schema;
 		
-		$settings = $this->settings();
+		$settings = $fs_schema->data->settings();
 		
 		$result = array( 'error' => '', 'message' => '' );
 
@@ -248,7 +248,7 @@ class fs_schema_brp {
 			
 				$output['error'] 	= 'YES';
 				
-				$output['message'] 	= 'Ett okänt fel uppstod. Var vänlig försök igen senare.';
+				$output['message'] 	= 'Ett okänt fel uppstod. Var vänlig försök igen senare. ';
 				
 				break;				
 
@@ -256,7 +256,7 @@ class fs_schema_brp {
 			
 				$output['error'] 	= 'YES';
 				
-				$output['message'] 	= 'Ett okänt fel uppstod, bokningssystemet returnerade ingen information. Var vänlig försök igen senare.';
+				$output['message'] 	= 'Ett okänt fel uppstod, bokningssystemet returnerade ingen information. Var vänlig försök igen senare. ';
 				
 				break;
 				
@@ -264,7 +264,7 @@ class fs_schema_brp {
 			
 				$output['error'] 	= 'YES';
 				
-				$output['message'] 	= 'Inloggning misslyckades. Användarnamn och/eller lösenord är felaktigt.';
+				$output['message'] 	= 'Inloggning misslyckades. Användarnamn och/eller lösenord är felaktigt. ';
 				
 				break;
 				
@@ -272,9 +272,9 @@ class fs_schema_brp {
 			
 				$output['error'] 	= 'YES';
 				
-				$output['message'] 	= 'Inloggning lyckades, men du har inte behörighet att boka denna aktivitet.';
+				$output['message'] 	= 'Inloggning lyckades, men du har inte behörighet att boka denna aktivitet. ';
 				
-				$output['xml']		= @simplexml_load_string( iconv( "windows-1252", "UTF-8//IGNORE",  $curl_output ) );
+				$output['xml']		= @simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $curl_output ) ); // windows-1252
 				
 				break;
 				
@@ -282,15 +282,15 @@ class fs_schema_brp {
 			
 				$output['error'] 	= 'YES';
 				
-				$output['message'] 	= 'Bad Request';
+				$output['message'] 	= 'Bad Request. ';
 				
-				$output['xml']		= @simplexml_load_string( iconv( "windows-1252", "UTF-8//IGNORE",  $curl_output ) );
+				$output['xml']		= @simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $curl_output ) );
 				
 				break;
 		
 			case '200':
 		
-				$output['xml']		= @simplexml_load_string( iconv( "windows-1252", "UTF-8//IGNORE",  $curl_output ) );
+				$output['xml']		= @simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $curl_output ) );
 				
 				break;
 				
@@ -359,6 +359,8 @@ class fs_schema_brp {
 	public function login ( $username, $password ) {	
 	
 		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
 			
 		$url = $settings[ 'fs_schema_brp_server_url' ] . 'persons.xml?apikey=' . $settings[ 'fs_booking_bpi_api_key' ];
 		
@@ -372,13 +374,13 @@ class fs_schema_brp {
 			
 			$result['message'] 		= 'Inloggningen verkade lyckas, men vi fick inte tillbaks korrekt information från bokningssystemet.';							
 		
-		} else {
+		} else if ( $result['error'] == '' ) {
 		
 			$result['personid'] = $result['xml']->person->id;
 			
 			$result['name'] 	= $result['xml']->person->firstname . ' ' . $result['xml']->person->lastname;
 		
-		}
+		} 
 		
 		$result['debug'] = $this->debug . print_r($result, true);
 		
@@ -410,17 +412,14 @@ class fs_schema_brp {
 		
 
 		// fix business units ids
-		if ( $r[ 'anlaggning' ] != '' )
+		if ( $r[ 'facility' ] != '' )
 		
-			$r['businessunitids'] 	= $r[ 'anlaggning' ];
+			$r['businessunitids'] 	= $r[ 'facility' ];
 		
 		else 
 		
 			$r['businessunitids'] 	= $settings[ 'fs_booking_bpi_businessunitids' ];
-		
 
-		//http://brp2.netono.se/fsdanderydgog/api/ver2/activities.xml?apikey=6a8aa4c1c6d84e3f9d17ced2ae5bec93&businessunitids=1&startdate=2013-06-17&enddate=2013-06-17	
-		
 		// 
 		$r['url']	 			= $settings[ 'fs_schema_brp_server_url' ] . 'activities.xml?apikey=' . $settings[ 'fs_booking_bpi_api_key' ] . '&businessunitids=' . $r['businessunitids'] . '&startdate=' . $r['date_stamp'] . '&enddate=' . $r['date_stamp_end']; //&product=12,23
 		
@@ -439,7 +438,7 @@ class fs_schema_brp {
 		
 		$result				= $this->check_brp_xml_errors ( $result );
 		
-		if ( $result['error'] 	== '' && !isset ( $result['xml']->activity )) {
+		if ( $result['error'] 	== '' && !isset ( $result['xml'] )) {  // ->activity
 			
 			$r['error'] 		= 'YES';
 			
@@ -526,7 +525,7 @@ class fs_schema_brp {
 						
 						'bookingid'		=> (string) $activity->bookingid,
 						
-						'cancelled'		=> false
+						'status'			=> 'OK'
 					)
 				);
 			}
@@ -551,7 +550,7 @@ class fs_schema_brp {
 				switch ( $err->code ) {
 				
 					case '1007':
-						$obj['message'] .= 'Du är redan inbokad på denna aktivitet. ';
+						$obj['message'] .= 'Bokningen krockar med tidigare bokningar. ';
 						break;
 						
 					default:
@@ -560,6 +559,8 @@ class fs_schema_brp {
 				
 				}
 			}
+			
+			$obj['error']	= 'YES';
 			
 			$obj['message'] = 'Bokningssystemet skickade tillbaks följande felmeddelande: ' . $obj['message'];
 			
@@ -617,7 +618,7 @@ class fs_schema_brp {
 			
 				$output .= '<label for="fs_booking_bpi_businessunitids' . $businessunit->id . '">
 						  <input type="checkbox" name="fs_booking_bpi_businessunitids[' . ( $count++) . ']" id="fs_booking_bpi_businessunitids' . $businessunit->id . '" 
-						  value="' . $businessunit->id . '"' . ( in_array( $businessunit->id, $stored_units ) ? 'checked="checked"' : '' ) . '> ' .  $businessunit->name . '<div class="buid">id: ' . $businessunit->id . '</div></label><br/>';
+						  value="' . $businessunit->id . '"' . ( in_array( $businessunit->id, $stored_units ) ? ' checked="checked"' : '' ) . '> ' .  $businessunit->name . '<div class="buid">id: ' . $businessunit->id . '</div></label><br/>';
 	
 			}
 			

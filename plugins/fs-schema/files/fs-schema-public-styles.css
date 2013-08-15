@@ -16,17 +16,19 @@
 
 .fs_schema .days							{ position: relative; left: 0px; top: 0px; }
 
-.fs_schema .day 							{ width: 200px; float: left; border: 1px solid #F2F2F2; margin-bottom: 20px; position: relative; }
+.fs_schema .day 							{ width: 200px;  float: left; border: 1px solid #F2F2F2; margin-bottom: 20px; position: relative; }
+
+.fs_schema.day .day							{ width: 100%; }
 
 .fs_schema .day .head						{ margin: 0px; padding: 6px 2px 6px 7px; font-size: 12px; background-color: #000; color: #fff; height: 14px; line-height: 16px; }
 
 .fs_schema .hours							{ position: absolute; background-color: #fff; }
 
-.fs_schema .hours .clock						{ border-top: 1px dotted #b8b8b8; font-size: 10px; padding: 2px; position: relative; }
+.fs_schema .hours .clock						{ border-top: 1px dotted #b8b8b8; font-size: 10px; padding: 2px 0px; position: relative; }
 
 .fs_schema .entries							{ background-color: #aaf; margin-left: 0px; position: relative; }
 
-.fs_schema .entries .entry					{ font-size: 10px; position: absolute; overflow: hidden; padding: 4px; 
+.fs_schema .entries .entry					{ font-size: 10px; position: absolute; overflow: hidden;
 										  box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2); -moz-box-shadow: 2px 2px 4px 2px #aaa; -webkit-box-shadow: 2px 2px 4px 2px #EEEEEE; 
 									       background-color: #fbfbfb; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fbfbfb), to(#EBEBEB)); background: -webkit-linear-gradient(top, #fbfbfb, #EBEBEB); 
 									       background: -moz-linear-gradient(top, #f8f8f8, #EBEBEB); background: -ms-linear-gradient(top, #fbfbfb, #EBEBEB); background: -o-linear-gradient(top, #fbfbfb, #EBEBEB);
@@ -47,9 +49,17 @@
 										  
 .fs_schema .entries .entry.before_now 			{ color: #aaa; } 
 
-.fs_schema .entries .entry .time				{ font-size: 10px; }
+.fs_schema .entries .entry .time				{ font-size: 10px; padding: 4px 4px 0px; }
 
-.fs_schema .entries .entry .product			{ font-weight: bold; font-size: 12px; }
+.fs_schema .entries .entry .product			{ font-weight: bold; font-size: 12px; padding: 0px 4px; }
+
+.fs_schema .entries .entry .staffroom			{ padding: 0px 4px 4px; }
+
+.fs_schema.day .entries .entry .time			{ font-size: 12px; padding-top: 9px; }
+
+.fs_schema.day .entries .entry .product			{ position: absolute; left: 75px; top: 4px; font-size: 18px; }
+
+.fs_schema.day .entries .entry .staffroom		{ position: absolute; left: 75px; top: 26px; font-size: 14px; }
 
 .fs_schema .hours > div:last-child				{ border-bottom: 1px solid #ccc; }
 
@@ -199,6 +209,12 @@
 .fs_schema .navigation .next					{ float: right; }
 
 .fs_schema .navigation .login_info				{ margin-left: 10px;  transition: 0.2s; -moz-transition: 0.15s; -webkit-transition: 0.1s; -o-transition: 0.1s; }
+
+.fs_schema .navigation .change_to_day			{ margin-left: 10px; }
+
+.fs_schema .navigation .change_to_week			{ margin-left: 10px; }
+
+.change_to_day.disabled, .change_to_week.disabled	{ color: #ccc; text-shadow: 1px 1px 1px #fff; cursor: default; } 
 
 .fs_schema .navigation .login_info.resized		{ -webkit-transform: scale(1.1); -moz-transform: scale(1.1); transform: scale(1.1); }
 

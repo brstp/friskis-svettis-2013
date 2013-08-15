@@ -35,8 +35,9 @@ class fs_schema_data {
 	
 		$this->brp 	= new fs_schema_brp;
 		
-		$this->profit 	= new fs_schema_profit;
-	
+		$this->profit 	= new fs_schema_profit;	
+		
+		add_action( 'init', array ( $this, 'setup_log' ));
 	}
 		
 		
@@ -52,9 +53,9 @@ class fs_schema_data {
 		$settings = $this->settings();
 		
 		$defaults = array(
-			'typ'				=> 'vecka', 		// vecka, pass
-			'anlaggning'			=> '',			// id, eller kommaseparerad id
-			'datum'				=> '', 			// format: YYYY-MM-DD
+			'type'				=> 'week', 		// week, pass
+			'facility'			=> '',			// id, eller kommaseparerad id
+			'date'				=> '', 			// format: YYYY-MM-DD
 			'username'			=> '',
 			'password'			=> '',
 			'session_key'			=> '',
@@ -68,12 +69,11 @@ class fs_schema_data {
 		$r['message'] 				= '';
 		
 		$r['schema']				= array();
-			
-
-		// fix business units ids
-		/*if ( $r[ 'anlaggning' ] != '' )
 		
-			$r['businessunitids'] 	= $r[ 'anlaggning' ];
+		// fix business units ids
+		/*if ( $r[ 'facility' ] != '' )
+		
+			$r['businessunitids'] 	= $r[ 'facility' ];
 		
 		else 
 		
@@ -81,19 +81,19 @@ class fs_schema_data {
 		
 		
 		// fix start date
-		$date_from_string 			= fs_schema::get_date_from_string ( $r['datum'] );
+		$date_from_string 			= fs_schema::get_date_from_string ( $r['date'] );
 		
 		if ( $date_from_string === false ) 
 		
 			$r['date_stamp'] 		= date('Y-m-d'); // today
 		
-		else $r['date_stamp'] 		= $r['datum'];
+		else $r['date_stamp'] 		= $r['date'];
 		
 		$r['start_date '] 			= fs_schema::get_date_from_string ( $r['date_stamp'] );
 		
 			
 		// fix week dates
-		if ( $r['typ'] == 'vecka' ) {
+		if ( $r['type'] == 'week' ) {
 		
 			$date_week_start 		= mktime( 0, 0, 0, date( "m", $r['start_date '] ), date( "d", $r['start_date '] ) - date( 'N', $r['start_date '] )+1, date( "Y", $r['start_date '] ));
 		
@@ -134,6 +134,8 @@ class fs_schema_data {
 				
 		}
 		
+		if ( $schema['error'] != '' ) $this->add_log ('Get Schema. ' . $schema['message'],  $this->debug );
+		
 		return $schema;
 	}
 	
@@ -153,16 +155,20 @@ class fs_schema_data {
 		
 			case 'BRP':
 			
-				return $this->brp->login( $username, $password );
+				$login_data = $this->brp->login( $username, $password );
 				break;
 				
 				
 			case 'PROFIT':
 			
-				return $this->profit->login( $username, $password );
+				$login_data = $this->profit->login( $username, $password );
 				break;
 		
 		}
+		
+		if ( $login_data['error'] != '' ) $this->add_log ('Login. ' . $login_data['message'],  $login_data['debug'] );
+		
+		return $login_data;
 	
 	}
 	
@@ -183,16 +189,20 @@ class fs_schema_data {
 		
 			case 'BRP':
 			
-				return $this->brp->book_activity( $username, $password, $activity_id );
+				$booking = $this->brp->book_activity( $username, $password, $activity_id );
 				break;
 				
 				
 			case 'PROFIT':
 			
-				return $this->profit->book_activity( $username, $password, $activity_id, $session_key );
+				$booking = $this->profit->book_activity( $username, $password, $activity_id, $session_key );
 				break;
 		
 		}
+		
+		if ( $booking['error'] != '' ) $this->add_log ('Book Activity. ' . $booking['message'],  $booking['debug'] );
+		
+		return $booking;
 	}	
 	
 	
@@ -214,16 +224,20 @@ class fs_schema_data {
 		
 			case 'BRP':
 			
-				return $this->brp->unbook_activity( $username, $password, $bookingid );
+				$unbook = $this->brp->unbook_activity( $username, $password, $bookingid );
 				break;
 				
 				
 			case 'PROFIT':
 			
-				return $this->profit->unbook_activity( $username, $password, $bookingid, $session_key );
+				$unbook = $this->profit->unbook_activity( $username, $password, $bookingid, $session_key );
 				break;
 		
 		}
+		
+		if ( $unbook['error'] != '' ) $this->add_log ('Unbook Activity. ' . $unbook['message'],  $unbook['debug'] );
+		
+		return $unbook;
 	}	
 	
 	
@@ -355,6 +369,41 @@ class fs_schema_data {
 	}
 
 
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// LOG ERROR FUNCTIONS
+	//
+	//////////////////////////////////////////////////////////////////////////////
+
+	public function setup_log () {
+	
+		register_post_type( 'fs_schema_log', array(
+			'labels'						=> array ('name' => 'FS Schema Fel Logg'),
+			'public' 						=> false,
+			'publicly_queryable' 			=> false,
+			'show_ui' 					=> true, 
+			'query_var' 					=> false,
+			'capability_type' 				=> 'post',
+			'hierarchical' 				=> false,
+			'supports' 					=> array ( 'title', 'editor' ),
+			'show_in_menu'					=> false,
+			'has_archive' 					=> false
+		));
+	}
+	
+	public function add_log ( $description, $log_object ) {
+	
+		$settings 		= $this->settings();
+
+		$new_log_id = wp_insert_post( array(
+		  'post_type'		=> 'fs_schema_log',
+		  'post_title'    	=> '[' . $settings['fs_schema_integration'] .'] ' . $description,
+		  'post_content'	=> print_r ( $log_object, true ),
+		  'post_status'   	=> 'publish',
+		  'post_author'   	=> 1
+		) );
+	}	
+	
 
 	
 } //End Class

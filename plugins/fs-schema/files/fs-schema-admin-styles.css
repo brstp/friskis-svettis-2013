@@ -17,3 +17,5 @@
 .brp_businessunitslist label .buid			{ position: absolute; left: 255px; top: -3px; width: 30px; font-weight: bold; font-size: 90%; }
 
 div.fs_shema_shortcode_help				{ display: none; }
+
+#fs_show_logs							{ margin-left: 10px; }
