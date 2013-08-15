@@ -14,20 +14,20 @@
 						endif; 
 					echo '</ul>';
 				echo '</div>';
+				echo '<div id="social">';
+					$twitterAccount 	= get_option('twitterAccount');
+					$facebookAccount	= get_option('facebookAccount');
+			
+					if(strlen(trim($facebookAccount))>0): ?>
+						<a href="http://www.facebook.com/<?php echo $facebookAccount; ?>" title="Följ oss på Facebook!"><img src="<?php echo THEME_IMAGES; ?>/facebook.png" alt="facebook"></a>
+						<?php endif; ?>
+						<?php if(strlen(trim($twitterAccount))>0): ?>
+						<a href="http://www.twitter.com/<?php echo $twitterAccount; ?>" title="Följ oss på Twitter!"><img src="<?php echo THEME_IMAGES; ?>/twitter.png" alt="twitter"></a>
+					<?php endif; 
+				echo '</div>';
 			?>
+			</div>		
 		</div>
-	<div id="social">
-	<?php 
-		$twitterAccount 	= get_option('twitterAccount');
-		$facebookAccount	= get_option('facebookAccount');
-		
-		if(strlen(trim($facebookAccount))>0): ?>
-			<a href="http://www.facebook.com/<?php echo $facebookAccount; ?>" title="Följ oss på Facebook!"><img src="<?php echo THEME_IMAGES; ?>/facebook.png" alt="facebook"></a>
-			<?php endif; ?>
-			<?php if(strlen(trim($twitterAccount))>0): ?>
-			<a href="http://www.twitter.com/<?php echo $twitterAccount; ?>" title="Följ oss på Twitter!"><img src="<?php echo THEME_IMAGES; ?>/twitter.png" alt="twitter"></a>
-		<?php endif; ?>
-	</div>
 </div>
 <footer>
 		<nav id="footerMenu">

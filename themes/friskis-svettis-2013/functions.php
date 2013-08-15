@@ -638,6 +638,15 @@ function news() {
 	);
 }
 
+function flush_permalinks(){
+	//defines the post type so the rules can be flushed.
+	news();
+
+	//and flush the rules.
+	flush_rewrite_rules();
+}
+
+add_action( 'after_theme_switch', 'flush_permalinks' );
 add_action( 'init', 'news' );
 
 /**

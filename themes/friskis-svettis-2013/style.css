@@ -4,7 +4,7 @@
 	Description: Theme for Friskis&Svettis
 	Author: Strop Digital Studio
 	Author URI: http://www.strop.se/
-	Version: 1.1.2 2013-06-24
+	Version: 1.0.0 2013
 	Copyright 2013
 */
 
@@ -658,8 +658,8 @@ nav#mainMenu {
 					}
 		
 		#social {
-			float: right;
 			clear: both;
+			float: right;
 			width: 80px;
 			text-align:right;
 			margin:10px 0 0 0;
@@ -692,7 +692,7 @@ nav#mainMenu {
 		}
 		
 		#footerLeft ul li.widget, #footerRight ul li.widget{
-			width:100%!important;
+			width:100%;
 			margin:0;
 			padding:0;
 			border:none;
@@ -849,8 +849,8 @@ float: left;
 	float:left;
 }
 #footerRight{
-	width:100%;
-	float:none;
+	width:50%;
+	float:right;
 }
 #wrapper {
 	width: auto!important;
@@ -991,8 +991,43 @@ footer nav#footerMenu {
 @media screen and (max-width: 960px) {
 	#footerRight {
 		float: right;
-		width: 48%;
+		width: 50%;
 	}
+	
+	footer {
+		display: block;
+		width: auto;
+		margin: 0 auto;
+		margin-top: 30px;
+		padding-bottom: 25px;
+		border-bottom: 1px solid #ddd;
+		margin-bottom: 10px;
+		text-align:center;
+	}
+	
+	footer nav#footerMenu {
+		width: auto;
+		height: 20px;
+		float: none;
+		text-align: center;
+	}
+	
+	footer nav#footerMenu ul{
+		width: auto;
+		float: none;
+		display: inline-block;
+		overflow: hidden;
+		text-align: center;
+	}
+	
+	footer #copyright {
+		width:100%;
+		float:none;
+		text-align:center;
+		display: block;
+		overflow:hidden;
+	}
+
 }
 
 @media screen and (max-width: 768px) {
@@ -1275,9 +1310,15 @@ footer {
 		display: none;
 	}
 	#footerRight{
-	width:50%;
-	float:right;
-}
+		width:50%;
+		float:right;
+	}
+	#footerLeft{
+		width:47%;
+		float:left;
+	}
+
+
 #footerLeft{
 	width:47%;
 	float:left;
