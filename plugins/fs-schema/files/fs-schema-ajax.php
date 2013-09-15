@@ -31,6 +31,8 @@ class fs_schema_ajax {
 		
 		add_action('wp_ajax_get_businessunits', 		array ( $this, 'get_businessunits' ));
 		
+		add_action('wp_ajax_clear_cache', 				array ( $this, 'clear_cache' ));
+		
 		
 		// add ajax functions for public
 		
@@ -96,6 +98,24 @@ class fs_schema_ajax {
 		
 		die();
 		
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// CLEAR CACHE (FOR ADMIN)
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	function clear_cache () {
+	
+		global $fs_schema;
+		
+		$fs_schema->data->clear_cache ();
+	
+		echo 'Mellanlagrad cache har rensats.';
+		
+		die();
+	
 	}
 
 		

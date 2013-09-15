@@ -87,6 +87,19 @@ fs_schema_admin = {
 		}
 	},
 	
+	clear_cache : function () {
+	
+		fs_schema_admin.ajax (
+				
+			{ action : 'clear_cache' }, function ( data ) { 
+			
+				jQuery( '#clear_cache_cmd' ).html(data);
+				
+			}
+		);
+	
+	},
+	
 	ajax : function ( data, fn_success, fn_error ) {
 	
 		jQuery.ajax({
