@@ -97,7 +97,23 @@ fs_schema_public = {
 		jQuery('.fs_schema .show_debug').click( function() { jQuery( '.fs_schema .debug').show(); jQuery('.fs_schema .show_debug').hide(); });
 
 		fs_schema_public.show_hud( jQuery('.fs_schema .days').attr('data-week') );
+		
+		jQuery(document).keydown( function(e) { fs_schema_public.key_down ( e.keyCode ); });
 
+	},
+	
+	
+	key_down : function ( key_code ) {
+	
+		 // ESCAPE key pressed
+		if ( key_code == 27 ) {
+		
+			if ( jQuery( '.fs_schema .open_event' ).length > 0 ) {
+		
+				fs_schema_public.close_event();
+		
+			}
+		}
 	},
 	
 	
@@ -105,7 +121,7 @@ fs_schema_public = {
 	
 		if ( fs_schema_public.num_days == 7 && fs_schema_public.enableday == true && jQuery('.fs_schema .change_to_day:not(.disabled) ').length > 0 ) {
 		
-			fs_schema_public.show_hud ( 'Växlar till dagsvy...' );
+			fs_schema_public.show_hud ( 'Växlar till lista...' );
 			
 			fs_schema_public.num_days = 1;
 			
@@ -131,7 +147,7 @@ fs_schema_public = {
 	
 		if ( fs_schema_public.num_days == 1 && fs_schema_public.enableweek == true && jQuery('.fs_schema .change_to_week:not(.disabled) ').length > 0 ) {
 	
-			fs_schema_public.show_hud ( 'Växlar till veckovy...' );
+			fs_schema_public.show_hud ( 'Växlar till schema...' );
 			
 			fs_schema_public.num_days = 7;
 			
@@ -272,7 +288,7 @@ fs_schema_public = {
 							
 							jQuery('.fs_schema .login_info.fs_button').addClass('green');
 							
-							jQuery('.fs_schema .loggedin').html ( 'Du är inloggad som ' + data.name ).css( 'display', 'block' );
+							jQuery('.fs_schema .loggedin').html ( 'Du är inloggad som ' + data.name + '.').css( 'display', 'block' );
 							
 							jQuery('.fs_schema .loginform ').css( 'display', 'none' );
 							
@@ -364,7 +380,7 @@ fs_schema_public = {
 		
 		jQuery('.fs_schema .login_btn ').css( 'display', 'inline' );
 					
-		jQuery('.fs_schema .login_book_event ').css( 'display', 'inline' );
+		jQuery('.fs_schema .login_book_event ').css( 'display', 'inline-block' );
 		
 		jQuery('.fs_schema .logout_btn ').css( 'display', 'none' );
 					
@@ -518,20 +534,28 @@ fs_schema_public = {
 		if (  fs_schema_public.is_busy == false ) {
 		
 			jQuery('.fs_schema .dialogue.open').hide().removeClass('open');
+			
+			win_top = jQuery(document).scrollTop();
+			
+			win_width =  jQuery(window).width();
 		
 			fs_schema_public.animate_source_on_close_event = false;
 			
 			fs_schema_public.remove_source_class_on_close_event = '';
 						
 			fs_schema_public.add_source_class_on_close_event = '';
-	
-			event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
+			
+			if ( win_width < 320 ) event_target_x = - (( 320 - win_width ) / 2);
+			
+			else event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
 			
 			//event_target_y = jQuery( event_el ).parent().parent().position().top;
 			
 			event_el_position_top = jQuery( event_el ).position().top;
 			
 			event_target_y = event_el_position_top > 30 ? event_el_position_top - 150 : 0;
+			
+			if ( event_target_y < win_top ) event_target_y = win_top;
 			
 			event_current_x = ( (jQuery( event_el ).parent().parent().attr('data-day') -1 ) * fs_schema_public.day_width ) + jQuery( event_el ).position().left - ( fs_schema_public.day_width / 2);
 			
@@ -660,7 +684,7 @@ fs_schema_public = {
 					
 						jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'block' );
 						
-						jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'inline' );
+						jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'inline-block' );
 						
 					}
 				}

@@ -12,17 +12,21 @@
 
 class fs_schema_public {
 
-	private $version 			= 'BETA-version 0.95';
+	private $version 			= 'BETA-version 0.96';
 	
 	//private $default_username	= 'klas@klas.se';
 	
 	//private $default_password	= '20898';
 
-	private $default_username	= 'klas@ehnemark.com';
+	//private $default_username	= 'klas@ehnemark.com';
 	
-	private $default_password	= 'test1280';	
+	//private $default_password	= 'test1280';	
 
-
+	private $default_username	= '';
+	
+	private $default_password	= '';
+	
+	
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
@@ -150,6 +154,8 @@ class fs_schema_public {
 		$settings 			= $fs_schema->data->settings();
 		
 		$output 				= '';
+		
+		date_default_timezone_set('Europe/Stockholm');
 
 
 
@@ -188,7 +194,7 @@ class fs_schema_public {
 			// some declarations
 			$num_days						= $r['type'] == 'day' ? 1 : 7;
 			
-			$weekdays 					= array ( 'ullday', 'månday', 'tisday', 'onsday', 'torsday', 'freday', 'lörday', 'sönday' );
+			$weekdays 					= array ( 'ulldag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag', 'söndag' );
 			
 			$week_activities 				= array();
 			
@@ -210,7 +216,7 @@ class fs_schema_public {
 			
 			$day_header_height_px			= 27;
 			
-			$hour_height_px				= 45;
+			$hour_height_px				= 62;  //45
 			
 			$min_hour_height_px				= 20;
 			
@@ -222,7 +228,7 @@ class fs_schema_public {
 			
 			$today_date					= mktime( 0, 0, 0, $today_date_array ['mon'], $today_date_array ['mday'],$today_date_array ['year']);
 			
-			$today_this_hour				= mktime( $today_date_array['hours']+1, 0, 0, $today_date_array ['mon'], $today_date_array ['mday'], $today_date_array ['year']);
+			$today_this_hour				= mktime( $today_date_array['hours'], 0, 0, $today_date_array ['mon'], $today_date_array ['mday'], $today_date_array ['year']);
 			
 			$this_hour_num					= date ( 'G', 	$today_this_hour );	
 			
@@ -246,9 +252,9 @@ class fs_schema_public {
 				
 				if ( $r['booking'] == '1' )	$output .= '<div class="login_info fs_button">Logga in...</div>';
 				
-				$output 					.= '<div class="change_to_week fs_button ' . ( $r['enableweek'] != true ? ' disabled' : '' ) . '" ' .  ( $r['type'] == 'week' ? 'style="display: none;" ' : '' ) . '>Växla till veckovy</div>';
+				$output 					.= '<div class="change_to_week fs_button ' . ( $r['enableweek'] != true ? ' disabled' : '' ) . '" ' .  ( $r['type'] == 'week' ? 'style="display: none;" ' : '' ) . '>Växla till veckoschema</div>';
 				
-				$output 					.= '<div class="change_to_day fs_button ' . ( $r['enableday'] != true ? ' disabled' : '' ) . '" ' .  ( $r['type'] == 'day' ? 'style="display: none;" ' : '' ) . '>Växla till daysvy</div>';
+				$output 					.= '<div class="change_to_day fs_button ' . ( $r['enableday'] != true ? ' disabled' : '' ) . '" ' .  ( $r['type'] == 'day' ? 'style="display: none;" ' : '' ) . '>Växla till lista</div>';
 				
 				$output					.= '<div class="fs_button next">Nästa ' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '&nbsp;&gt;</div></div>';
 				
@@ -367,7 +373,7 @@ class fs_schema_public {
 				
 					$this_hour_class	= $this_hour_num == $h && $today_week == $this_week ? ' this_hour' : '' ;
 				
-					$hours_field 		.= '<div class="clock" style="height: ' . $day_hour_info[ $h ]['height']. 'px; ' . ( $num_days == 1 ? '' : 'width: ' . ( $day_width_px - 2 ) . 'px;' ) . '"><div class="day_clock' . $this_hour_class . '">' . $h . ':00' . '</div></div>'; 
+					$hours_field 		.= '<div class="clock" style="height: ' . $day_hour_info[ $h ]['height']. 'px; ' . ( $num_days == 1 ? '' : 'width: ' . ( $day_width_px - 2 ) . 'px;' ) . '"><div class="day_clock' . $this_hour_class . '">' . $h . '.00' . '</div></div>'; 
 
 					if ( isset( $week_activities[$d][$h] ) && is_array( $week_activities[$d][$h] )) {
 					
@@ -393,7 +399,7 @@ class fs_schema_public {
 								$products				= $entry['products'];
 							}
 							
-							$entry_data 				= ' data-id="' . $entry['id'] . '" data-start="' . $entry['starttime'] . '" data-end="' . $entry['endtime'] . '" data-product="' . $products . '"';
+							$entry_data 				= ' data-id="' . $entry['id'] . '" data-start="' . str_replace ( ':', '.', $entry['starttime']) . '" data-end="' . str_replace ( ':', '.', $entry['endtime']) . '" data-product="' . $products . '"';
 							
 							$entry_data 			    .= ' data-staff="' . $entry['staff'] . '" data-room="' . $entry['room'] . '" data-freeslots="' . $entry['freeslots'] . '"';
 							
@@ -407,7 +413,7 @@ class fs_schema_public {
 							
 							
 							// calculate entry height based on duration
-							$entry_height 				= ' height: ' . ( $hour_height_px + 3 ) . 'px;';
+							$entry_height 				= ' height: ' . ( $hour_height_px + 4 ) . 'px;';
 							
 							$entry_width 				= ( $num_days == 1 ? 'width: 100%;' : 'width: ' . ( $day_width_px ) . 'px;' );
 
@@ -441,7 +447,7 @@ class fs_schema_public {
 							// create the entry html object
 							$entries_field 			.= '<div class="entry' . $entry_class . '" style="' . $entry_top . $entry_width . $entry_height . '"' . $entry_data . $tooltip . '>';
 							
-							$entries_field 			.= '<div class="time">' . $entry['starttime'] . '-' . $entry['endtime']  . '</div>';
+							$entries_field 			.= '<div class="time">' . str_replace ( ':', '.', $entry['starttime']) . '-' . str_replace ( ':', '.', $entry['endtime'])  . '</div>';
 							
 							$entries_field 			.= '<div class="product">' . $products . '</div>';
 							
@@ -486,7 +492,7 @@ class fs_schema_public {
 									<div class="loginform">
 										<div class="username">Användarnamn:<span><input type="text" value="' . $this->default_username . '" /></span></div>
 										<div class="password">Lösenord:<span><input type="password" value="' . $this->default_password . '" /></span></div>
-										<div class="save_me_cookie"><label for="save_me"><input type="checkbox" id="save_me" disabled> Förbli inloggad på den här datorn</label></div>
+										<!--<div class="save_me_cookie"><label for="save_me"><input type="checkbox" id="save_me" disabled> Förbli inloggad på den här datorn</label></div>-->
 									</div>
 									<div class="buttons">
 										<div class="fs_button close_login_form">Avbryt</div>
@@ -504,13 +510,13 @@ class fs_schema_public {
 								<div class="date">date:<span>x</span></div>
 								<div class="time">Tid:<span>x</span></div>
 								<div class="room">Lokal:<span>x</span></div>
-								<div class="staff">Personal:<span>x</span></div>
+								<div class="staff">Ledare:<span>x</span></div>
 								<div class="freeslots">Lediga platser:<span>x</span></div>';
 								
 				if ( $r['booking'] == '1' ) {				
 				
 					$output 	 .= '<div class="loggedin"></div>
-								<div class="booked_info">Du är inbokad på denna aktivitet.</div>
+								<div class="booked_info">Du är inbokad.</div>
 								<div class="entry_info_dropin">På detta pass gäller endast dropin.</div>
 								<div class="entry_info_full">Passet är fullbokat.</div>
 								<div class="entry_info_cancelled">Passet är inställt.</div>
@@ -535,7 +541,7 @@ class fs_schema_public {
 								</div>';
 				}
 				
-				$output 		.= '	<img src="' . plugins_url('fs-schema') . '/files/fs-schema-close-button.png" class="close_open_event close" />
+				$output 		.= '	<img src="' . plugins_url('fs-schema') . '/files/fs-schema-close-button.png" class="close_open_event close" title="Stäng" />
 								<div class="message"></div>
 								<div class="progress"><img src="' . plugins_url('fs-schema') . '/files/fs-schema-progress.gif" /><div class="doingwhat">Loggar in...</div></div>
 								<div class="big_message"><div class="head">Fel.</div><div class="info">Meddelande</div><div class="fs_button close_btn">OK</div></div>
@@ -643,7 +649,7 @@ class fs_schema_public {
 	
 		$settings = $fs_schema->data->settings();
 		
-		$output = '<pre class="about">Schema ' . $this->version . ' av <a href="http://klasehnemark.com">Klas Ehnemark</a>, kopplat till ';
+		$output = '<div class="about">Schema ' . $this->version . ' av <a href="http://klasehnemark.com">Klas Ehnemark</a>, kopplat till ';
 		
 		//$output = '<pre class="about">FS-Schema ' . $this->version . ', kopplat till ';
 		
@@ -652,7 +658,7 @@ class fs_schema_public {
 			default:
 			case 'BRP':
 			
-				$output .= '<a href="http://www.brp.se">BRP</a>. ';
+				$output .= '<a href="http://www.brpsystems.se">BRP</a>. ';
 				break;
 				
 			case 'PROFIT':
@@ -661,7 +667,7 @@ class fs_schema_public {
 				break;	
 		}
 		
-		$output .= '</pre>';
+		$output .= '</div>';
 		
 		if ( $settings['fs_schema_show_debug'] == 'YES' )
 		

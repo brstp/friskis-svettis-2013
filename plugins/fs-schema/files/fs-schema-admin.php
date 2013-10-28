@@ -164,6 +164,8 @@ class fs_schema_admin {
 			
 			$this->update_option_from_form ( 'fs_schema_show_debug' );
 			
+			$this->update_option_from_form ( 'fs_schema_show_day_default' );
+			
 			
 			// remove any spaces in businessunitids
 			$fs_booking_bpi_businessunitids 	=  get_option( 'fs_booking_bpi_businessunitids' );
@@ -308,7 +310,7 @@ class fs_schema_admin {
 					<tr valign="top">
 						<th scope="row"><label for="fs_booking_profit_organization_unit">Uppdateingsintervall</label></th>
 						<td>
-							<input name="fs_schema_update_inteval" type="text" id="fs_schema_update_inteval" value="' . $fs_schema_update_inteval . '" class="small-text" /> minuter
+							<input name="fs_schema_update_inteval" type="text" id="fs_schema_update_inteval" value="' . $fs_schema_update_inteval . '" class="small-text" /> minuter. <span id="clear_cache_cmd"><a href="javascript: fs_schema_admin.clear_cache();">Rensa cache nu</a></span>
 							<p class="description">Ange hur ofta Wordpress ska uppdatera schemat från bokningssystemet. 60 minuter är ganska rimligt.<br>När användaren är inloggad hämtas informationen alltid direkt, utan mellanlagring.</p>
 						</td>
 					</tr>
@@ -325,7 +327,7 @@ class fs_schema_admin {
 					</tr>
 					
 				</table>
-				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Spara inställningarna" /><a href="edit.php?post_type=fs_schema_log" id="fs_show_logs" class="button action">Visa fel-logg</a></p></div></form></div>';
+				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Spara inställningarna" /><a href="edit.php?post_type=fs_schema_log" id="fs_show_logs" class="button action">Visa fel-logg</a></p></form></div>';
 		
 	}
 
