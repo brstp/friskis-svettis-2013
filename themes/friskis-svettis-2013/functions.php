@@ -620,6 +620,8 @@ function fetchSettings() {
 	return array('city' => $city, 'facebookUser' => $facebookUser, 'twitterUser' => $twitterUser);
 }
 
+add_action('init', 'portfolio_register');
+ 
 function news() {
 	register_post_type( 'fs_news',
 		array(
