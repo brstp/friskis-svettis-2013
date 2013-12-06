@@ -37,7 +37,7 @@ class fs_schema_shortcodes {
 	public function schema ( $attr, $content = null ) {
 	
 		$defaults = array(
-			'typ'			=> 'vecka', 		// vecka, pass
+			'typ'			=> 'vecka', 		// vecka, dag
 			'anlaggning'		=> '',			// id, eller kommaseparerad id
 			'datum'			=> '',  			// format: YYYY-MM-DD
 			'bokning'			=> '1',
@@ -58,7 +58,7 @@ class fs_schema_shortcodes {
 			'enableweek'		=> $r['visavyknapp'] == '0' ? false : true,
 			'enableday'		=> $r['visavyknapp'] == '0' ? false : true,
 		);
-		
+
 		return  $fs_schema->public->render_schema ( $args );
 		
 	}

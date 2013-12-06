@@ -18,11 +18,13 @@
 
 .fs_schema .day 							{ width: 200px;  float: left; border: 1px solid #F2F2F2; margin-bottom: 20px; position: relative; }
 
-.fs_schema.day .day							{ width: 100%; }
+.fs_schema.day .day, .fs_schema.bookings .day 	{ width: 100%; }
 
 .fs_schema .day .head						{ margin: 0px; padding: 6px 2px 6px 7px; font-size: 12px; background-color: #000; color: #fff; height: 14px; line-height: 16px; }
 
 .fs_schema .hours							{ position: absolute; background-color: #fff; }
+
+.fs_schema.day .hours, .fs_schema.bookings .hours	{ display: none; }
 
 .fs_schema .hours .clock						{ border-top: 1px dotted #b8b8b8; font-size: 10px; padding: 2px 0px; position: relative; }
 
@@ -44,22 +46,72 @@
 										  
 .fs_schema .entries .entry.selected			{ border: 10px solid #000; }
 
-.fs_schema .entries .entry.booked				{ background-color: #c5e7c7; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#d1eed2), to(#c5e7c7)); background: -webkit-linear-gradient(top, #d1eed2, #c5e7c7); 
+.fs_schema .entries .entry.fully_booked,
+
+.fs_schema .entries .entry.cancelled,
+
+.entry_info_cancelled,
+
+.entry_info_full,
+
+.entry_info_closed							{ background-color: #fb9999; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f9b0b0), to(#fb9999)); background: -webkit-linear-gradient(top, #f9b0b0, #fb9999); 
+									       background: -moz-linear-gradient(top, #f9b0b0, #fb9999); background: -ms-linear-gradient(top, #f9b0b0, #fb9999); background: -o-linear-gradient(top, #f9b0b0, #fb9999); }
+
+.fs_schema .entries .entry.notbookable,
+
+.entry_info_not_opened_yet,
+
+.entry_info_not_bookable						{ background-color: #ffae95; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcc6a5), to(#ffae95)); background: -webkit-linear-gradient(top, #fcc6a5, #ffae95); 
+									       background: -moz-linear-gradient(top, #fcc6a5, #ffae95); background: -ms-linear-gradient(top, #fcc6a5, #ffae95); background: -o-linear-gradient(top, #fcc6a5, #ffae95); }
+
+.fs_schema .entries .entry.reserve,
+
+.entry_info_reserve,
+
+.booked_info.reserve 						{ background-color: #85c7ff; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#baddfb), to(#85c7ff)); background: -webkit-linear-gradient(top, #baddfb, #85c7ff); 
+									       background: -moz-linear-gradient(top, #baddfb, #85c7ff); background: -ms-linear-gradient(top, #baddfb, #85c7ff); background: -o-linear-gradient(top, #baddfb, #85c7ff); }
+
+.fs_schema .entries .entry.booked,
+
+.booked_info 								{ background-color: #c5e7c7; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#d1eed2), to(#c5e7c7)); background: -webkit-linear-gradient(top, #d1eed2, #c5e7c7); 
 									       background: -moz-linear-gradient(top, #d1eed2, #c5e7c7); background: -ms-linear-gradient(top, #d1eed2, #c5e7c7); background: -o-linear-gradient(top, #d1eed2, #c5e7c7); }
-										  
+
+.fs_schema .entries .entry.dropin,
+
+.entry_info_dropin 							{ background-color: #fbe5a0; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcebb6), to(#fbe5a0)); background: -webkit-linear-gradient(top, #fcebb6, #fbe5a0); 
+									       background: -moz-linear-gradient(top, #fcebb6, #fbe5a0); background: -ms-linear-gradient(top, #fcebb6, #fbe5a0); background: -o-linear-gradient(top, #fcebb6, #fbe5a0); }
+
+
+.fs_schema .entries .entry.cancelled			{ text-decoration:line-through !important; }
+																
 .fs_schema .entries .entry.before_now 			{ color: #aaa; } 
+
+.fs_schema.bookings .entries .entry.before_now 	{ display: none; }
 
 .fs_schema .entries .entry .time				{ font-size: 10px; padding: 4px 4px 0px; }
 
 .fs_schema .entries .entry .product			{ font-weight: bold; font-size: 12px; padding: 0px 4px; }
 
-.fs_schema .entries .entry .staffroom			{ padding: 0px 4px 4px; }
+.fs_schema .entries .entry .staffroom			{ padding: 3px 4px 4px; line-height: 8px; }
 
-.fs_schema.day .entries .entry .time			{ font-size: 12px; padding-top: 9px; }
+.fs_schema.day .entries .entry .time,
 
-.fs_schema.day .entries .entry .product			{ position: absolute; left: 75px; top: 4px; font-size: 18px; white-space: nowrap; }
+.fs_schema.bookings .entries .entry .time		{ font-size: 12px; padding-top: 5px; padding-left: 14px; }
 
-.fs_schema.day .entries .entry .staffroom		{ position: absolute; left: 75px; top: 26px; font-size: 14px; }
+.fs_schema.day .entries .entry .product, 
+
+.fs_schema.bookings .entries .entry .product		{ position: absolute; left: 10px; top: 22px; font-size: 18px; white-space: nowrap; }
+
+.fs_schema.day .entries .entry .staffroom,
+
+.fs_schema.bookings .entries .entry .staffroom	{ position: absolute; left: 10px; top: 46px; font-size: 14px; }
+
+.fs_schema .entries .entry .booking_info		{ position: absolute; left: 4px; bottom: 5px; font-size: 9px; }
+
+.fs_schema.day .entries .entry .booking_info,
+
+.fs_schema.bookings .entries .entry .booking_info	{ left: inherit; right: 10px; top: 8px; font-size: 14px; }
+
 
 .fs_schema .hours > div:last-child				{ border-bottom: 1px solid #ccc; }
 
@@ -100,9 +152,11 @@
 
 .fs_schema .dialogue div span					{ position: absolute; left: 0px; margin-left: 100px; }
 
+.fs_schema .dialogue div span.two				{ position: absolute; left: 0px; margin-left: 140px; }
+
 .fs_schema .dialogue .header 					{ font-size: 18px; font-weight: bold; text-shadow: 1px 1px 1px #ccc; margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
 
-.fs_schema .dialogue .loginform				{ margin-top: 12px; }
+.fs_schema .dialogue .loginform				{ margin-top: 10px; }
 
 .fs_schema .dialogue .loginform input			{ border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; padding: 4px; border: 1px solid #D5D5D5;
 										  -moz-box-shadow: inset 0 1px 1px rgba( 0,0,0,0.5); -webkit-box-shadow: inset 0 1px 1px rgba( 0,0,0,0.5); box-shadow: inset 0 1px 1px rgba( 0,0,0,0.5); }
@@ -111,7 +165,7 @@
 
 .fs_schema .dialogue .loginform > div			{ height: 22px; font-size: 12px; }
 
-.fs_schema .dialogue .buttons					{ position: absolute; bottom: 10px; left: 20px; width: 260px; text-align: right; }
+.fs_schema .dialogue .buttons					{ position: relative; top: 10px; text-align: right; }
 
 .fs_schema .dialogue .buttons .fs_button		{ margin-left: 5px; line-height: 18px; }
 
@@ -126,66 +180,82 @@
 										  box-shadow: 0 1px 5px #555; -moz-box-shadow: 0 1px 5px #555; -webkit-box-shadow: 0 1px 5px #555; }
 
 
-.fs_schema .dialogue .progress				{ display: none; position: absolute; top: 0px; left: 0px; width: 300px; height: 320px; background-color: rgba(255,255,255,0.9); }
-								       
-.fs_schema .dialogue .progress img				{ position: absolute; left: 126px; top: 110px; }
+.fs_schema .dialogue .progress				{ display: none; position: absolute; top: 0px; left: 0px; width: 300px; height: 100%; background-color: rgba(255,255,255,0.9); margin-bottom: 0px; }
 
-.fs_schema .dialogue .progress .doingwhat		{ position: absolute; top: 183px; left: 0px; width: 300px; text-align: center; font-size: 12px; font-weight: bold; }
+.fs_schema .dialogue .progress img				{ position: absolute; left: 126px; top: 100px; }
+
+.fs_schema .dialogue .progress .doingwhat		{ position: absolute; top: 170px; left: 0px; width: 300px; text-align: center; font-size: 12px; font-weight: bold; }
 
 
-.fs_schema .dialogue .big_message 				{ display: none; position: absolute; top: 0px; left: 0px; width: 300px; height: 320px; background-color: #eee; }
+.fs_schema .big_message 						{ display: none; position: absolute !important; top: 0px; left: 0px; width: 300px; height: 100%; background-color: #eee; }
 
-.fs_schema .dialogue .big_message .head			{ padding: 20px; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 1px #ccc; margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 10px; } 
+.fs_schema .big_message .head					{ padding: 20px; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 1px #ccc; margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 10px; } 
 
-.fs_schema .dialogue .big_message .info 		{ width: 260px; font-size: 12px; font-weight: bold; padding: 10px 20px; }
+.fs_schema .big_message .info 				{ width: 260px; font-size: 12px; font-weight: bold; padding: 10px 20px; }
 
-.fs_schema .dialogue .big_message .close_btn		{ position: absolute; top: 260px; left: 110px; padding-left: 30px; padding-right: 30px;  }
+.fs_schema .big_message .fallback_url			{ font-weight: normal; margin-top: 10px; font-size: 11px; line-height: 15px; }
 
-.fs_schema .dialogue .big_message.error			{ background-color: #e7c5c5; }
+.fs_schema .big_message .close_btn				{ position: absolute; bottom: 20px; left: 110px; padding-left: 30px; padding-right: 30px;  }
 
-.fs_schema .dialogue .big_message.error .err		{ padding: 20px; line-height: 20px; background-color: rgba(255,255,255,0.3); margin-top: 15px; padding: 10px; 
+.fs_schema .big_message.error					{ background-color: #e7c5c5; }
+
+.fs_schema .big_message.error .err				{ padding: 20px; line-height: 20px; background-color: rgba(255,255,255,0.3); margin-top: 15px; padding: 10px; 
 										  border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
 
+.fs_schema .big_message.week_message			{ top: 30px; left: 0px; height: 300px; z-index: 9; border: 10px solid #000000;
+									 	   -webkit-box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6); -moz-box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6)); box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6); }
 
-.fs_schema .login							{ display: none; width: 260px; height: 145px; top: 0px; transition: 0.2s; -moz-transition: 0.15s; -webkit-transition: 0.1s; -o-transition: 0.1s; }
 
-.fs_schema .login .progress					{ height: 185px; }
+.fs_schema .login							{ display: none; width: 260px; top: 0px; transition: 0.2s; -moz-transition: 0.15s; -webkit-transition: 0.1s; -o-transition: 0.1s; }
 
-.fs_schema .login .progress img				{ top: 60px; }
+.fs_schema .login .progress					{ height: 100%; }
 
-.fs_schema .login .progress .doingwhat			{ top: 120px; }
+.fs_schema .login .progress img				{ top: 55px; }
 
-.fs_schema .login .big_message				{ height: 185px; }
+.fs_schema .login .progress .doingwhat			{ top: 115px; }
 
-.fs_schema .login .big_message .close_btn		{ top: 135px; }
+.fs_schema .login .big_message				{ height: 170px; }
+
+.fs_schema .login .big_message .fallback_url		{ display: none; }
 
 .fs_schema .login .logout_btn					{ display: none; }
 
 
 .fs_schema .save_me_cookie					{ margin-top: 15px; color: #aaa; }
 
-.fs_schema .open_event 						{ display: none; width: 260px; height: 280px; }
+.fs_schema .open_event 						{ display: none; width: 260px;}
 
 .fs_schema .open_event .time 					{ }
 
 .fs_schema .open_event .staff 				{ }
 
-.fs_schema .open_event .freeslots 				{ border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+.fs_schema .open_event .bookableslots 			{ }
 
-.fs_schema .open_event .room 					{ margin-bottom: 12px;  border-bottom: 1px solid #ddd; padding-bottom: 10px;}
+.fs_schema .open_event .waitinglist 			{ }
 
-.fs_schema .open_event .loggedin 				{ font-size: 12px; margin-top: 10px; display: none; }
+.fs_schema .open_event .divider				{ border-bottom: 1px solid #ddd; padding-bottom: 5px; }
 
-.fs_schema .open_event .booked_info			{ display: none; background-color: #c5e7c7; font-weight: bold; margin: 0px -5px; padding: 8px 5px; text-align: center; 
+.fs_schema .open_event .room 					{ margin-bottom: 5px;  border-bottom: 1px solid #ddd; padding-bottom: 8px;}
+
+.fs_schema .open_event .loggedin 				{ font-size: 12px; display: none; }
+
+.fs_schema .open_event .booked_info			{ display: none; font-weight: bold; margin: 10px -5px 5px; padding: 8px 5px; text-align: center; 
 										  border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
-										  box-shadow: inset 0px 2px 4px 0px rgba(0,0,0,0.2); -moz-box-shadow: inset 2px 2px 4px 2px #aaa; -webkit-box-shadow: inset 2px 2px 4px 2px #EEEEEE; 
-										  }
+										  box-shadow: inset 0px 2px 4px 0px rgba(0,0,0,0.2); -moz-box-shadow: inset 2px 2px 4px 2px #aaa; -webkit-box-shadow: inset 2px 2px 4px 2px #EEEEEE; }
+									  
+.fs_schema .open_event .update_watinglist 		{ display: inline; font-size: 9px; position: relative; top: -3px; left: 5px; }
 
 .fs_schema .open_event .no_booking 			{ font-size: 12px; margin-top: 10px; }
 
+.fs_schema .open_event .entry_info				{ left: -20px; padding: 4px 20px; top: -5px; width: 260px; }
+
 .fs_schema .open_event .buttons .book_event		{ display: none; }
 
+.fs_schema .open_event .buttons .book_waitinglist	{ display: none; }
+
 .fs_schema .open_event .buttons .login_book_event	{ }
+
+.fs_schema .open_event .login_book_waitinglist	{ display: none; }
 
 
 
@@ -212,6 +282,10 @@
 
 .fs_schema .navigation .change_to_day			{ margin-left: 10px; }
 
+.fs_schema .navigation .my_bookings			{ margin-left: 10px; display: none; }
+
+.fs_schema .navigation .update_schema			{ margin-left: 10px; display: none; }
+
 .fs_schema .navigation .change_to_week			{ margin-left: 10px; }
 
 .change_to_day.disabled, .change_to_week.disabled	{ color: #ccc; text-shadow: 1px 1px 1px #fff; cursor: default; } 
@@ -220,18 +294,22 @@
 
 .fs_schema .about, .cache_status, .show_debug	{ color: #9A9A9A; padding: 20px 0px; clear: both; }
 
-.fs_schema .week_overlay						{ position: absolute; top: 180px; left: 450px; background-color: rgba(99,99,99,0.3); color: #fff; font-size: 40px; font-weight: bold; padding: 15px 10px; width: 200px; text-align: center; z-index: 999;
+.fs_schema .week_overlay						{ position: absolute; top: 180px; left: 450px; background-color: rgba(99,99,99,0.7); color: #fff; font-size: 40px; font-weight: bold; padding: 15px 10px; width: 300px; text-align: center; z-index: 999;
 										  border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; box-shadow: 1px 2px 5px #999; -moz-box-shadow: 1px 2px 5px #999; -webkit-box-shadow: 1px 2px 5px #999; }
 	
 .fs_schema .week_progress					{ display: none; position: absolute; top: 0px; left: 0px; z-index: 1000; background-color: rgba(255,255,255,0.6); width: 100%; height: 100%; text-align: center; }
 
-.fs_schema .week_progress img					{ position: relative; top: 40%; }
+.fs_schema .week_progress div					{ background: url(fs-schema-progress.gif) no-repeat scroll center center rgba(0, 0, 0, 0); height: 100%; max-height: 600px; }
+
+.fs_schema .fs_booking_fallback_url			{ display: none; }
 
 .fs_schema_error							{ font-size: 14px; padding: 20px; font-weight: bold; margin-bottom: 20px; 
 										  box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2); -moz-box-shadow: 2px 2px 4px 2px #aaa; -webkit-box-shadow: 2px 2px 4px 2px #EEEEEE; 
 									       background-color: #fbfbfb; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fbfbfb), to(#EBEBEB)); background: -webkit-linear-gradient(top, #fbfbfb, #EBEBEB); 
 									       background: -moz-linear-gradient(top, #f8f8f8, #EBEBEB); background: -ms-linear-gradient(top, #fbfbfb, #EBEBEB); background: -o-linear-gradient(top, #fbfbfb, #EBEBEB); } 
-									       
+
+.fs_schema_error span						{ font-weight: normal; font-size: 12px; display: block; margin-top: 10px; }
+
 .fs_schema .week_debug						{ display: none; } 
 
 .fs_schema .debug							{ display: none; border: 1px dotted #000; padding: 10px; background-color: #eee;}

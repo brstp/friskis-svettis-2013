@@ -40,19 +40,29 @@ fs_schema_public = {
 	
 	animate_source_on_close_event : false,
 	
+	close_event_after_big_message : true,
+	
 	add_source_class_on_close_event : '',
 	
+	refresh_on_close_event : false,
+	
 	remove_source_class_on_close_event : '',
+	
+	fallback_url : '',
 	
 	last_step : 0,
 	
 	book_event_after_login : false,
+	
+	book_waitinglist_after_login : false,
 	
 	enableweek : false,
 	
 	enableday : false,
 	
 	forceday : false,
+	
+	show_my_bookings : false,
 	
 	after_refresh : function () {},
 	
@@ -61,45 +71,56 @@ fs_schema_public = {
 	init : function () {
 	
 		fs_schema_public.set_values();
+			
+		if ( fs_schema_public.check_browser() == true ) {
 
-		jQuery(window).resize( function() { fs_schema_public.set_values(); });
+			jQuery(window).resize( function() { fs_schema_public.set_values(); });
+		
+			jQuery('.fs_schema .entry.openable').click( function( ev_data ) { fs_schema_public.open_event ( this ); });
+			
+			jQuery('.fs_schema .close_open_event').click( function() { fs_schema_public.close_event (); });
+			
+			jQuery('.fs_schema .login_book_event').click( function() { fs_schema_public.login_and_book_event (); });
+			
+			jQuery('.fs_schema .login_book_waitinglist').click( function() { fs_schema_public.login_book_waitinglist (); });
+			
+			jQuery('.fs_schema .book_event ').click( function() { fs_schema_public.book_event (); });
+			
+			jQuery('.fs_schema .book_waitinglist ').click( function() { fs_schema_public.book_waitinglist (); });
+			
+			jQuery( '.fs_schema .open_event .unbook_event' ).click( function() { fs_schema_public.unbook_event (); });
+			
+			jQuery('.fs_schema .big_message .close_btn').click( function() { fs_schema_public.close_dialogue_big_message (); });
+			
+			jQuery('.fs_schema .navigation .previous').click( function() { fs_schema_public.previous (); });
+			
+			jQuery('.fs_schema .navigation .next').click( function() { fs_schema_public.next (); });
+			
+			jQuery('.fs_schema .navigation .fs_button.login_info').click( function() { fs_schema_public.show_login (); });
+			
+			jQuery('.fs_schema .close_login_form').click( function() { fs_schema_public.close_login (); });
+			
+			jQuery('.fs_schema .login_btn').click( function() { fs_schema_public.login (); });
+			
+			jQuery('.fs_schema .my_bookings ').click( function() { fs_schema_public.my_bookings (); });
+			
+			jQuery('.fs_schema .update_schema ').click( function() { fs_schema_public.refresh (); });
+			
+			jQuery('.fs_schema .logout_btn ').click( function() { fs_schema_public.logout (); });
+			
+			jQuery('.fs_schema .change_to_day').click( function() { fs_schema_public.change_to_day (); });
+			
+			jQuery('.fs_schema .change_to_week').click( function() { fs_schema_public.change_to_week (); });
+			
+			jQuery( '.fs_schema .debug').html( jQuery( '.fs_schema .week_debug' ).html() );
+			
+			jQuery('.fs_schema .show_debug').click( function() { jQuery( '.fs_schema .debug').show(); jQuery('.fs_schema .show_debug').hide(); });
 	
-		jQuery('.fs_schema .entry.openable').click( function( ev_data ) { fs_schema_public.open_event ( this ); });
-		
-		jQuery('.fs_schema .close_open_event').click( function() { fs_schema_public.close_event (); });
-		
-		jQuery('.fs_schema .login_book_event').click( function() { fs_schema_public.login_and_book_event (); });
-		
-		jQuery('.fs_schema .book_event ').click( function() { fs_schema_public.book_event (); });
-		
-		jQuery( '.fs_schema .open_event .unbook_event' ).click( function() { fs_schema_public.unbook_event (); });
-		
-		jQuery('.fs_schema .big_message .close_btn').click( function() { fs_schema_public.close_dialogue_big_message (); fs_schema_public.close_event(); });
-		
-		jQuery('.fs_schema .navigation .previous').click( function() { fs_schema_public.previous (); });
-		
-		jQuery('.fs_schema .navigation .next').click( function() { fs_schema_public.next (); });
-		
-		jQuery('.fs_schema .navigation .fs_button.login_info').click( function() { fs_schema_public.show_login (); });
-		
-		jQuery('.fs_schema .close_login_form').click( function() { fs_schema_public.close_login (); });
-		
-		jQuery('.fs_schema .login_btn').click( function() { fs_schema_public.login (); });
-		
-		jQuery('.fs_schema .logout_btn ').click( function() { fs_schema_public.logout (); });
-		
-		jQuery('.fs_schema .change_to_day').click( function() { fs_schema_public.change_to_day (); });
-		
-		jQuery('.fs_schema .change_to_week').click( function() { fs_schema_public.change_to_week (); });
-		
-		jQuery( '.fs_schema .debug').html( jQuery( '.fs_schema .week_debug' ).html() );
-		
-		jQuery('.fs_schema .show_debug').click( function() { jQuery( '.fs_schema .debug').show(); jQuery('.fs_schema .show_debug').hide(); });
-
-		fs_schema_public.show_hud( jQuery('.fs_schema .days').attr('data-week') );
-		
-		jQuery(document).keydown( function(e) { fs_schema_public.key_down ( e.keyCode ); });
-
+			fs_schema_public.show_hud( jQuery('.fs_schema .days').attr('data-week') );
+			
+			jQuery(document).keydown( function(e) { fs_schema_public.key_down ( e.keyCode ); });
+			
+		}
 	},
 	
 	
@@ -187,6 +208,8 @@ fs_schema_public = {
 			
 			fs_schema_public.book_event_after_login = false;
 			
+			fs_schema_public.book_waitinglist_after_login = false;
+			
 		}
 	},
 	
@@ -264,6 +287,8 @@ fs_schema_public = {
 					
 					if ( data.error != '' ) {
 					
+						fs_schema_public.close_event_after_big_message = true;
+					
 						fs_schema_public.display_dialogue_big_message ( 'Fel.', data.message, true );
 					
 						fs_schema_public.is_busy = false;
@@ -302,6 +327,10 @@ fs_schema_public = {
 							
 							jQuery('.fs_schema .login.dialogue .header').html('Logga ut');
 							
+							jQuery('.fs_schema .my_bookings').css( 'display', 'inline' );
+							
+							jQuery('.fs_schema .update_schema').css( 'display', 'inline' );
+							
 						}, 500);
 						
 						if ( fs_schema_public.book_event_after_login == true ) {
@@ -327,6 +356,29 @@ fs_schema_public = {
 						
 							fs_schema_public.book_event();
 							
+						} else if ( fs_schema_public.book_waitinglist_after_login == true ) {
+						
+							if ( data.forceday && fs_schema_public.num_days == 7 ) {
+							
+								fs_schema_public.after_book_event = function() {
+							
+									fs_schema_public.change_to_day();
+									
+									jQuery('.fs_schema .change_to_week').addClass('disabled').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
+								};
+								
+							} else {
+							
+								fs_schema_public.after_book_event = function() {
+								
+									fs_schema_public.refresh();
+									
+								};
+							
+							}
+						
+							fs_schema_public.book_waitinglist();
+							
 						} else {
 					
 							fs_schema_public.is_busy = false;
@@ -344,7 +396,7 @@ fs_schema_public = {
 							}
 						}
 						
-						if ( fs_schema_public.book_event_after_login == false ) fs_schema_public.show_hud ( 'Inloggad' );
+						if ( fs_schema_public.book_event_after_login == false && fs_schema_public.book_waitinglist_after_login == false ) fs_schema_public.show_hud ( 'Inloggad' );
 					}
 					
 					jQuery( '.fs_schema .debug').html( data.debug );
@@ -389,13 +441,21 @@ fs_schema_public = {
 		jQuery('.fs_schema .login.dialogue .header').html('Logga in');
 		
 		jQuery('.fs_schema .change_to_week').removeClass('disabled').attr('title', '');
+		
+		jQuery('.fs_schema .my_bookings').css( 'display', 'none' );
+							
+		jQuery('.fs_schema .update_schema').css( 'display', 'none' );
+		
+		if ( fs_schema_public.show_my_bookings === true ) fs_schema_public.close_my_bookings();
 	},
 	
 	
 	
 	show_hud : function ( week_info ) {
 	
-		jQuery('.fs_schema .week_overlay').html( week_info ).delay(200).fadeIn(200).delay(800).fadeOut(500);
+		jQuery('.fs_schema .week_overlay').html( week_info );
+		
+		jQuery('.fs_schema .week_overlay').fadeIn(200).delay(1000).fadeOut(500);
 
 	},
 	
@@ -420,26 +480,32 @@ fs_schema_public = {
 	
 		if (  fs_schema_public.is_busy == false ) {
 		
-			jQuery('.fs_schema .week_progress').css('display', 'block');
+			if ( fs_schema_public.show_my_bookings === true ) fs_schema_public.my_bookings();
+			
+			else {
 		
-			date_info = jQuery('.fs_schema .days').attr('data-date-info');
+				jQuery('.fs_schema .week_progress').css('display', 'block');
 			
-			fs_schema_public.ajax (
-			
-				{ action : 'walk_schema', num_days: fs_schema_public.num_days, date_info : date_info, step: 0, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
+				date_info = jQuery('.fs_schema .days').attr('data-date-info');
 				
-					jQuery( '.fs_schema .weeks' ).html(data);
+				fs_schema_public.ajax (
+				
+					{ action : 'walk_schema', num_days: fs_schema_public.num_days, date_info : date_info, step: 0, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
 					
-					jQuery('.fs_schema .week_progress').css('display', 'none');
-					
-					fs_schema_public.after_refresh();
-					
-					jQuery('.fs_schema .entry.openable').click( function( ev_data ) { fs_schema_public.open_event ( this ); });
-					
-					fs_schema_public.after_refresh = function() {};
-				});
+						jQuery( '.fs_schema .weeks' ).html(data);
+						
+						jQuery('.fs_schema .week_progress').css('display', 'none');
+						
+						fs_schema_public.after_refresh();
+						
+						jQuery('.fs_schema .entry.openable').click( function( ev_data ) { fs_schema_public.open_event ( this ); });
+						
+						fs_schema_public.after_refresh = function() {};
+						
+						jQuery( '.fs_schema .debug').html( jQuery( '.fs_schema .week_debug' ).html() );
+					});
+			}
 		}
-	
 	},
 	
 
@@ -528,29 +594,141 @@ fs_schema_public = {
 	},
 
 	
+	my_bookings : function () {
+			
+		if (  fs_schema_public.is_busy == false ) {
+		
+			// show my bookings
+			
+			if ( fs_schema_public.show_my_bookings === false ) { 
+			
+				fs_schema_public.show_my_bookings = true;
+			
+				jQuery('.fs_schema .change_to_day').css('display', 'none');
+				
+				jQuery('.fs_schema .my_bookings').html('Visa schemat');
+			
+				jQuery('.fs_schema .week_progress').css('display', 'block');
+				
+				fs_schema_public.ajax (
+			
+					{ action : 'walk_schema', num_days: 0, date_info : date_info, step: 0, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'html', function ( data ) {
+					
+						jQuery( '.fs_schema .weeks' ).html(data);
+						
+						jQuery('.fs_schema .week_progress').css('display', 'none');
+						
+						jQuery('.fs_schema').removeClass('week').removeClass('day').addClass('bookings');
+					
+						jQuery('.fs_button.change_to_week').css('display', 'none');
+					
+						jQuery('.fs_button.change_to_day').css('display', 'none'); 
+						
+						jQuery('.fs_button.previous').css('display', 'none'); 
+						
+						jQuery('.fs_button.next').css('display', 'none'); 
+						
+						jQuery('.fs_schema .login_info').css('margin-left', '0px'); 
+				
+						jQuery('.fs_schema .entry.openable').click( function( ev_data ) { fs_schema_public.open_event ( this ); });
+						
+						jQuery( '.fs_schema .debug').html( jQuery( '.fs_schema .week_debug' ).html() );
+					});
+					
+			
+			// close my bookings and show schema again
+			
+			} else {
+			
+				fs_schema_public.close_my_bookings();	
+			}
+		}
+	},
+	
+	
+	close_my_bookings : function () {
+	
+		fs_schema_public.show_my_bookings = false;
+				 
+		jQuery('.fs_button.change_to_day').css('display', 'none');
+		
+		jQuery('.fs_button.change_to_week').css('display', 'none');
+		
+		jQuery('.fs_schema .my_bookings').html('Mina bokningar');
+		
+		jQuery('.fs_schema').removeClass('bookings');
+				
+		jQuery('.fs_button.previous').css('display', 'inline'); 
+				
+		jQuery('.fs_button.next').css('display', 'inline'); 
+		
+		jQuery('.fs_schema .login_info').css('margin-left', '10px'); 
+		
+		if ( fs_schema_public.num_days == 7 ) {
+		
+			jQuery('.fs_schema').addClass('week');
+			
+			jQuery('.fs_button.change_to_day').css('display', 'inline');
+			
+		} else { 
+		
+			jQuery('.fs_schema').addClass('day');
+			
+			jQuery('.fs_button.change_to_week').css('display', 'inline');
+	
+		}
+		
+		fs_schema_public.refresh();
+	
+	},
+	
+	
 	
 	open_event : function ( event_el ) {
 	
 		if (  fs_schema_public.is_busy == false ) {
 		
-			jQuery('.fs_schema .dialogue.open').hide().removeClass('open');
 			
-			win_top = jQuery(document).scrollTop();
+			// store some variables into the fs_schema object
 			
-			win_width =  jQuery(window).width();
-		
+			fs_schema_public.open_event_id = jQuery( event_el ).attr( 'data-id' );
+			
+			fs_schema_public.open_bookingid = jQuery( event_el ).attr( 'data-bookingid' );
+			
+			fs_schema_public.open_event_el = event_el;
+			
 			fs_schema_public.animate_source_on_close_event = false;
+			
+			fs_schema_public.refresh_on_close_event = false;
 			
 			fs_schema_public.remove_source_class_on_close_event = '';
 						
 			fs_schema_public.add_source_class_on_close_event = '';
 			
+			
+			
+			// get some variables from DOM
+						
+			var bookable_slots = jQuery( event_el ).attr( 'data-bookableslots' );
+			
+			var waitinglistsize =  jQuery( event_el ).attr( 'data-waitinglistsize' );
+
+			var waitinglistposition = jQuery( event_el ).attr( 'data-waitinglistposition' );
+			
+			var entry_status = jQuery( event_el ).attr( 'data-status' );
+			
+			
+	
+			// calculate event window position and animation
+			
+			win_top = jQuery(document).scrollTop();
+			
+			win_width =  jQuery(window).width();
+		
 			if ( win_width < 320 ) event_target_x = - (( 320 - win_width ) / 2);
 			
 			else event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
-			
-			//event_target_y = jQuery( event_el ).parent().parent().position().top;
-			
+
 			event_el_position_top = jQuery( event_el ).position().top;
 			
 			event_target_y = event_el_position_top > 30 ? event_el_position_top - 150 : 0;
@@ -565,7 +743,10 @@ fs_schema_public = {
 			
 			event_diff_y = event_target_y-event_current_y + 30;
 		
-			fs_schema_public.open_event_el = event_el;
+			
+			// set values into the DOM
+			
+			jQuery('.fs_schema .dialogue.open').hide().removeClass('open');
 		
 			jQuery( '.fs_schema .open_event' )
 			
@@ -576,15 +757,7 @@ fs_schema_public = {
 				.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
 				
 				.css( '-webkit-transform', 'scale(0.1)').css( '-moz-transform', 'scale(0.1)').css( 'transform', 'scale(0.1)');
-				
-			bookable = jQuery( event_el ).attr( 'data-bookableslots' );	
-			
-			if ( bookable > 1 ) bookable = bookable + ' bokningsbara';
-			
-			else bookable = bookable + ' bokningsbar';
-			
-			fs_schema_public.open_event_id = jQuery( event_el ).attr( 'data-id' );
-			
+
 			jQuery( '.fs_schema .open_event .header' ).html( jQuery( event_el ).attr( 'data-product' ));
 			
 			jQuery( '.fs_schema .open_event .date span' ).html( jQuery( event_el ).attr( 'data-startdate' ));
@@ -594,98 +767,187 @@ fs_schema_public = {
 			jQuery( '.fs_schema .open_event .staff span' ).html( jQuery( event_el ).attr( 'data-staff' ));
 			
 			jQuery( '.fs_schema .open_event .room span' ).html( jQuery( event_el ).attr( 'data-room' ));
-			
-			jQuery( '.fs_schema .open_event .freeslots span' ).html(  jQuery( event_el ).attr( 'data-freeslots' ) + ' (' + bookable + ')' );
-			
-			
-			// adjust event on what status the event has got
-			entry_status = jQuery( event_el ).attr( 'data-status' );
-			
-			entry_info_dropin = jQuery( '.fs_schema .open_event .entry_info_dropin' );
-			
-			entry_info_full = jQuery( '.fs_schema .open_event .entry_info_full' );
-			
-			entry_info_cancelled = jQuery( '.fs_schema .open_event .entry_info_cancelled' );
-			
-			entry_info_not_bookable = jQuery( '.fs_schema .open_event .entry_info_not_bookable' );
-			
-			entry_info_dropin.css( 'display', 'none' );
-			
-			entry_info_full.css( 'display', 'none' );
-			
-			entry_info_cancelled.css( 'display', 'none' );
-			
-			entry_info_not_bookable.css( 'display', 'none' );
-			
-			entry_is_bookable = false;
-			
-			switch ( entry_status ) {
-			
-				default: entry_is_bookable = true; break;
-					
-				case 'dropin': entry_info_dropin.css( 'display', 'block' ); break;
-					
-				case 'reserve': break;
-					
-				case 'notbookable': entry_info_not_bookable.css( 'display', 'block' ); break;
-					
-				case 'full': entry_info_full.css( 'display', 'block' ); break;
-					
-				case 'closed': entry_info_not_bookable.css( 'display', 'block' ); break;
+						
 				
-				case 'cancelled': entry_info_cancelled.css( 'display', 'block' ); break;
+			// reset all buttons and other visual things
+			
+			jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'none' );
+			
+			jQuery( '.fs_schema .open_event .book_waitinglist' ).css( 'display', 'none' );
+			
+			jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
+					
+			jQuery( '.fs_schema .open_event .login_book_waitinglist' ).css( 'display', 'none' );
+		
+			jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
+			
+			jQuery( '.fs_schema .open_event .unbook_event' ).css( 'display', 'none' );
+			
+			jQuery( '.fs_schema .open_event .unbook_waitinglist' ).css( 'display', 'none' );
+			
+			jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'none' );
+			
+			jQuery( '.fs_schema .open_event .waitinglist' ).css( 'display', 'none' );
+			
+			jQuery( '.fs_schema .open_event .bookableslots').css('display', 'none');
+					
+
+
+			// adjust event on what status the event has got
+			
+			jQuery( '.fs_schema .open_event .entry_info_dropin' ).css( 'display', entry_status == 'dropin' ? 'block' : 'none' );
+			
+			jQuery( '.fs_schema .open_event .entry_info_full' ).css( 'display', entry_status == 'full' ? 'block' : 'none' );
+			
+			jQuery( '.fs_schema .open_event .entry_info_cancelled' ).css( 'display', entry_status == 'cancelled' ? 'block' : 'none' );
+			
+			jQuery( '.fs_schema .open_event .entry_info_not_bookable' ).css( 'display', entry_status == 'notbookable' ? 'block' : 'none' );
+			
+			jQuery( '.fs_schema .open_event .entry_info_reserve' ).css( 'display', entry_status == 'reserve' ? 'block' : 'none' );
+			
+			jQuery( '.fs_schema .open_event .entry_info_not_opened_yet' ).css( 'display', entry_status == 'not_opened_yet' ? 'block' : 'none' );
+			
+			jQuery( '.fs_schema .open_event .entry_info_closed' ).css( 'display', entry_status == 'closed' ? 'block' : 'none' );
+			
+					
+		
+			// show/hide free slots and drop ins
+			
+			if ( bookable_slots != -1 ) {
+			
+				var bookable_slots_html = bookable_slots;
+				
+				var dropin_slots = jQuery( event_el ).attr( 'data-dropinslots' );
+				
+				if ( dropin_slots != '-1' ) bookable_slots_html =bookable_slots_html + ' (' + dropin_slots + ' drop-in)';
+			
+				jQuery( '.fs_schema .open_event .bookableslots span' ).html( bookable_slots_html );
+				
+				if ( entry_status != 'dropin' ) 
+
+					jQuery( '.fs_schema .open_event .bookableslots').css('display', 'block');
+			
+			} 
+
+
+
+			// determine if the event is bookable
+			
+			event_is_bookable = true;
+			
+			if ( entry_status == 'full' || entry_status == 'cancelled' || entry_status == 'notbookable' || entry_status == 'dropin' || entry_status == 'not_opened_yet' || entry_status == 'closed' )
+			
+				event_is_bookable = false;
+				
+			
+			// put info into and show/hide waitinglist
+			
+			if ( (waitinglistposition != '' && waitinglistposition != '0' && waitinglistposition != '-1' ) && fs_schema_public.password != '' ) {
+			
+				jQuery( '.fs_schema .open_event .waitinglist span' ).html( waitinglistsize );
+			
+				jQuery( '.fs_schema .open_event .waitinglist' ).css( 'display', 'block' );
+				
 			}
-									
-			fs_schema_public.open_bookingid = jQuery( event_el ).attr( 'data-bookingid' );
 			
-			// user has allready booked this event
-			if ( fs_schema_public.open_bookingid != '' ) {
 			
+			// if user is logged in, show login info and hide log in form
+			
+			if ( fs_schema_public.password != '' ) {
+							
+				jQuery( '.fs_schema .open_event .loggedin' ).css( 'display', 'block' );
+				
+				jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'none' );
+			
+			
+			
+			// if user is NOT logged in, show log in form if the event is bookable
+			
+			} else { 
+							
+				jQuery( '.fs_schema .open_event .loggedin' ).css( 'display', 'none' );
+				
+				if ( event_is_bookable == true ) jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'block' );
+			}
+			
+				
+			
+			// user HAS already booked this event, hide booking function and show booking info
+			
+			if ( fs_schema_public.open_bookingid != '' || (waitinglistposition != '' && waitinglistposition != '0' )) {
+			
+				jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'none' );
+					
+				jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
+				
 				jQuery( '.fs_schema .open_event .booked_info' ).css( 'display', 'block' );
-			
+					
 				jQuery( '.fs_schema .open_event .unbook_event' ).css( 'display', 'inline' );
 				
-				jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'none' );
 				
-				jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
+				// if booking is a reserve list, show that, otherwise not
+				
+				if (waitinglistposition != '' && waitinglistposition != '0' ) 
+				
+					jQuery( '.fs_schema .open_event .booked_info' ).addClass('reserve').html('Du har reservplats ' + waitinglistposition + ' av ' + waitinglistsize + '.');
+				
+				else 
+					
+					jQuery( '.fs_schema .open_event .booked_info' ).removeClass('reserve').html('Du är inbokad.');
+				
+					
 
-			// user has not booked this event
+			// user has NOT booked this event
+			
 			} else {
 			
 				jQuery( '.fs_schema .open_event .booked_info' ).css( 'display', 'none' );
 			
 				jQuery( '.fs_schema .open_event .unbook_event' ).css( 'display', 'none' );
 				
-				// this event is not bookable
-				if ( entry_is_bookable == false ) {
-					
-					jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'none' );
-					
-					jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
-					
-					jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'none' );
 				
-					jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
-					
-					jQuery( '.fs_schema .open_event .loggedin' ).css( 'display', 'none' );
+				// if this event is bookable, and user has not booked it yet
 				
-				// this event is bookable, and user has not booked it yet
-				} else {
-			
-					// user is logged in
-					if ( fs_schema_public.password != '' ) {
+				if ( event_is_bookable == true ) {
+				
+	
+					// if there are no free slots, user has to book a waiting-list
 					
-						jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'inline' );
+					if ( jQuery( event_el ).attr( 'data-bookableslots' ) < 1 ) {
+
+						jQuery( '.fs_schema .open_event .waitinglist').css('display', 'block');
 						
-						jQuery( '.fs_schema .open_event .loggedin' ).css( 'display', 'block' );
 						
-					// user is not logged in
+						// user is logged in
+						
+						if ( fs_schema_public.password != '' ) jQuery( '.fs_schema .open_event .book_waitinglist' ).css( 'display', 'inline' );
+						
+						// user is not logged in
+						else jQuery( '.fs_schema .open_event .login_book_waitinglist' ).css( 'display', 'inline-block' );
+					
+					
+					// user can book this! Bingo.
+					
 					} else {
+
+						jQuery( '.fs_schema .open_event .waitinglist').css('display', 'none');
+						
 					
-						jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'block' );
+						// user is logged in
+						if ( fs_schema_public.password != '' ) {
 						
-						jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'inline-block' );
+							jQuery( '.fs_schema .open_event .book_event' ).css( 'display', 'inline' );
+							
+							jQuery( '.fs_schema .open_event .loggedin' ).css( 'display', 'block' );
+							
+							
+						// user is not logged in
+						} else {
 						
+							jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'block' );
+							
+							jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'inline-block' );	
+						}
 					}
 				}
 			}
@@ -704,7 +966,6 @@ fs_schema_public = {
 				
 				}, 100);
 		}
-	
 	},
 	
 
@@ -736,13 +997,23 @@ fs_schema_public = {
 		
 		jQuery( '.fs_schema .dialogue.open .progress').css( 'display', 'none' );
 		
+		jQuery( '.fs_schema .week_progress' ).css('display', 'none');
+		
 		big_message = jQuery( '.fs_schema .dialogue.open .big_message' );
+		
+		if ( big_message.length == 0 ) big_message = jQuery( '.fs_schema .big_message.week_message' );
 	
 		jQuery( big_message ).css ( 'display', 'block' ).addClass('open');
 		
-		if ( error == true ) jQuery( big_message ).addClass ( 'error' );
-		
-		else jQuery( big_message ).removeClass ( 'error' );
+		if ( error == true ) { 
+			
+			jQuery( big_message ).addClass ( 'error' );
+			
+			if ( fs_schema_public.fallback_url  != '' ) 
+			
+				message = message + '<div class="fallback_url">Om du tror att felet är en bugg kan du prova att använda den alternativa bokningsfunktionen på <a href="' + fs_schema_public.fallback_url  + '">' + fs_schema_public.fallback_url  + '</a>.</div>';
+			
+		} else jQuery( big_message ).removeClass ( 'error' );
 		
 		jQuery( big_message ).find( '.head' ).html( header );
 		
@@ -754,7 +1025,9 @@ fs_schema_public = {
 	
 	close_dialogue_big_message : function () {
 	
-		jQuery( '.fs_schema .dialogue.open .big_message.open' ).css ( 'display', 'none' ).removeClass('open');
+		jQuery( '.fs_schema .big_message.open' ).css ( 'display', 'none' ).removeClass('open');
+		
+		 if ( fs_schema_public.close_event_after_big_message == true ) fs_schema_public.close_event(); 
 
 	},
 		
@@ -767,7 +1040,14 @@ fs_schema_public = {
 		
 	},
 	
+	login_book_waitinglist : function () {
 	
+		fs_schema_public.book_waitinglist_after_login = true;
+
+		fs_schema_public.login();
+	},
+	
+
 	book_event : function () {
 	
 		fs_schema_public.is_busy = true;
@@ -788,25 +1068,21 @@ fs_schema_public = {
 				
 				fs_schema_public.is_busy = false;
 				
-				refresh_after_booked = false;
-				
 				jQuery( '.fs_schema .open_event .progress').css( 'display', 'none' );
 				
 				if ( data.error != '' ) {
 				
+					fs_schema_public.close_event_after_big_message = true;
+				
 					fs_schema_public.display_dialogue_big_message ( 'Fel.', data.message, true );
+							
+					fs_schema_public.refresh_on_close_event = true;
 				
 				} else {
 				
-					if ( data.bookingid == '' ) {	// profit dont give us a booking id when booking, what kind of booking system is that?
-					
-						refresh_after_booked = true;
-					
-					} else {
-				
-						jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid',  data.bookingid );
+					jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid',  data.bookingid );
 						
-					}
+					jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Du är inbokad');
 					
 					fs_schema_public.animate_source_on_close_event = true;
 					
@@ -815,6 +1091,164 @@ fs_schema_public = {
 					fs_schema_public.close_event();
 					
 					fs_schema_public.show_hud ( 'Bokat!' );
+				}
+				
+				fs_schema_public.after_book_event ();
+						
+				fs_schema_public.after_book_event = function() {};
+					
+				jQuery( '.fs_schema .debug').html( data.debug );
+			}
+		);
+	
+	},
+	
+	
+	unbook_event : function () {
+	
+		if ( fs_schema_public.open_bookingid != '' && fs_schema_public.open_bookingid != 'x' ) {
+		
+			if ( fs_schema_public.username != '' && fs_schema_public.password != '' ) {
+	
+				fs_schema_public.is_busy = true;
+				
+				window.clearTimeout( fs_schema_public.dialogue_message_timeout );
+				
+				jQuery( '.fs_schema .open_event .message' ).css( 'display', 'none' );
+		
+				jQuery( '.fs_schema .open_event .progress .doingwhat').html('Avbokar aktiviteten');
+				
+				jQuery( '.fs_schema .open_event .progress').css( 'display', 'block' );
+				
+				var booking_type = jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingtype' );
+				
+				if ( booking_type == 'ordinary' )
+				
+					post_object = { action : 'unbook_activity', bookingid: fs_schema_public.open_bookingid, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key };
+	
+				else 
+				
+					post_object = { action : 'unbook_waitinglist', bookingid: fs_schema_public.open_bookingid, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key };
+
+				fs_schema_public.ajax (
+				
+					post_object , 'json', function ( data ) { 
+						
+						jQuery( '.fs_schema .debug').html( data.debug );
+						
+						fs_schema_public.is_busy = false;
+						
+						jQuery( '.fs_schema .open_event .progress').css( 'display', 'none' );
+						
+						if ( data.error != '' ) {
+						
+							fs_schema_public.close_event_after_big_message = true;
+						
+							fs_schema_public.display_dialogue_big_message ( 'Fel.', data.message, true );
+							
+							fs_schema_public.refresh_on_close_event = true;
+						
+						} else {
+							
+							fs_schema_public.animate_source_on_close_event = true;
+							
+							fs_schema_public.remove_source_class_on_close_event = ( booking_type == 'ordinary' ? 'booked' : 'reserve' );
+							
+							jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid', '' );
+							
+							jQuery( fs_schema_public.open_event_el ).attr( 'data-waitinglistposition', '' );
+							
+							jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Avbokad');
+							
+							fs_schema_public.close_event();
+					
+							fs_schema_public.show_hud ( 'Avbokat!' );
+							
+						}
+					}
+				);
+				
+			} else {
+			
+				fs_schema_public.close_event_after_big_message = true;
+			
+				fs_schema_public.display_dialogue_big_message ( 'Fel', 'Saknar av någon anledning ditt använarnamn och lösenord. Prova att ladda om sidan, logga in igen och avboka därefter igen.', true );
+			
+			}
+			
+		} else {		
+		
+			fs_schema_public.refresh_on_close_event = true;
+		
+			fs_schema_public.close_event_after_big_message = true;
+		
+			fs_schema_public.display_dialogue_big_message ( 'Fel', 'Saknar ID på din bokning p.g.a begränsningar i bokningssystemet, och kan därför inte göra en avbokning just nu. Vi laddar om schemat nu för att hämta boknings-id. Därefter kan du försöka avboka aktiviteten igen.', true );
+
+		}
+	}, 
+	
+	
+	book_waitinglist : function () {
+	
+		fs_schema_public.is_busy = true;
+		
+		window.clearTimeout( fs_schema_public.dialogue_message_timeout );
+	
+		jQuery( '.fs_schema .open_event .message' ).css( 'display', 'none' );
+
+		jQuery( '.fs_schema .open_event .progress .doingwhat').html('Bokar reservplats');
+		
+		jQuery( '.fs_schema .open_event .progress').css( 'display', 'block' );
+		
+		var book_waitinglist = 0;
+		
+		if ( jQuery( fs_schema_public.open_event_el ).attr( 'data-bookableslots' ) < 1 ) book_waitinglist = 1;
+		
+		fs_schema_public.ajax (
+		
+			{ action : 'book_waitinglist', username : fs_schema_public.username, password: fs_schema_public.password, activityid: fs_schema_public.open_event_id, session_key: fs_schema_public.session_key }, 'json', function ( data ) { 
+			
+				//jQuery( '.fs_schema .debug').html( data );
+				
+				fs_schema_public.is_busy = false;
+				
+				refresh_after_booked = false;
+				
+				jQuery( '.fs_schema .open_event .progress').css( 'display', 'none' );
+				
+				if ( data.error != '' ) {
+				
+					fs_schema_public.close_event_after_big_message = true;
+				
+					fs_schema_public.display_dialogue_big_message ( 'Fel.', data.message, true );
+				
+				} else {
+				
+					if ( data.bookingid == '' ) {	// profit dont give us a booking id when booking Ahh, what kind of booking system is that?
+					
+						refresh_after_booked = true;
+					
+					} else {
+				
+						jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid',  data.bookingid );
+						
+						jQuery( fs_schema_public.open_event_el ).attr( 'data-waitinglistposition',  data.waitinglistposition );
+						
+						jQuery( fs_schema_public.open_event_el ).attr( 'data-waitinglistsize',  data.waitinglistsize );
+						
+						jQuery( fs_schema_public.open_event_el ).attr( 'title',  'Du har reservplats ' + data.waitinglistposition + ' av ' + data.waitinglistposition );
+						
+						jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Reservplats');
+
+					}
+					
+					fs_schema_public.animate_source_on_close_event = true;
+					
+					fs_schema_public.add_source_class_on_close_event = 'reserve';
+					
+					fs_schema_public.close_event();
+					
+					fs_schema_public.show_hud ( 'Reservplats bokad!' );
 				}
 				
 				if ( refresh_after_booked == true ) {
@@ -841,73 +1275,52 @@ fs_schema_public = {
 					
 				jQuery( '.fs_schema .debug').html( data.debug );
 			}
-		);
-	
+		);	
 	},
 	
 	
-	unbook_event : function () {
 	
-		if ( fs_schema_public.open_bookingid != '' ) {
-		
-			if ( fs_schema_public.username != '' && fs_schema_public.password != '' ) {
+	update_waitinglist : function() {
 	
-				fs_schema_public.is_busy = true;
-				
-				window.clearTimeout( fs_schema_public.dialogue_message_timeout );
-				
-				jQuery( '.fs_schema .open_event .message' ).css( 'display', 'none' );
+		fs_schema_public.is_busy = true;
 		
-				jQuery( '.fs_schema .open_event .progress .doingwhat').html('Avbokar aktiviteten');
-				
-				jQuery( '.fs_schema .open_event .progress').css( 'display', 'block' );
-				
-				fs_schema_public.ajax (
-				
-					{ action : 'unbook_activity', bookingid: fs_schema_public.open_bookingid, username: fs_schema_public.username, password: fs_schema_public.password, session_key: fs_schema_public.session_key }, 'json', function ( data ) { 
-					
-						//jQuery( '.fs_schema .debug').html( data );
-						
-						jQuery( '.fs_schema .debug').html( data.debug );
-						
-						fs_schema_public.is_busy = false;
-						
-						jQuery( '.fs_schema .open_event .progress').css( 'display', 'none' );
-						
-						if ( data.error != '' ) {
-						
-							fs_schema_public.display_dialogue_big_message ( 'Fel.', data.message, true );
-						
-						} else {
-						
-							//fs_schema_public.display_dialogue_big_message ( 'Avbokat.', data.message, false );
-							
-							fs_schema_public.animate_source_on_close_event = true;
-							
-							fs_schema_public.remove_source_class_on_close_event = 'booked';
-							
-							jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid', '' );
-							
-							fs_schema_public.close_event();
-					
-							fs_schema_public.show_hud ( 'Avbokat!' );
-							
-						}
-					}
-				);
-				
-			} else {
-			
-				fs_schema_public.display_dialogue_big_message ( 'Fel', 'Saknar av någon anledning ditt använarnamn och lösenord. Prova att ladda om sidan, logga in igen och avboka därefter igen.', true );
-			
-			}
-			
-		} else {
-		
-			fs_schema_public.display_dialogue_big_message ( 'Fel', 'Saknar av någon anledning ID på din bokning och kan därför inte göra en avbokning just nu. Prova att ladda om sidan och gör om proceduren.', true );
+		window.clearTimeout( fs_schema_public.dialogue_message_timeout );
+	
+		jQuery( '.fs_schema .open_event .message' ).css( 'display', 'none' );
 
-		}
-	}, 
+		jQuery( '.fs_schema .open_event .progress .doingwhat').html('Hämtar information');
+		
+		jQuery( '.fs_schema .open_event .progress').css( 'display', 'block' );
+		
+		fs_schema_public.ajax (
+		
+			{ action : 'update_waitinglist', bookingid: fs_schema_public.open_bookingid, username : fs_schema_public.username, password: fs_schema_public.password, activityid: fs_schema_public.open_event_id, session_key: fs_schema_public.session_key }, 'json', function ( data ) { 
+			
+				jQuery( '.fs_schema .debug').html( data );
+				
+				fs_schema_public.is_busy = false;
+				
+				jQuery( '.fs_schema .open_event .progress').css( 'display', 'none' );
+				
+				if ( data.error != '' ) {
+				
+					fs_schema_public.close_event_after_big_message = false;
+				
+					fs_schema_public.display_dialogue_big_message ( 'Fel.', data.message, true );
+				
+				} else {
+				
+					fs_schema_public.close_event_after_big_message = false;
+				
+					fs_schema_public.display_dialogue_big_message ( 'Din plats i kön.', data.message, false );
+
+					jQuery( fs_schema_public.open_event_el ).attr( 'data-waitinglistposition', data.waitinglistposition );	
+					
+					jQuery( '.fs_schema .open_event .waitinglist .your_place ').html( data.waitinglistposition );
+				}
+			}
+		);
+	},
 
 	
 	
@@ -925,7 +1338,9 @@ fs_schema_public = {
 			
 				.css( 'display', 'none')
 			
-				.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none');
+				.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
+				
+				.removeClass ( 'open' );
 				
 				if ( fs_schema_public.animate_source_on_close_event == true ) {
 
@@ -947,10 +1362,13 @@ fs_schema_public = {
 	
 					fs_schema_public.open_event_id = 0;
 					
+					if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
+					
 				} else {
 				
-					fs_schema_public.open_event_id = 0;			
-				
+					fs_schema_public.open_event_id = 0;
+					
+					if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
 				}
 			
 			}, 100);
@@ -966,7 +1384,11 @@ fs_schema_public = {
 		
 		fs_schema_public.hours_width = jQuery('.fs_schema').attr('data-hours-width');
 		
-		jQuery( '.fs_schema .week_overlay' ).css('left', ((fs_schema_public.schema_width/2)-100));
+		fs_schema_public.fallback_url = jQuery ( '.fs_schema .fs_booking_fallback_url').html();
+		
+		jQuery( '.fs_schema .week_overlay' ).css('left', ((fs_schema_public.schema_width/2)-150));
+		
+		jQuery( '.fs_schema .big_message.week_message' ).css('left', ((fs_schema_public.schema_width/2)-150));
 		
 		if ( jQuery('.fs_schema.enableday ').length > 0 ) fs_schema_public.enableday = true;
 		
@@ -977,6 +1399,43 @@ fs_schema_public = {
 	},
 	
 	
+	// make sure th user has a modern ok browser
+	
+	check_browser : function () {
+	
+		var browser_ok = true;
+		
+		var style = document.documentElement.style;
+		
+		if (( typeof ( style.webkitTransform ) !== 'undefined'||
+			typeof ( style.MozTransform ) !== 'undefined'  ||
+			typeof ( style.OTransform ) !== 'undefined'  ||
+			typeof ( style.MsTransform ) !== 'undefined'  ||
+			typeof ( style.transform ) !== 'undefined' ) == false ) 
+			
+			browser_ok  = false;
+		
+		if (navigator.appName.indexOf("Microsoft")!=-1) {
+			
+			var ie_version = parseInt( navigator.userAgent.toLowerCase().split('msie')[1]);
+			
+			if ( ie_version < 9 ) browser_ok  = false;
+		
+		}
+		
+		if ( browser_ok  == false ) {
+		
+			var message = 'Din webbläsare är för gammal för att kunna visa schemat. Vänligen uppdatera webbläsaren till en nyare version.';
+			
+			if ( fs_schema_public.fallback_url  != '' ) message = message + '<span>Tills dess kan du också använda den alternativa bokningsfunktionen på <a href="' + fs_schema_public.fallback_url  + '">' + fs_schema_public.fallback_url  + '</a>.</span>';
+		
+			jQuery ( '.fs_schema' ).html('<div class="fs_schema_error">' + message + '</div>');
+
+		}
+		
+		return browser_ok;
+	},
+	
 
 	ajax : function ( data, datatype, fn_success, fn_error ) {
 	
@@ -986,18 +1445,48 @@ fs_schema_public = {
 		
 			type: "POST", url: fsschemavars.ajaxurl, dataType: datatype, data: data, context: document.body,
 			
+			timeout: 20000,  // 20 seconds
+			
 			success: function( data) { fn_success ( data ); },
 			
 			error: function ( jqXHR, textStatus, errorThrown )  { 
+				switch ( textStatus ) {
 				
-				if ( fn_error ) { fn_error(); } 
-				
-				else { 
-				
-					fs_schema_public.display_dialogue_big_message ( 'Fel.', 'Det uppstod ett oväntat fel. Detta är den tekniska beskrivningen. Ledsen om det verkar kryptiskt:<br><br>' + textStatus + ' ' + errorThrown , true ); 
-				
-					fs_schema_public.is_busy = false;
-				
+					case 'timeout':
+					
+						fs_schema_public.close_event_after_big_message = false;
+						
+						fs_schema_public.display_dialogue_big_message ( 'Fel.', 'Det gick inte att kommunicera med servern (timeout). Vänligen försök igen.', true );
+						
+						break;
+						
+					default:
+							
+						if ( fn_error ) { fn_error(); } 
+						
+						else { 
+						
+							fs_schema_public.close_event_after_big_message = false;
+						
+							fs_schema_public.display_dialogue_big_message ( 'Fel.', 'Det uppstod ett oväntat fel. Var vänlig försök igen.' , true ); 
+								
+							// do it again and save the returned data as text in debug window
+							
+							fs_schema_public.ajax ( data, 'html', function ( data ) { 
+								
+									jQuery( '.fs_schema .debug').html( data );
+									
+								}, function ( data ) { 
+								
+									jQuery( '.fs_schema .debug').html( data );
+									
+								}
+							);
+							
+							fs_schema_public.is_busy = false;
+						
+						}
+						break;
 				}
 			}
 			

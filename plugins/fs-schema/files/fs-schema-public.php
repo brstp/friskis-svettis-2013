@@ -12,12 +12,15 @@
 
 class fs_schema_public {
 
-	private $version 			= 'BETA-version 0.96';
+	private $version 			= 'Alfa-version 0.97';
+	
+	// PRoFIt
 	
 	//private $default_username	= 'klas@klas.se';
 	
 	//private $default_password	= '20898';
 
+	// BRP
 	//private $default_username	= 'klas@ehnemark.com';
 	
 	//private $default_password	= 'test1280';	
@@ -105,7 +108,7 @@ class fs_schema_public {
 			
 			$r['date']			= date( 'Y-m-d', mktime( 0, 0, 0, date( "m", $date ), date( "d", $date ) + ( $step * $num_days ) , date( "Y", $date )));
 			
-			$r['type']			= $num_days == 7 ? 'week' : 'day';
+			$r['type']			= ( $num_days == 7 ? 'week' :( $num_days == 0 ? 'bookings' : 'day') ) ;
 			
 		} else {
 		
@@ -134,7 +137,7 @@ class fs_schema_public {
 	function render_schema ( $args ) {
 
 		$defaults = array(
-			'type'			=> 'week', 		// week, day
+			'type'			=> 'week', 		// week, day, bookings
 			'facility'		=> '',			// id, eller kommaseparerad id
 			'date'			=> '',  			// format: YYYY-MM-DD
 			'day_width'		=> '130',
@@ -160,7 +163,10 @@ class fs_schema_public {
 
 
 		// get data
-		$s = $fs_schema->data->get_schema( $r );
+		if ( $r['type'] == 'bookings' ) $s = $fs_schema->data->get_bookings( $r );
+			
+		else $s = $fs_schema->data->get_schema( $r );
+		
 
 		if ( $s['error'] != '' ) {
 		
@@ -168,9 +174,13 @@ class fs_schema_public {
 			
 				$output  		.= '<div class="fs_schema">';
 			
-				$output 		.= '<div class="fs_schema_error">Fel. ' . $s['message'] . '</div>';
+				$output 		.= '<div class="fs_schema_error">' . $s['message'];;
+				
+				if ( $settings['fs_booking_fallback_url'] != '' ) 
+				
+					$output 	.= '<span>Om felet består, prova att använda den alternativa bokningsfunktionen på <a href="' . $settings['fs_booking_fallback_url']  . '">' . $settings['fs_booking_fallback_url']  . '</a>.</span>';
 			
-				$output 		.= $this->about_html();
+				$output 		.= '</div>' . $this->about_html();
 				
 				if ( $settings['fs_schema_show_debug'] == 'YES' ) 
 			
@@ -192,7 +202,9 @@ class fs_schema_public {
 
 		
 			// some declarations
-			$num_days						= $r['type'] == 'day' ? 1 : 7;
+			$num_days						= $r['type'] == 'week' ? 7 : 1;
+			
+			$num_entries					= count( $s['schema'] );
 			
 			$weekdays 					= array ( 'ulldag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag', 'söndag' );
 			
@@ -239,9 +251,10 @@ class fs_schema_public {
 			$this_year					= date ( 'Y', $date_week_start );
 			
 			$r['date']					= date ( 'Y-m-d', $s['start_date ']);
+
 			
 			// build the class name based on settings
-			$class_name					= 'fs_schema ' . ( $num_days == 1 ? 'day' : 'week' ) . ( $r['enableweek'] == true ? ' enableweek' : '' ) . ( $r['enableday'] == true ? ' enableday' : '' );
+			$class_name					= 'fs_schema ' . $r['type'] . ( $r['enableweek'] == true ? ' enableweek' : '' ) . ( $r['enableday'] == true ? ' enableday' : '' );
 			
 
 			if ( $r['no_wrapper'] === false ) {
@@ -250,7 +263,18 @@ class fs_schema_public {
 				
 				$output					.= '<div class="navigation"><div class="fs_button previous">&lt;&nbsp;Föregående ' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</div>';
 				
-				if ( $r['booking'] == '1' )	$output .= '<div class="login_info fs_button">Logga in...</div>';
+				
+				if ( $r['booking'] == '1' )	
+				
+					$output 				.= '<div class="login_info fs_button">Logga in...</div>';
+				
+				if ( $settings['fs_schema_show_my_bookings'] == 'YES' ) {
+				
+					$output 				.= '<div class="my_bookings fs_button">Mina bokningar</div>';
+					
+					$output 				.= '<div class="update_schema fs_button">Refresh</div>';
+					
+				}
 				
 				$output 					.= '<div class="change_to_week fs_button ' . ( $r['enableweek'] != true ? ' disabled' : '' ) . '" ' .  ( $r['type'] == 'week' ? 'style="display: none;" ' : '' ) . '>Växla till veckoschema</div>';
 				
@@ -356,16 +380,22 @@ class fs_schema_public {
 				$day_date 		= $num_days == 7 ? mktime( 0, 0, 0, date ( "m", $date_week_start  ), date( "d", $date_week_start ) + $d - 1 , date( "Y", $date_week_start )) : date ( 'U', $s['start_date ']);
 				
 				$today_class		= $today_date == $day_date ? ' today' : '';
+				
+				$day_height		= ( $r['type'] == 'week' ? ( $day_hour_info[ $latest_hour ]['acc_height'] + $day_header_height_px + $day_hour_info[ $latest_hour]['height'] + 5 ) : ( $num_entries * ( $hour_height_px + 1 ) ) + 20 );
 			
-				$output 			.= '<div class="day day' . $d . ' ' . $today_class . '" data-day="' . $d . '" style="height: ' . ( $day_hour_info[ $latest_hour ]['acc_height'] + $day_header_height_px + $day_hour_info[ $latest_hour]['height'] + 5 ). 'px; ';
+				$output 			.= '<div class="day day' . $d . ' ' . $today_class . '" data-day="' . $d . '" style="height: ' . $day_height . 'px; ';
 				
 				$output 			.= ( $num_days == 1 ? '' : 'width: ' . $day_width_px . 'px;' ) . ' ">';
 				
-				$output 			.= '<div class="head">' . ( $num_days == 7 ? $weekdays[ $d ] : $weekdays[ date ( 'N' , $s['start_date '] )] ) . ' ' . date('j/n', $day_date) . '</div>';
+				$head_title		= ( $r['type'] == 'week' ?  $weekdays[ $d ] . ' ' . date('j/n', $day_date) : ( $r['type'] == 'day' ? $weekdays[ date ( 'N' , $s['start_date '] )] . ' ' . date('j/n', $day_date) : 'Mina bokningar (under utveckling - får ej användas live)' ) );
+				
+				$output 			.= '<div class="head">' . $head_title . '</div>';
 				
 				$hours_field		= '';
 				
 				$entries_field 	= '';
+				
+				$entry_count 		= 0;
 				
 
 				// loop thru every hour in the day
@@ -377,7 +407,7 @@ class fs_schema_public {
 
 					if ( isset( $week_activities[$d][$h] ) && is_array( $week_activities[$d][$h] )) {
 					
-						$entry_count = 0;
+						$hour_entry_count = 0;
 						
 						$hour_entries = $week_activities[$d][$h];
 						
@@ -385,10 +415,13 @@ class fs_schema_public {
 					
 						foreach ( $hour_entries as $entry ) {	
 				
-							$entry_count++; 
+							$entry_count++;
+							
+							$hour_entry_count++; 
+							
 						
 							// entry data
-							$entry_class 				= $products = '';
+							$entry_class 				= $products = $title = $booking_info = '';
 							
 							if ( is_Array ( $entry['products']  )) {
 							
@@ -403,9 +436,13 @@ class fs_schema_public {
 							
 							$entry_data 			    .= ' data-staff="' . $entry['staff'] . '" data-room="' . $entry['room'] . '" data-freeslots="' . $entry['freeslots'] . '"';
 							
-							$entry_data 			    .= ' data-bookableslots="' . $entry['bookableslots'] . '" data-startdate="' . $weekdays[ $d ] . ' ' . date('j/n Y', $day_date)  . '"';
+							$entry_data 			    .= ' data-bookableslots="' . $entry['bookableslots'] . '" data-dropinslots="' . $entry['dropinslots'] . '"';
 							
-							$entry_data 			    .= ' data-bookingid="' . $entry['bookingid'] . '" data-h="' . $h . '"';
+							$entry_data 			    .= ' data-waitinglistsize="' . $entry['waitinglistsize'] . '" data-waitinglistposition="' . $entry['waitinglistposition'] . '"';
+							
+							$entry_data 			    .= ' data-startdate="' . $weekdays[ $d ] . ' ' . date('j/n Y', $day_date)  . '" data-datestamp="' . date( 'Y-m-d', $day_date)  . '"';
+							
+							$entry_data 			    .= ' data-bookingid="' . $entry['bookingid'] . '" data-h="' . $h . '" data-bookingtype="' . $entry['bookingtype'] . '"';
 							
 							$entry_data			    .= ' data-status="' . $entry['status'] . '"';
 							
@@ -418,36 +455,127 @@ class fs_schema_public {
 							$entry_width 				= ( $num_days == 1 ? 'width: 100%;' : 'width: ' . ( $day_width_px ) . 'px;' );
 
 
-							// calculate entry position from top, based on what time it starts
+							// calculate entry position from top
 							$entry_top				= '';
 							
-							if ( $h > $earliest_hour ) 	$entry_top = 'top: ' . (int)((($day_hour_info[ $h ]['acc_height']) + ( $entry_count -1) * $hour_height_px ) + $entry_count  ) . 'px;'; //  
+							if ( $h > $earliest_hour ) {
+							
+								// if week, based on what time it starts
+								if ( $r['type'] == 'week' )
+								
+									$entry_top = 'top: ' . (int)((($day_hour_info[ $h ]['acc_height']) + ( $hour_entry_count -1) * $hour_height_px ) + $hour_entry_count  ) . 'px; ';
+								
+								// if day or bookings, just add height to it
+								else
+								
+									$entry_top = 'top: ' . ( $entry_count - 1 ) * $hour_height_px . 'px; '; 
+							}
+							
 							
 							// is this entry before now, add a before now class
 							if ( $entry['_before_now'] === true ) {
 							
 								$entry_class			.= ' before_now';
-								$tooltip				= ' title="Den här händelsen har redan varit" ';
+								
+								$title				= ' Den här händelsen har redan varit. ';
 							
 							} else {
 							
 								$entry_class			.= ' openable';
-								$tooltip				= '';
-							}
-							
-							
-							// if this entry is booked by the logged in user
-							if ( $entry['bookingid'] != '' ) {
-							
-								$entry_class			.= ' booked';
 								
+								
+								// if user has booked this event
+								
+								if ( $entry['bookingid'] != '' && $entry['_before_now'] !== true && $entry['status'] != 'cancelled' ) {
+									
+									switch ( $entry['bookingtype'] ) {
+									
+										case 'ordinary':
+										default:
+										
+											$entry_class			.= ' booked';
+											
+											$title				.= 'Du är inbokad på det här passet. ';
+											
+											$booking_info 			.= 'Du är inbokad. ';										
+											
+											break;
+											
+										case 'waitinglist':
+										
+											$entry_class			.= ' reserve';
+											
+											$title				.= 'Du har reservplats ' . $entry['waitinglistposition'] . '  av ' . $entry['waitinglistposition'];
+											
+											$booking_info 			.= 'Du har reservplats ' . $entry['waitinglistposition'] . '  av ' . $entry['waitinglistposition'];										
+											
+											break;
+									} 
+
+								} else {
+									
+									switch ( $entry['status'] ) {
+									
+										case 'full':
+										
+											$entry_class			.= ' fully_booked';
+											
+											$title				.= 'Inga lediga platser. ';
+										
+											break;
+											
+										case 'dropin':
+										
+											$entry_class			.= ' dropin';
+											
+											$title				.= 'Endast dropin. ';
+										
+											break;
+											
+										case 'notbookable':
+										
+											$entry_class			.= ' notbookable';
+											
+											$title				.= 'Går inte att boka. ';
+										
+											break;
+											
+										case 'cancelled':
+										
+											$entry_class			.= ' cancelled';
+											
+											$title				.= 'Inställd. ';
+										
+											break;
+											
+										case 'closed':
+										
+											$entry_class			.= ' notbookable';
+											
+											$title				.= 'Stängt för bokning. ';
+											
+											break;
+											
+										case 'not_opened_yet':
+										
+											$entry_class			.= ' notbookable';
+											
+											$title				.= 'Går inte att boka än. ';
+											
+											break;
+									}
+								}
 							}
 							
 							
 							// create the entry html object
-							$entries_field 			.= '<div class="entry' . $entry_class . '" style="' . $entry_top . $entry_width . $entry_height . '"' . $entry_data . $tooltip . '>';
+							$entries_field 			.= '<div class="entry' . $entry_class . '" title="' . $title . '" style="' . $entry_top . $entry_width . $entry_height . '"' . $entry_data  . '>';
 							
-							$entries_field 			.= '<div class="time">' . str_replace ( ':', '.', $entry['starttime']) . '-' . str_replace ( ':', '.', $entry['endtime'])  . '</div>';
+							$entries_field 			.= '<div class="time">';
+							
+							if ( $r['type'] == 'bookings' ) $entries_field .= $weekdays[ date ( 'N' , $s['start_date '] )] . ' ' . date('j/n, Y', $day_date) . ' kl. ';
+							
+							$entries_field 			.= str_replace ( ':', '.', $entry['starttime']) . '-' . str_replace ( ':', '.', $entry['endtime'])  . '</div>';
 							
 							$entries_field 			.= '<div class="product">' . $products . '</div>';
 							
@@ -457,13 +585,17 @@ class fs_schema_public {
 							
 							if ( $entry['room'] != '' ) 	$entries_field .= ' i ' . $entry['room'];
 							
-							$entries_field 			.= '</div></div>';
+							$entries_field 			.= '</div>';
+							
+							$entries_field 			.= '<div class="booking_info">' .  $booking_info . '</div>';
+							
+							$entries_field 			.= '</div>';
 							
 						}
 					}
 				}
 				
-				$output 		.= '<div class="hours" style="' . ( $num_days == 1 ? '' : 'width: ' . $day_width_px . 'px;' ) . '">' . $hours_field . '</div><div class="entries">' . $entries_field . '</div></div>';
+				$output 	.= '<div class="hours" style="' . ( $num_days == 1 ? '' : 'width: ' . $day_width_px . 'px;' ) . '">' . $hours_field . '</div><div class="entries">' . $entries_field . '</div></div>';
 			}
 			
 			if ( $settings['fs_schema_show_debug'] == 'YES' )
@@ -484,7 +616,12 @@ class fs_schema_public {
 				
 				$output 		.= '<div class="week_overlay">v52, 2013</div>';
 				
-				$output 		.= '<div class="week_progress"><img src="' . plugins_url('fs-schema') . '/files/fs-schema-progress.gif" /></div>';
+				$output 		.= '<div class="week_progress"><div></div></div>';
+				
+				$output 		.= '<div class="big_message week_message"><div class="head">Fel.</div><div class="info">Meddelande</div><div class="fs_button close_btn">OK</div></div>';
+				
+				$output 		.= '<div class="fs_booking_fallback_url">' . $settings['fs_booking_fallback_url']  . '</div>';
+			
 				
 				$output 		.= '<div class="login dialogue">
 									<div class="header">Logga in</div>
@@ -507,20 +644,25 @@ class fs_schema_public {
 				
 				$output 		.= '<div class="open_event dialogue">
 								<div class="header">Rubrik</div>
-								<div class="date">date:<span>x</span></div>
+								<div class="date">Datum:<span>x</span></div>
 								<div class="time">Tid:<span>x</span></div>
 								<div class="room">Lokal:<span>x</span></div>
 								<div class="staff">Ledare:<span>x</span></div>
-								<div class="freeslots">Lediga platser:<span>x</span></div>';
+								<div class="bookableslots">Lediga platser:<span>x</span></div>
+								<div class="waitinglist">Reservkö:<span>x</span></div>
+								<div class="divider"></div>';
 								
 				if ( $r['booking'] == '1' ) {				
 				
-					$output 	 .= '<div class="loggedin"></div>
-								<div class="booked_info">Du är inbokad.</div>
-								<div class="entry_info_dropin">På detta pass gäller endast dropin.</div>
-								<div class="entry_info_full">Passet är fullbokat.</div>
-								<div class="entry_info_cancelled">Passet är inställt.</div>
-								<div class="entry_info_not_bookable">Passet går inte att boka för tillfället.</div>
+					$output 	 .= '<div class="booked_info">Du är inbokad.</div>
+								<div class="entry_info entry_info_dropin">På detta pass gäller endast dropin.</div>
+								<div class="entry_info entry_info_full">Passet är fullbokat.</div>
+								<div class="entry_info entry_info_reserve">Fullt. Du kan boka en reservplats.</div>
+								<div class="entry_info entry_info_cancelled">Passet är inställt.</div>
+								<div class="entry_info entry_info_not_bookable">Passet går inte att boka för tillfället.</div>
+								<div class="entry_info entry_info_not_opened_yet">Passet går inte att boka än.</div>
+								<div class="entry_info entry_info_closed">Passet är stängt för bokning.</div>
+								<div class="loggedin"></div>
 								<div class="loginform">
 									<div class="username">Användarnamn:<span><input type="text" value="' . $this->default_username . '" /></span></div>
 									<div class="password">Lösenord:<span><input type="password" value="' . $this->default_password . '" /></span></div>
@@ -528,12 +670,14 @@ class fs_schema_public {
 								<div class="buttons">
 									<div class="fs_button logout">Logga ut</div>
 									<div class="fs_button book_event">Boka</div>
+									<div class="fs_button book_waitinglist">Boka reservplats</div>
 									<div class="fs_button unbook_event">Avboka</div>
 									<div class="fs_button login_book_event">Logga in och boka</div>
+									<div class="fs_button login_book_waitinglist">Boka reservplats</div>
 									<div class="fs_button close_open_event">Stäng</div>
 								</div>';
 								
-				} else {
+				} else { 
 				
 					$output 	.= ' <div class="no_booking">Schemat visas utan möjlighet till booking.</div>
 								<div class="buttons">
@@ -597,11 +741,50 @@ class fs_schema_public {
 
 	}
 	
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// BOOK WAITINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public function book_waitinglist ( $username, $password, $activity_id, $session_key ) {
+
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+		
+		$return = array( 'error' => '', 'message' => '', 'debug' => '' );
+		
+		if ( $username == '' || $password == '' ) {
+		
+			$return['error'] 		= 'YES';
+			
+			$return['message'] 		= 'Användarnamn och eller lösenord saknas.';
+			
+		} else if ( $activity_id == '' ) {
+		
+			$return['error'] 		= 'YES';
+			
+			$return['message'] 		= 'Information om aktiviteten saknas.';
+			
+		} else {
+		
+			$return = $fs_schema->data->book_waitinglist ( $username, $password, $activity_id, $session_key );
+			
+		}
+		
+		return $return;
+
+	}
+	
 
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
-	// BOOK ACTIVITY
+	// UNBOOK ACTIVITY
 	//
 	////////////////////////////////////////////////////////////////////////////////
 		
@@ -635,7 +818,46 @@ class fs_schema_public {
 
 	}
 	
-	
+
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// UNBOOK WAITINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public function unbook_waitinglist ( $username, $password, $bookingid, $session_key ) {
+
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+		
+		$return = array( 'error' => '', 'message' => '', 'debug' => '' );
+		
+		if ( $username == '' || $password == '' ) {
+		
+			$return['error'] 		= 'YES';
+			
+			$return['message'] 		= 'Användarnamn och eller lösenord saknas.';
+			
+		} else if ( $bookingid == '' ) {
+		
+			$return['error'] 		= 'YES';
+			
+			$return['message'] 		= 'Information om bookingen saknas.';
+			
+		} else {
+		
+			$return = $fs_schema->data->unbook_waitinglist ( $username, $password, $bookingid, $session_key );
+			
+		}
+		
+		return $return;
+
+	}
+
+
 	
 	////////////////////////////////////////////////////////////////////////////////
 	//

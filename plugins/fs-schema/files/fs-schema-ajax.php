@@ -49,8 +49,18 @@ class fs_schema_ajax {
 		add_action('wp_ajax_unbook_activity', 			array ( $this, 'unbook_activity' ));
 		
 		add_action('wp_ajax_nopriv_unbook_activity', 	array ( $this, 'unbook_activity' ));
-
-
+		
+		
+		add_action('wp_ajax_book_waitinglist', 			array ( $this, 'book_waitinglist' ));
+		
+		add_action('wp_ajax_nopriv_book_waitinglist', 	array ( $this, 'book_waitinglist' ));
+		
+		
+		add_action('wp_ajax_unbook_waitinglist', 		array ( $this, 'unbook_waitinglist' ));
+		
+		add_action('wp_ajax_nopriv_unbook_waitinglist', 	array ( $this, 'unbook_waitinglist' ));
+		
+	
 		add_action('wp_ajax_walk_schema', 				array ( $this, 'walk_schema' ));
 		
 		add_action('wp_ajax_nopriv_walk_schema', 		array ( $this, 'walk_schema' ));
@@ -141,8 +151,9 @@ class fs_schema_ajax {
 		
 		die();
 	}
-	
-	
+
+
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
@@ -164,11 +175,58 @@ class fs_schema_ajax {
 		
 		echo json_encode( $fs_schema->public->unbook_activity ( $username, $password, $bookingid, $session_key ));
 		
-		//echo fs_schema::debug ( $fs_schema->public->unbook_activity ( $username, $password, $bookingid ));
-		
 		die();
 	}	
 
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// BOOK WAITINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+
+	function book_waitinglist () { 
+	
+		global $fs_schema;
+		
+		$username 		= isset( $_POST[ 'username' ] )? $_POST[ 'username' ] 		: '';
+		
+		$password 		= isset( $_POST[ 'password' ] )? $_POST[ 'password' ] 		: '';
+		
+		$activity_id 		= isset( $_POST[ 'activityid' ] )? $_POST[ 'activityid' ] 	: '';
+		
+		$session_key 		= isset( $_POST[ 'session_key' ] )	? $_POST[ 'session_key' ] : '';
+		
+		echo json_encode( $fs_schema->public->book_waitinglist ( $username, $password, $activity_id, $session_key ));
+		
+		die();
+	}
+		
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// UNBOOK WAITINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	
+	function unbook_waitinglist () {
+	
+		global $fs_schema;
+		
+		$username 		= isset( $_POST[ 'username' ] )? $_POST[ 'username' ] 		: '';
+		
+		$password 		= isset( $_POST[ 'password' ] )? $_POST[ 'password' ] 		: '';
+		
+		$bookingid 		= isset( $_POST[ 'bookingid' ] )? $_POST[ 'bookingid' ] 	: '';
+		
+		$session_key 		= isset( $_POST[ 'session_key' ] )	? $_POST[ 'session_key' ] : '';
+		
+		echo json_encode( $fs_schema->public->unbook_waitinglist ( $username, $password, $bookingid, $session_key));
+		
+		die();
+	}
+	
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -217,6 +275,8 @@ class fs_schema_ajax {
 		$password 		= isset( $_POST[ 'password' ] )? $_POST[ 'password' ] : '';
 
 		echo json_encode( $fs_schema->public->login ( $username, $password ));
+		
+		//echo fs_schema::debug( $fs_schema->public->login ( $username, $password ));
 		
 		die();
 	}	

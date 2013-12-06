@@ -57,8 +57,6 @@ class fs_schema_profit {
 		$sub_cache_name			= 'schema_' . $r['type'] . '_' . $r['facility'] . '_' . $r['date'];
 
 		//return $this->update_schema( $r );
-		 
-		
 
 		// if username and password, don't cache this schema
 		if ( $r['username'] != '' || $r['password'] != '' ) {
@@ -81,6 +79,141 @@ class fs_schema_profit {
 		return $schema;
 			
 	}
+
+
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// UPDATE SCHEMA INTO CACHE, return a serialized object
+	//
+	// %1$s in xml is session key
+	//
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	public function update_schema ( $r ) {
+	
+		$user_bookings = $user_reserve_bookings = array();
+	
+		// if no username, get schema as guest
+		if ( $r['username'] == '' || $r['password'] == '' || $r['session_key'] == '' ) {
+		
+			$this->debug 	 .= '<br>Påbörjar anrop till Profit som Gäst';
+			
+			$xmls  		  = '<ProfitAndroid command="FetchBookableObjectsFiltered">
+								<GUID>%1$s</GUID>
+								<START>' . $r['date_stamp'] . '</START>
+								<END>' . $r['date_stamp_end'] . '</END>
+								<GLOBALUNITID>-1</GLOBALUNITID>
+								<ACTIVITYID>-1</ACTIVITYID>
+								<ACTIVITYCATEGORYID>-1</ACTIVITYCATEGORYID>
+								<LEADERFREETEXT></LEADERFREETEXT>
+							</ProfitAndroid>';
+			
+			$result 		  = $this->make_soap_call( $xmls );
+		
+		} else {
+
+			$this->debug 	 .= '<br>Påbörjar anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'];
+					
+			$xmls  		  = '<ProfitAndroid command="FetchBookableObjects">
+								<GUID>%1$s</GUID>
+								<Date>' . $r['date_stamp'] . '</Date>
+								<User>' . $r['username'] . '</User>
+								<Password>' . $r['password'] . '</Password>
+							</ProfitAndroid>';
+		
+			$result 		  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
+			
+			
+			
+			// get user bookings so we can mark what events this user is booked at
+			
+			$this->debug 	 .= '<br>Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta bokningarna';
+
+			$xmls  		  = '<ProfitAndroid command="FetchBookings">
+								<GUID>%1$s</GUID>
+								<Date>' . $r['date_stamp'] . '</Date>
+								<User>' . $r['username'] . '</User>
+								<Password>' . $r['password'] . '</Password>
+							</ProfitAndroid>';
+			
+			$book_result 	  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
+			
+			$this->debug 	 .= '<br>Resultat från bokningen: ' . print_r( $book_result, true) ;
+			
+			if ( $book_result['error'] != '' ) {
+			
+				return $book_result;
+			
+			} else {
+			
+				if ( isset ( $book_result['xml']->AndroidBookingObjects->Booking )) {
+			
+					foreach ( $book_result['xml']->AndroidBookingObjects->Booking as $booking ){
+					
+						$user_bookings[ (string) $booking->bookableobjectid ] = (string) $booking->BOOKINGID;
+					}
+				}
+			}
+			
+			
+			// get user waitinglist bookings so we can mark what events this user is on waiting list
+			
+			$this->debug 	 .= '<br>Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta reservlistbokningarna';
+
+			$xmls  		  = '<ProfitAndroid command="FetchReserveBookings">
+								<GUID>%1$s</GUID>
+								<Date>' . $r['date_stamp'] . '</Date>
+								<User>' . $r['username'] . '</User>
+								<Password>' . $r['password'] . '</Password>
+							</ProfitAndroid>';
+			
+			$book_result 	  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
+			
+			$this->debug 	 .= '<br>Resultat från bokningen: ' . print_r( $book_result, true) ;
+			
+			if ( $book_result['error'] != '' ) {
+			
+				return $book_result;
+			
+			} else {
+			
+				if ( isset ( $book_result['xml']->AndroidBookingObjects->Booking )) {
+			
+					foreach ( $book_result['xml']->AndroidBookingObjects->Booking as $booking ){
+					
+						$user_reserve_bookings[ (string) $booking->bookableobjectid ] = array ( 
+						
+							'bookingid' 	=> (string) $booking->BOOKINGID,
+							
+							'position' 	=> (string) $booking->POSITION
+						);
+					}
+				}
+			}
+			
+		}
+
+
+		if ( $result['error'] == '' && !isset ( $result['xml']->AndroidBookableObjects )) {  // ->bo
+			
+			$r['error'] 		= 'YES';
+			
+			$r['message'] 		= 'Schemat för aktuell period är tomt.';							
+			
+		} else if ( $result['error'] != '' ) {
+		
+			$r = $result;
+		
+		} else {
+
+			$r['schema'] 		= $this->add_schema_xml ( $result['xml']->AndroidBookableObjects->bo, 'schema', $user_bookings, $user_reserve_bookings );
+		}
+		
+		return $r;
+	}
+	
 	
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -119,7 +252,7 @@ class fs_schema_profit {
 			} else {
 			
 				// PROFIT DONT RETURN ANY BOOKING ID. What kind of booking system is this???
-				$result['bookingid']	= '';
+				$result['bookingid']	= 'x';
 			}
 		
 		} else {
@@ -150,6 +283,7 @@ class fs_schema_profit {
 		
 		$settings = $fs_schema->data->settings();
 
+		// try to make a "debooking"
 		$xmls = '<ProfitAndroid command="DeBook">
 			<GUID>%1$s</GUID>
 			<BOOKINGID>' . $bookingid . '</BOOKINGID>
@@ -188,7 +322,106 @@ class fs_schema_profit {
 		return $result;
 
 	}		
+
+
 	
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// BOOK WAITINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public function book_waitinglist ( $username, $password, $activity_id, $session_key ) {
+
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+
+		$xmls = '<ProfitAndroid command="BookReserv">
+			<GUID>%1$s</GUID>
+			<BOID>' . $activity_id . '</BOID>
+			<User>' . $username . '</User>
+			<Password>' . $password . '</Password>
+		</ProfitAndroid>';
+		
+		$this->debug 				.= '<br>Påbörjar bokning av reservplats på aktivitet hos Profit som inloggad användare ' . $username;
+		
+		$result 					= $this->make_soap_call ( $xmls, $session_key, $username, $password );
+		
+		if ( $result['error'] 		== '' && isset ( $result['xml']->status )) {
+		
+			$this->debug .= '<br>We have a response with status ' . $result['xml']->status;
+		
+			if ( $result['xml']->status != 'OK' ) {
+		
+				$result['error'] 		= 'YES';
+			
+				$result['message'] 		= 'Det gick inte att boka. ' . $result['xml']->status . '.';
+			
+			} else {
+			
+				// PROFIT DONT RETURN ANY BOOKING ID. What kind of booking system is this???
+				$result['bookingid']	= '';
+			}
+		
+		} else {
+		
+			$this->debug .= '<br>Profit didnt give us any status in the response.';
+		
+			$result['error'] 		= 'YES';
+				
+			$result['message'] 		= 'Det gick inte att boka. Profit Bokningssystem svarade inte.';		
+		}
+		
+		$result['debug'] 			= $this->debug . '<br>' . print_r($result, true);
+		
+		return $result;	
+	}
+
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// UNBOOK WAITINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public function unbook_waitinglist ( $username, $password, $bookingid, $session_key ) {
+
+		global $fs_schema;
+		
+		$settings 		   = $fs_schema->data->settings();
+	
+
+		$xmls			   = '<ProfitAndroid command="DeBookReserve">
+								<GUID>%1$s</GUID>
+								<RESERVEBOOKINGID>' . $bookingid. '</RESERVEBOOKINGID>
+								<User>' . $username . '</User>
+								<Password>' . $password . '</Password>
+							</ProfitAndroid>';
+		
+		$this->debug 		  .= '<br>Påbörjar förfrågan om att avboka reservbokningen ' . $bookingid . ' hos Profit som inloggad användare ' . $username;
+		
+		$result 		   	  = $this->make_soap_call( $xmls, $session_key, $username, $password );
+		
+		$this->debug 		  .= '<br>Resultat från bokningen: ' . print_r( $result, true) ;
+		
+		if ( $result['xml']->status != 'OK' ) {
+	
+			$result['error']   = 'YES';
+		
+			$result['message'] = 'Det gick inte att avboka. ' . $result['xml']->status . '.';
+		
+		} 
+		
+		$result['debug'] 	   = $this->debug . '<br>' . print_r($result, true);
+	
+		return $result;
+	}
+
+
+
 	//////////////////////////////////////////////////////////////////////////////
 	//
 	// LOGIN
@@ -242,160 +475,138 @@ class fs_schema_profit {
 		return $result;
 	}
 	
-	
+
+
+
 	//////////////////////////////////////////////////////////////////////////////
 	//
-	// UPDATE SCHEMA INTO CACHE, return a serialized object
-	//
-	// %1$s in xml is session key
+	// GET BOOKINGS
 	//
 	//////////////////////////////////////////////////////////////////////////////
 	
-	
-	public function update_schema ( $r ) {
-	
+	public function get_bookings ( $r ) {
+
 		$user_bookings = array();
 	
-		// if no username, get schema as guest
-		if ( $r['username'] == '' || $r['password'] == '' || $r['session_key'] == '' ) {
+		// get user bookings so we can mark what events this user is booked at
 		
-			$this->debug 		.= '<br>Påbörjar anrop till Profit som Gäst';
-			
-			$xmls = '<ProfitAndroid command="FetchBookableObjectsFiltered">
-				<GUID>%1$s</GUID>
-				<START>' . $r['date_stamp'] . '</START>
-				<END>' . $r['date_stamp_end'] . '</END>
-				<GLOBALUNITID>-1</GLOBALUNITID>
-				<ACTIVITYID>-1</ACTIVITYID>
-				<ACTIVITYCATEGORYID>-1</ACTIVITYCATEGORYID>
-				<LEADERFREETEXT></LEADERFREETEXT>
-			</ProfitAndroid>';
-			
-			$result 			= $this->make_soap_call( $xmls );
-		
-		} else {
+		$this->debug 		.= '<br>Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta bokningarna';
 
-			$this->debug 		.= '<br>Påbörjar anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'];
-			
-			$xmls = '<ProfitAndroid command="FetchBookableObjects">
-				<GUID>%1$s</GUID>
-				<Date>' . $r['date_stamp'] . '</Date>
-				<User>' . $r['username'] . '</User>
-				<Password>' . $r['password'] . '</Password>
-			</ProfitAndroid>';
+		$xmls = '<ProfitAndroid command="FetchBookings">
+			<GUID>%1$s</GUID>
+			<Date>' . $r['date_stamp'] . '</Date>
+			<User>' . $r['username'] . '</User>
+			<Password>' . $r['password'] . '</Password>
+		</ProfitAndroid>';
 		
-			$result 			= $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
-			
-			// get user bookings so we can mark what events this user is booked at
-			
-			$this->debug 		.= '<br>Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta bokningarna';
-
-			$xmls = '<ProfitAndroid command="FetchBookings">
-				<GUID>%1$s</GUID>
-				<Date>' . $r['date_stamp'] . '</Date>
-				<User>' . $r['username'] . '</User>
-				<Password>' . $r['password'] . '</Password>
-			</ProfitAndroid>';
-			
-			$book_result 			= $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
-			
-			$this->debug 		.= '<br>Resultat från bokningen: ' . print_r( $book_result, true) ;
-			
-			if ( $book_result['error'] != '' ) {
-			
-				return $book_result;
-			
-			} else {
-			
-				if ( isset ( $book_result['xml']->AndroidBookingObjects->Booking )) {
-			
-					foreach ( $book_result['xml']->AndroidBookingObjects->Booking as $booking ){
-					
-						$user_bookings[ (string) $booking->bookableobjectid ] = (string) $booking->BOOKINGID;
-					}
-				}
-			}
-		}
-
-		if ( $result['error'] 	== '' && !isset ( $result['xml']->AndroidBookableObjects )) {  // ->bo
-			
-			$r['error'] 		= 'YES';
-			
-			$r['message'] 		= 'Schemat för aktuell period är tomt.';							
-			
-		} else if ( $result['error'] != '' ) {
+		$book_result 			= $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
 		
-			$r = $result;
+		$this->debug 		.= '<br>Resultat från bokningen: ' . print_r( $book_result, true) ;
+		
+		if ( $book_result['error'] != '' ) {
+		
+			return $book_result;
 		
 		} else {
-
-			// loop thru xml and store data into array
-			//$schema = array();
-			
-			foreach ( $result['xml']->AndroidBookableObjects->bo as $activity ){
-
-				
-				// fix dates
-				$start_time_stamp			= strtotime ( (string) $activity->start );
-				
-				$startdate 				= date( 'Y-m-d', $start_time_stamp );
-				
-				$starttime 				= date( 'G:i', $start_time_stamp );
-				
-				$end_time_stamp			= strtotime ( (string) $activity->e );
-				
-				$enddate 					= date( 'Y-m-d', $end_time_stamp );
-				
-				$endtime 					= date( 'G:i', $end_time_stamp );
-				
-				// put it together
-				array_push( $r['schema'],
-				
-					array(
-					
-						'id'				=> (string) $activity->BOID,
-						
-						'products'		=> (string) $activity->desc,
-						
-						'resources'		=> '',
-						
-						'staff'			=> (string) $activity->l,
-						
-						'room'			=> (string) $activity->r,
-						
-						'businessuniidt'	=> '',
-						
-						'businessunit'		=> '',
-						
-						'startdate'		=> $startdate,
-						
-						'starttime'		=> $starttime,
-						
-						'startdatetime'	=> (string) $activity->start,
-						
-						'enddate'			=> $enddate,
-						
-						'endtime'			=> $endtime,
-						
-						'enddatetime'		=> (string) $activity->e,
-						
-						'freeslots'		=> (string) $activity->sl,
-						
-						'bookableslots'	=> (string) $activity->rsl,
-						
-						'bookingid'		=> array_key_exists ( (string) $activity->BOID, $user_bookings) ? $user_bookings [ (string) $activity->BOID ] : '',
-						
-						'status'			=> strtolower( (string) $activity->bookbuttonstatus )
-					)
-				);
-			}
+		
+			$r['schema'] = $this->add_schema_xml ( $book_result['xml']->AndroidBookingObjects->Booking, 'bookings' );
 		}
 		
 		return $r;
+		
 	}
 	
-
 	
+
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// PRIVATE FUNCTINO ADD SCHEMA XML
+	//
+	//////////////////////////////////////////////////////////////////////////////
+	
+	private function add_schema_xml ( $activites_nodes, $xml_type, $user_bookings = array(), $user_reserve_bookings = array() ) {
+
+		$schema = array();
+		
+		foreach ( $activites_nodes as $activity ){
+
+			// fix dates
+			$start_time_stamp			= strtotime ( (string) $activity->start );
+			
+			$startdate 				= date( 'Y-m-d', $start_time_stamp );
+			
+			$starttime 				= date( 'G:i', $start_time_stamp );
+			
+			$end_time_stamp			= strtotime ( (string) $activity->e );
+			
+			$enddate 					= date( 'Y-m-d', $end_time_stamp );
+			
+			$endtime 					= date( 'G:i', $end_time_stamp );
+			
+			
+			// fix booking id and bookingtype
+			
+			$booking_id 		= array_key_exists ( (string) $activity->BOID, $user_bookings) ? $user_bookings [ (string) $activity->BOID ] : '';
+			
+			$reserve_booking_id = array_key_exists ( (string) $activity->BOID, $user_reserve_bookings) ? $user_reserve_bookings [ (string) $activity->BOID ]['bookingid'] : '';
+			
+			$reserve_position	= array_key_exists ( (string) $activity->BOID, $user_reserve_bookings) ? $user_reserve_bookings [ (string) $activity->BOID ]['position'] : '';
+			
+			$booking_type		= $booking_id != '' ? 'ordinary' : ( $reserve_booking_id != '' ? 'waitinglist' : '' );
+
+			
+			// put it together
+			array_push( $schema,
+			
+				array(
+				
+					'id'					=> (string) $activity->BOID,
+					
+					'products'			=> (string) $activity->desc,
+					
+					'resources'			=> '',
+					
+					'staff'				=> (string) $activity->l,
+					
+					'room'				=> (string) $activity->r,
+					
+					'businessuniidt'		=> '',
+					
+					'businessunit'			=> '',
+					
+					'startdate'			=> $startdate,
+					
+					'starttime'			=> $starttime,
+					
+					'startdatetime'		=> (string) $activity->start,
+					
+					'enddate'				=> $enddate,
+					
+					'endtime'				=> $endtime,
+					
+					'enddatetime'			=> (string) $activity->e,
+					
+					'freeslots'			=> (string) $activity->sl,
+					
+					'bookableslots'		=> (string) $activity->rsl,
+					
+					'dropinslots'			=> '-1', // unknown
+					
+					'waitinglistsize'		=> '-1', // unknown
+					
+					'waitinglistposition'	=> $reserve_position,
+					
+					'bookingid'			=> $booking_id, 
+					
+					'bookingtype'			=> $booking_type,
+					
+					'status'				=> strtolower( (string) $activity->bookbuttonstatus )
+				)
+			);
+		}
+		
+		return $schema;
+	}
 
 	
 	////////////////////////////////////////////////////////////////////////////////
@@ -409,7 +620,7 @@ class fs_schema_profit {
 	
 		$this->debug .= '<br>Make soap call, session_key: ' . $session_key . ', username: ' . $username . ', password:' . $password;
 	
-		$output = array( 'error' => '', 'message' => '', 'xml' => false, 'new_session_key' => '' );
+		$output = array( 'error' => '', 'message' => '', 'xml' => false, 'new_session_key' => '', 'debug' => '' );
 	
 		// login as guest, get current session_guid from database
 		if ( $username == '' && $password == '' ) {

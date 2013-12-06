@@ -72,6 +72,76 @@ class fs_schema_brp {
 	}
 
 
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// UPDATE SCHEMA INTO CACHE, return a serialized object
+	//
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	public function update_schema ( $r ) {
+	
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+		
+		$r['error'] 				= '';
+		
+		$r['message'] 				= '';
+		
+		$r['schema']				= array();
+		
+		
+
+		// fix business units ids
+		if ( $r[ 'facility' ] != '' )
+		
+			$r['businessunitids'] 	= $r[ 'facility' ];
+		
+		else 
+		
+			$r['businessunitids'] 	= $settings[ 'fs_booking_bpi_businessunitids' ];
+
+		// 
+		$r['url']	 			= $settings[ 'fs_schema_brp_server_url' ] . 'activities.xml?apikey=' . $settings[ 'fs_booking_bpi_api_key' ] . '&businessunitids=' . $r['businessunitids'] . '&startdate=' . $r['date_stamp'] . '&enddate=' . $r['date_stamp_end']; //&product=12,23
+		
+		if ( $r['username'] != '' && $r['password'] != '' ) {
+			
+			$r['url']			.= '&includebooking=true';
+			
+			$result 			= $this->get_xml_file ( $r['url'], false, $r['username'], $r['password'] );
+		
+		} else {
+		
+			$result			= $this->get_xml_file ( $r['url'] );
+		
+		}
+		
+		
+		$result				= $this->check_brp_xml_errors ( $result );
+		
+		if ( $result['error'] 	== '' && !isset ( $result['xml'] )) {  // ->activity
+			
+			$r['error'] 		= 'YES';
+			
+			$r['message'] 		= 'Schemat för aktuell period är tomt.';							
+			
+		} else if ( $result['error'] != '' ) {
+		
+			$r = $result;
+		
+		} else {
+			
+			
+			// loop thru xml and store data into array
+			
+			$r['schema'] = array_merge ( $r['schema'], $this->add_schema_xml ( $result['xml']->activity, 'schema' ));
+	
+		}
+		return $r;
+	}
+	
+
 	////////////////////////////////////////////////////////////////////////////////
 	//
 	// BOOK ACTIVITY
@@ -82,37 +152,37 @@ class fs_schema_brp {
 
 		global $fs_schema;
 		
-		$settings = $fs_schema->data->settings();
+		$settings 				= $fs_schema->data->settings();
 		
-		$result = array( 'error' => '', 'message' => '' );
+		$result 					= array( 'error' => '', 'message' => '' );
 		
-		$server_url			= $settings[ 'fs_schema_brp_server_url' ];
+		$server_url				= $settings[ 'fs_schema_brp_server_url' ];
 		
-		$api_key				= $settings[ 'fs_booking_bpi_api_key' ];
+		$api_key					= $settings[ 'fs_booking_bpi_api_key' ];
 		
-		$url 				= $settings[ 'fs_schema_brp_server_url' ] . 'activitybookings.xml';
+		$url 					= $settings[ 'fs_schema_brp_server_url' ] . 'activitybookings.xml';
 		
-		$post_data			= array (
+		$post_data				= array (
 		
-			'apikey'			=> $settings[ 'fs_booking_bpi_api_key' ],
+			'apikey'				=> $settings[ 'fs_booking_bpi_api_key' ],
 			
-			'type'			=> 'ordinary',
+			'type'				=> 'ordinary',
 			
-			'activityid'		=> $activity_id
+			'activityid'			=> $activity_id
 		
 		);
 		
-		$result				= $this->get_xml_file( $url, $post_data, $username, $password );
+		$result					= $this->get_xml_file( $url, $post_data, $username, $password );
 		
-		$result				= $this->check_brp_xml_errors ( $result );
+		$result					= $this->check_brp_xml_errors ( $result );
 		
-		$activity_booking		= $result['xml']->xpath('/activitybooking' );
+		$activity_booking			= $result['xml']->xpath('/activitybooking' );
 		
 		if ( $result['error'] 	== '' && !isset ( $activity_booking[0] )) {
 			
-			$result['error'] 	= 'YES';
+			$result['error'] 		= 'YES';
 			
-			$result['message'] 	= 'Bokningen har skickats iväg, men det gick inte att få bekräftat från bokningssystemet att bokningen lyckats.';
+			$result['message'] 		= 'Bokningen har skickats iväg, men det gick inte att få bekräftat från bokningssystemet att bokningen lyckats.';
 			
 		} else if ( $result['error'] 	== '' ) {
 		
@@ -122,11 +192,13 @@ class fs_schema_brp {
 
 		}
 				
-		$result['debug'] = $this->debug;
+		$result['debug'] 			= $this->debug;
 		
 		return $result;
 
 	}	
+
+	
 	
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -135,19 +207,21 @@ class fs_schema_brp {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 		
-	public function unbook_activity ( $username, $password, $bookingid ) {
+	public function unbook_activity ( $username, $password, $bookingid, $type ) {
 
 		global $fs_schema;
 		
-		$settings = $fs_schema->data->settings();
+		$settings 			= $fs_schema->data->settings();
 		
-		$result = array( 'error' => '', 'message' => '' );
+		$result 				= array( 'error' => '', 'message' => '' );
 
 		$server_url			= $settings[ 'fs_schema_brp_server_url' ];
 		
 		$api_key				= $settings[ 'fs_booking_bpi_api_key' ];
 		
-		$url 				= $settings[ 'fs_schema_brp_server_url' ] . 'activitybookings/' . $bookingid . '.xml?apikey=' . $api_key . '&type=ordinary';
+		$unbook_type			= $type != 'waitinglist' ? 'ordinary' : $type;
+		
+		$url 				= $settings[ 'fs_schema_brp_server_url' ] . 'activitybookings/' . $bookingid . '.xml?apikey=' . $api_key . '&type=' . $unbook_type;
 
 		$result				= $this->get_xml_file( $url, false, $username, $password, true );
 		
@@ -165,7 +239,7 @@ class fs_schema_brp {
 			
 				$result['error'] 	= 'YES';
 				
-				$result['message'] 	= 'Avbokningen har skickats iväg men det gick inte att avgöra om den lyckades eller inte. Ladda om schemat för att se om aktiviteten fortfarande är bokad på dig.';							
+				$result['message'] 	= 'Avbokningen har skickats iväg men det gick inte att avgöra om den lyckades eller inte. Vi laddar om schemat för att se om aktiviteten fortfarande är bokad på dig.';							
 				
 			} 
 		}
@@ -175,6 +249,84 @@ class fs_schema_brp {
 		return $result;
 
 	}	
+		
+
+	
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// BOOK WAITINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public function book_waitinglist ( $username, $password, $activity_id ) {
+
+		global $fs_schema;
+		
+		$settings 						= $fs_schema->data->settings();
+			
+		$result 							= array( 'error' => '', 'message' => '' );
+		
+		$server_url						= $settings[ 'fs_schema_brp_server_url' ];
+		
+		$api_key							= $settings[ 'fs_booking_bpi_api_key' ];
+		
+		$url 							= $settings[ 'fs_schema_brp_server_url' ] . 'activitybookings.xml';
+		
+		$post_data						= array (
+		
+			'apikey'						=> $settings[ 'fs_booking_bpi_api_key' ],
+			
+			'type'						=> 'waitinglist',
+			
+			'activityid'					=> $activity_id
+		
+		);
+		
+		$result							= $this->get_xml_file( $url, $post_data, $username, $password );
+		
+		$result							= $this->check_brp_xml_errors ( $result );
+		
+		$activity_booking					= $result['xml']->xpath('/activitybooking' );
+		
+		if ( $result['error'] 	== '' && !isset ( $activity_booking[0] )) {
+			
+			$result['error'] 				= 'YES';
+			
+			$result['message'] 				= 'Bokningen av reservplats har skickats iväg, men det gick inte att få bekräftat från bokningssystemet att bokningen lyckats.';
+			
+		} else if ( $result['error'] 	== '' ) {
+		
+			$result['message'] 				= 'Bokningen av reservplats är genomförd och har fått id ' . $activity_booking[0]->id . ' i bokningssystemet.';
+			
+			$result['bookingid']			= (string)$activity_booking[0]->id;
+			
+			$result['waitinglistposition']	= (string)$activity_booking[0]->waitinglistposition;
+			
+			$result['waitinglistsize']		= (string)$activity_booking[0]->waitinglistsize;
+
+		}
+				
+		$result['debug'] 			= $this->debug;
+		
+		return $result;
+
+	}	
+		
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// UNBOOK WATINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public function unbook_waitinglist ( $username, $password, $bookingid ) {
+
+		return $this->unbook_activity ( $username, $password, $bookingid, 'waitinglist' );
+
+	}
+	
 		
 			
 
@@ -197,7 +349,7 @@ class fs_schema_brp {
 		
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		
-		//curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		
 		if ( $send_delete === true ) curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE" );
 		
@@ -256,7 +408,7 @@ class fs_schema_brp {
 			
 				$output['error'] 	= 'YES';
 				
-				$output['message'] 	= 'Ett okänt fel uppstod, bokningssystemet returnerade ingen information. Var vänlig försök igen senare. ';
+				$output['message'] 	= 'Det gick inte att få kontakt med bokningssystemet. Var vänlig försök igen senare. ';
 				
 				break;
 				
@@ -388,152 +540,239 @@ class fs_schema_brp {
 	
 	}
 	
-	
 
+	
+	
 	//////////////////////////////////////////////////////////////////////////////
 	//
-	// UPDATE SCHEMA INTO CACHE, return a serialized object
+	// GET BOOKINGS
 	//
 	//////////////////////////////////////////////////////////////////////////////
 	
+	public function get_bookings ( $args ) {
 	
-	public function update_schema ( $r ) {
-	
+		$defaults = array(
+			'date'			=> '', 			// format: YYYY-MM-DD
+			'username'		=> '',
+			'password'		=> ''
+		);
+		
+		$r 					= wp_parse_args( $args, $defaults );
+		
+		global $fs_schema;
+
 		global $fs_schema;
 		
 		$settings = $fs_schema->data->settings();
 		
-		$r['error'] 				= '';
+		$r['error'] 			= '';
 		
-		$r['message'] 				= '';
+		$r['message'] 			= '';
 		
-		$r['schema']				= array();
+		$r['schema']			= array();
 		
 		
-
-		// fix business units ids
-		if ( $r[ 'facility' ] != '' )
+		// create url for ordinary bookings
+		$r['url']	 			= $settings[ 'fs_schema_brp_server_url' ] . 'activitybookings.xml?type=ordinary&apikey=' . $settings[ 'fs_booking_bpi_api_key' ]  . '&startdate=' . $r['date_stamp'] . '&enddate=' . date('Y-m-d', mktime(0,0,0,date("m")+1,date("d"),date("Y")));; // add one month from now
 		
-			$r['businessunitids'] 	= $r[ 'facility' ];
-		
-		else 
-		
-			$r['businessunitids'] 	= $settings[ 'fs_booking_bpi_businessunitids' ];
-
-		// 
-		$r['url']	 			= $settings[ 'fs_schema_brp_server_url' ] . 'activities.xml?apikey=' . $settings[ 'fs_booking_bpi_api_key' ] . '&businessunitids=' . $r['businessunitids'] . '&startdate=' . $r['date_stamp'] . '&enddate=' . $r['date_stamp_end']; //&product=12,23
-		
-		if ( $r['username'] != '' && $r['password'] != '' ) {
-			
-			$r['url']			.= '&includebooking=true';
-			
-			$result 			= $this->get_xml_file ( $r['url'], false, $r['username'], $r['password'] );
-		
-		} else {
-		
-			$result			= $this->get_xml_file ( $r['url'] );
-		
-		}
-		
+		$result 				= $this->get_xml_file ( $r['url'], false, $r['username'], $r['password'], 'bookings' );
 		
 		$result				= $this->check_brp_xml_errors ( $result );
 		
-		if ( $result['error'] 	== '' && !isset ( $result['xml'] )) {  // ->activity
-			
-			$r['error'] 		= 'YES';
-			
-			$r['message'] 		= 'Schemat för aktuell period är tomt.';							
-			
-		} else if ( $result['error'] != '' ) {
+		if ( $result['error'] != '' ) {
 		
 			$r = $result;
 		
-		} else {
-			
-			
+		} else { 
+		
 			// loop thru xml and store data into array
-			$schema = array();
+			$r['schema'] = array_merge ( $r['schema'], $this->add_schema_xml ( $result['xml']->activitybooking, 'bookings' ));	
 			
-			foreach ( $result['xml']->activity as $activity ){
-
-
-				// build the product
-				$products = array();
+			
+			// create url for waitinglist bookings
+			$r['url']	 			= $settings[ 'fs_schema_brp_server_url' ] . 'activitybookings.xml?type=waitinglist&apikey=' . $settings[ 'fs_booking_bpi_api_key' ]  . '&startdate=' . $r['date_stamp'] . '&enddate=' . date('Y-m-d', mktime(0,0,0,date("m")+1,date("d"),date("Y")));; // add one month from now
+			
+			$result 				= $this->get_xml_file ( $r['url'], false, $r['username'], $r['password'] );
+			
+			$result				= $this->check_brp_xml_errors ( $result );
+			
+			if ( $result['error'] != '' ) {
+			
+				$r = $result;
+			
+			} else {
 				
-				foreach ( $activity->product as $product ) {
+				// loop thru xml and store data into array
+				$r['schema'] = array_merge ( $r['schema'], $this->add_schema_xml ( $result['xml']->activitybooking, 'bookings' ));	
 				
-					array_push( $products, array ( 'id' =>  (string) $product->id, 'name' => (string) $product->name ));
-					
-				}
-				
-
-				// build the resources
-				$resources 	= array();
-				$staff		= '';
-				$room		= '';
-				
-				foreach ( $activity->resources->resource as $resource ) {
-				
-					switch ( (string) $resource->type ) {
-					
-						case 'Personal': 		$staff 	.= (string) $resource->name; break;
-							
-						case 'Trningssalar':	$room 	.= (string) $resource->name; break;
-					
-					}
-				
-					array_push( $resources, array ( 'id' =>  (string) $resource->id, 'name' => (string) $resource->name, 'type' => (string) $resource->type  ));
-					
-				}				
-				
-				
-				
-				// put it together
-				array_push( $r['schema'],
-				
-					array(
-					
-						'id'				=> (string) $activity->id,
-						
-						'products'		=> $products,
-						
-						'resources'		=> $resources,
-						
-						'staff'			=> $staff,
-						
-						'room'			=> $room,
-						
-						'businessuniidt'	=> (string) $activity->businessunit->id,
-						
-						'businessunit'		=> (string) $activity->businessunit->name,
-						
-						'startdate'		=> (string) $activity->start->timepoint->date,
-						
-						'starttime'		=> (string) $activity->start->timepoint->time,
-						
-						'startdatetime'	=> (string) $activity->start->timepoint->datetime,
-						
-						'enddate'			=> (string) $activity->end->timepoint->date,
-						
-						'endtime'			=> (string) $activity->end->timepoint->time,
-						
-						'enddatetime'		=> (string) $activity->end->timepoint->datetime,
-						
-						'freeslots'		=> (string) $activity->freeslots,
-						
-						'bookableslots'	=> (string) $activity->bookableslots,
-						
-						'bookingid'		=> (string) $activity->bookingid,
-						
-						'status'			=> 'OK'
-					)
-				);
-			}
+			}				
 		}
+		
+		if ( $result['error'] 	== '' && count($r['schema']) == 0  ) { 
+			
+			$r['error'] 		= 'YES';
+			
+			$r['message'] 		= 'Du verkar inte ha några bokningar.';	
+			
+		}
+		
 		return $r;
 	}
-	
 
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// PRIVATE FUNCTINO ADD SCHEMA XML
+	//
+	//////////////////////////////////////////////////////////////////////////////
+	
+	private function add_schema_xml ( $activites_nodes, $xml_type ) {
+	
+		$schema = array();
+		
+		foreach ( $activites_nodes as $activity ){
+
+
+			// build the product
+			$products = array();
+			
+			foreach ( $activity->product as $product ) {
+			
+				array_push( $products, array ( 'id' =>  (string) $product->id, 'name' => (string) $product->name ));
+				
+			}
+			
+
+			// build the resources
+			$resources 	= array();
+			$staff		= '';
+			$room		= '';
+			
+			foreach ( $activity->resources->resource as $resource ) {
+			
+				switch ( (string) $resource->type ) {
+				
+					case 'Personal': 		$staff 	.= (string) $resource->name; break;
+						
+					case 'Trningssalar':	$room 	.= (string) $resource->name; break;
+				
+				}
+			
+				array_push( $resources, array ( 'id' =>  (string) $resource->id, 'name' => (string) $resource->name, 'type' => (string) $resource->type  ));
+				
+			}	
+			
+			
+			// for schemas
+			
+			if ( $xml_type == 'schema' ) {
+			
+			
+				// get time for booking possibilites
+			
+				$bookableearliest 				= (string) $activity->bookableearliest->timepoint->timestamp;
+				
+				$bookablelatest 				= (string) $activity->bookablelatest->timepoint->timestamp;
+				
+				
+				// build the status
+			
+				$entry_status 					= 'BOOK';  										// default: booking is possible
+	
+				
+				if ( (string) $activity->freeslots == '0' ) {										// entry has no free slots (no drop in either)
+				
+					$entry_status 				= 'reserve';											// only reserve booking is possible
+					
+																								// there is no way saying ONLY DROPIN
+				
+				} else if ( (string) $activity->cancelled == 'true' ) {								// entry is cancelled
+				
+					$entry_status 				= 'cancelled';
+				
+				} else if ( $bookableearliest != '' && strtotime('now') < Date( $bookableearliest ) ) {		// booking has not opened yet
+				
+					$entry_status 				= 'not_opened_yet';
+				
+				} else if ( $bookablelatest != '' && strtotime('now') >  Date(  $bookablelatest ) ) {		// booking has been closed
+				
+					$entry_status 				= 'closed';
+				}
+				
+				
+				// build the booking type and id
+				
+				$booking_type					= (string) $activity->bookingtype == '' ? 'ordinary' : (string) $activity->bookingtype;
+				
+				$booking_id					= (string) $activity->bookingid;
+				
+			
+			// this is for my bookings list
+			
+			} else {
+			
+				$entry_status = '';
+				
+				$booking_type					= (string) $activity->type == '' ? 'ordinary' : (string) $activity->type;
+				
+				$booking_id					= (string) $activity->id;
+				
+			}
+
+			// put it together
+			array_push( $schema,
+			
+				array(
+				
+					'id'					=> $xml_type == 'schema' ? (string) $activity->id : (string) $activity->activityid,
+					
+					'products'			=> $products,
+					
+					'resources'			=> $resources,
+					
+					'staff'				=> $staff,
+					
+					'room'				=> $room,
+					
+					'businessuniidt'		=> (string) $activity->businessunit->id,
+					
+					'businessunit'			=> (string) $activity->businessunit->name,
+					
+					'startdate'			=> (string) $activity->start->timepoint->date,
+					
+					'starttime'			=> (string) $activity->start->timepoint->time,
+					
+					'startdatetime'		=> (string) $activity->start->timepoint->datetime,
+					
+					'enddate'				=> (string) $activity->end->timepoint->date,
+					
+					'endtime'				=> (string) $activity->end->timepoint->time,
+					
+					'enddatetime'			=> (string) $activity->end->timepoint->datetime,
+					
+					'freeslots'			=> isset ( $activity->freeslots ) ? (string) $activity->freeslots : '-1',
+					
+					'bookableslots'		=> (string) $activity->bookableslots,
+					
+					'dropinslots'			=> (int) $activity->bookableslots - (int) $activity->freeslots,
+					
+					'waitinglistsize'		=> (string) $activity->waitinglistsize,
+					
+					'waitinglistposition'	=> (string) $activity->waitinglistposition,
+					
+					'bookingid'			=> $booking_id,
+					
+					'bookingtype'			=> $booking_type,
+					
+					'status'				=> strtolower( $entry_status )
+				)
+			);
+		}	
+		return $schema;
+	}
+	
+	
 	
 	////////////////////////////////////////////////////////////////////////////////
 	//
@@ -541,7 +780,7 @@ class fs_schema_brp {
 	//
 	////////////////////////////////////////////////////////////////////////////////
 			
-	public function check_brp_xml_errors ( $obj ) {
+	private function check_brp_xml_errors ( $obj ) {
 			
 		if ( isset ( $obj['xml']->error )) {
 		

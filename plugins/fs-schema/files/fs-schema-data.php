@@ -140,6 +140,72 @@ class fs_schema_data {
 	}
 	
 	
+	
+
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	// GET BOOKINGS
+	//
+	//////////////////////////////////////////////////////////////////////////////
+	
+	public function get_bookings ( $args ) {
+	
+		$settings = $this->settings();
+		
+		$defaults = array(
+			'username'			=> '',
+			'password'			=> '',
+			'session_key'			=> '',
+			'integration'			=> $settings[ 'fs_schema_integration' ]
+		);
+		
+		$r 						= wp_parse_args( $args, $defaults );
+		
+		$r['error'] 				= '';
+		
+		$r['message'] 				= '';
+		
+		$r['schema']				= array();
+		
+		
+		// dummies
+		$r['date_stamp'] 			= $r['date_stamp_end'] = date('Y-m-d'); 
+		
+		$r['start_date ']			= $r['end_date']  = fs_schema::get_date_from_string ( $r['date_stamp'] );
+		
+		
+		
+
+		// get info from integration
+		switch ( $r['integration'] ) {
+		
+			case 'BRP':
+			
+				$schema = $this->brp->get_bookings( $r );
+				
+				$this->debug .= $this->brp->debug;
+				
+				break;
+				
+				
+			case 'PROFIT':
+			
+				$schema = $this->profit->get_bookings( $r );
+				
+				$this->debug .= $this->profit->debug;
+				
+				break;
+				
+		}
+		
+		if ( $schema['error'] != '' ) $this->add_log ('Get Bookings. ' . $schema['message'],  $this->debug );
+		
+		return $schema;
+		
+	}
+	
+	
+	
 
 	//////////////////////////////////////////////////////////////////////////////
 	//
@@ -205,9 +271,6 @@ class fs_schema_data {
 		return $booking;
 	}	
 	
-	
-
-
 
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -224,7 +287,7 @@ class fs_schema_data {
 		
 			case 'BRP':
 			
-				$unbook = $this->brp->unbook_activity( $username, $password, $bookingid );
+				$unbook = $this->brp->unbook_activity( $username, $password, $bookingid, 'ordinary' );
 				break;
 				
 				
@@ -239,9 +302,72 @@ class fs_schema_data {
 		
 		return $unbook;
 	}	
+
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// BOOK WAITINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public function book_waitinglist ( $username, $password, $activity_id, $session_key ) {
+
+		$settings = $this->settings();
+		
+		switch ( $settings[ 'fs_schema_integration' ] ) {
+		
+			case 'BRP':
+			
+				$booking = $this->brp->book_waitinglist( $username, $password, $activity_id );
+				break;
+				
+				
+			case 'PROFIT':
+			
+				$booking = $this->profit->book_waitinglist( $username, $password, $activity_id, $session_key );
+				break;
+		
+		}
+		
+		if ( $booking['error'] != '' ) $this->add_log ('Book Waitinglist. ' . $booking['message'],  $booking['debug'] );
+		
+		return $booking;
+	}	
 	
 	
 	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// UNBOOK WATINGLIST
+	//
+	////////////////////////////////////////////////////////////////////////////////
+		
+	public function unbook_waitinglist ( $username, $password, $bookingid, $session_key ) {
+
+		$settings = $this->settings();
+		
+		switch ( $settings[ 'fs_schema_integration' ] ) {
+		
+			case 'BRP':
+			
+				$unbook = $this->brp->unbook_waitinglist ( $username, $password, $bookingid );
+				break;
+				
+				
+			case 'PROFIT':
+			
+				$unbook = $this->profit->unbook_waitinglist ( $username, $password, $bookingid, $session_key );
+				break;
+		
+		}
+		
+		if ( $unbook['error'] != '' ) $this->add_log ('Unbook Waitinglist. ' . $unbook['message'],  $unbook['debug'] );
+		
+		return $unbook;
+	}
+
+
 	
 	//////////////////////////////////////////////////////////////////////////////
 	//
@@ -373,7 +499,11 @@ class fs_schema_data {
 			
 			$this->settings_array[ 'fs_schema_update_inteval' ]			= get_option( 'fs_schema_update_inteval' ) 	== '' ? '60' 	:  get_option( 'fs_schema_update_inteval' );
 			
+			$this->settings_array[ 'fs_booking_fallback_url' ]			= get_option( 'fs_booking_fallback_url' );
+			
 			$this->settings_array[ 'fs_schema_show_debug' ]				= get_option( 'fs_schema_show_debug' );
+			
+			$this->settings_array[ 'fs_schema_show_my_bookings' ]			= get_option( 'fs_schema_show_my_bookings' );
 			
 			if ( substr( $this->settings_array[ 'fs_schema_brp_server_url' ] , -1 ) != '/' ) $this->settings_array[ 'fs_schema_brp_server_url' ] .= '/';
 		

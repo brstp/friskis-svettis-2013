@@ -164,7 +164,9 @@ class fs_schema_admin {
 			
 			$this->update_option_from_form ( 'fs_schema_show_debug' );
 			
-			$this->update_option_from_form ( 'fs_schema_show_day_default' );
+			$this->update_option_from_form ( 'fs_booking_fallback_url' );
+			
+			$this->update_option_from_form ( 'fs_schema_show_my_bookings' );
 			
 			
 			// remove any spaces in businessunitids
@@ -202,7 +204,11 @@ class fs_schema_admin {
 		
 		$fs_schema_update_inteval			= $settings[ 'fs_schema_update_inteval' ];
 		
+		$fs_booking_fallback_url				= $settings[ 'fs_booking_fallback_url' ];
+		
 		$fs_schema_show_debug				= $settings[ 'fs_schema_show_debug' ];
+		
+		$fs_schema_show_my_bookings			= $settings[ 'fs_schema_show_my_bookings' ];
 		
 		
 		$fs_booking_bpi_businessunitids_html 	= $fs_schema->data->brp->get_businessunits ( 'BRP' );
@@ -308,7 +314,7 @@ class fs_schema_admin {
 					</tr>
 					
 					<tr valign="top">
-						<th scope="row"><label for="fs_booking_profit_organization_unit">Uppdateingsintervall</label></th>
+						<th scope="row"><label for="fs_schema_update_inteval">Uppdateingsintervall</label></th>
 						<td>
 							<input name="fs_schema_update_inteval" type="text" id="fs_schema_update_inteval" value="' . $fs_schema_update_inteval . '" class="small-text" /> minuter. <span id="clear_cache_cmd"><a href="javascript: fs_schema_admin.clear_cache();">Rensa cache nu</a></span>
 							<p class="description">Ange hur ofta Wordpress ska uppdatera schemat från bokningssystemet. 60 minuter är ganska rimligt.<br>När användaren är inloggad hämtas informationen alltid direkt, utan mellanlagring.</p>
@@ -316,11 +322,24 @@ class fs_schema_admin {
 					</tr>
 
 					<tr valign="top">
+						<th scope="row"><label for="fs_booking_fallback_url">Alternativ bokning</label></th>
+						<td>
+							<input name="fs_booking_fallback_url" type="text" id="fs_booking_fallback_url" value="' . $fs_booking_fallback_url. '" class="regular-text" />.
+							<p class="description">Ange sökväg till alternativ online-bokning som ev. tillhandahålles av bokningssystemet, i de fall kommunikationen inte fungerar eller användaren har en för gammal webbläsare.<br />Om fältet är tomt visas ingen alternativ bokning för användaren. OBS! Börja sökvägen med http://</p>
+						</td>
+					</tr>
+					
+					<tr valign="top">
 						<th scope="row"><label>Övrigt</label></th>
 						<td>
 							<label for="fs_schema_show_debug">
 							<input type="checkbox" name="fs_schema_show_debug" id="fs_schema_show_debug" 
 							value="YES"' . ( $fs_schema_show_debug == 'YES' ? ' checked="checked"' : '' ) . '> <span style="position: relative; top: 2px; ">Visa debug-information</span>
+							</label>
+							<div></div>
+							<label for="fs_schema_show_my_bookings">
+							<input type="checkbox" name="fs_schema_show_my_bookings" id="fs_schema_show_my_bookings" 
+							value="YES"' . ( $fs_schema_show_my_bookings == 'YES' ? ' checked="checked"' : '' ) . '> <span style="position: relative; top: 2px; ">Visa inloggad användares bokningar i en lista (för utveckling, <u>får ej användas live</u>)</span>
 							</label>
 							<div></div>
 						</td>
