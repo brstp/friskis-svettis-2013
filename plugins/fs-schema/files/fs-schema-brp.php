@@ -751,6 +751,8 @@ class fs_schema_brp {
 					
 					'enddatetime'			=> (string) $activity->end->timepoint->datetime,
 					
+					'totalslots'			=> isset ( $activity->totalslots ) ? (string) $activity->totalslots : '-1',
+					
 					'freeslots'			=> isset ( $activity->freeslots ) ? (string) $activity->freeslots : '-1',
 					
 					'bookableslots'		=> (string) $activity->bookableslots,

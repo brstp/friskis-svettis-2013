@@ -16,6 +16,10 @@ fs_schema_public = {
 	
 	session_key : '',
 	
+	responsive : '',
+	
+	clear_creds : true, 
+	
 	schema_width : 0,
 	
 	day_width : 0,
@@ -115,7 +119,9 @@ fs_schema_public = {
 			jQuery( '.fs_schema .debug').html( jQuery( '.fs_schema .week_debug' ).html() );
 			
 			jQuery('.fs_schema .show_debug').click( function() { jQuery( '.fs_schema .debug').show(); jQuery('.fs_schema .show_debug').hide(); });
-	
+			
+			jQuery('.fs_schema .schema_print').click( function() { window.print(); });
+			
 			fs_schema_public.show_hud( jQuery('.fs_schema .days').attr('data-week') );
 			
 			jQuery(document).keydown( function(e) { fs_schema_public.key_down ( e.keyCode ); });
@@ -154,9 +160,9 @@ fs_schema_public = {
 			
 				jQuery('.fs_button.change_to_day').css('display', 'none'); 
 				
-				jQuery('.fs_button.previous').html('&lt; Föregående dag');
+				jQuery('.fs_button.previous').html('&lt;&nbsp;Föregående <span>dag</span>');
 				
-				jQuery('.fs_button.next').html('Nästa dag &gt;');
+				jQuery('.fs_button.next').html('Nästa <span>dag</span>&nbsp;&gt;');
 			}
 			
 			fs_schema_public.refresh();
@@ -180,9 +186,9 @@ fs_schema_public = {
 			
 				jQuery('.fs_button.change_to_day').css('display', 'inline'); 
 				
-				jQuery('.fs_button.previous').html('&lt; Föregående vecka');
+				jQuery('.fs_button.previous').html('&lt;&nbsp;Föregående <span>vecka</span>');
 				
-				jQuery('.fs_button.next').html('Nästa vecka &gt;');
+				jQuery('.fs_button.next').html('Nästa <span>vecka</span>&nbsp;&gt;');
 			}
 			
 			fs_schema_public.refresh();
@@ -194,16 +200,31 @@ fs_schema_public = {
 	
 		if (  fs_schema_public.is_busy == false ) {
 		
+			if ( fs_schema_public.clear_creds == true ) {
+			
+				jQuery( '.fs_schema .login.dialogue .loginform .username input' ).val('');
+			
+				jQuery( '.fs_schema .login.dialogue .loginform .password input' ).val('');
+			}
+		
 			jQuery('.fs_schema .dialogue.open').hide().removeClass('open');
 			
 			jQuery('.fs_schema .login.dialogue')
+			
 				.css('left',  ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 ))
+				
 				.css('display', 'block')
+				
 				.addClass('open')
+				
 				.css( '-webkit-transform', 'scale(1.1)').css( '-moz-transform', 'scale(1.1)').css( 'transform', 'scale(1.1)');
 				
 			window.setTimeout(function() {
+			
 				jQuery( '.fs_schema .login' ).css( '-webkit-transform', 'scale(1)').css( '-moz-transform', 'scale(1)').css( 'transform', 'scale(1)');
+				
+				jQuery( '.fs_schema .login.dialogue .loginform .username input' ).focus();
+				
 			}, 100);
 			
 			fs_schema_public.book_event_after_login = false;
@@ -309,7 +330,7 @@ fs_schema_public = {
 						
 						window.setTimeout(function() {
 						
-							jQuery('.fs_schema .login_info.fs_button').html ('Inloggad som ' + data.name );
+							jQuery('.fs_schema .login_info.fs_button').html ('<span>Inloggad som </span>' + data.name );
 							
 							jQuery('.fs_schema .login_info.fs_button').addClass('green');
 							
@@ -331,6 +352,10 @@ fs_schema_public = {
 							
 							jQuery('.fs_schema .update_schema').css( 'display', 'inline' );
 							
+							jQuery('.fs_schema .navigation.above_schema').addClass( 'logged_in' );
+							
+							jQuery('.fs_schema ').addClass( 'logged_in' );
+							
 						}, 500);
 						
 						if ( fs_schema_public.book_event_after_login == true ) {
@@ -341,7 +366,7 @@ fs_schema_public = {
 							
 									fs_schema_public.change_to_day();
 									
-									jQuery('.fs_schema .change_to_week').addClass('disabled').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
+									jQuery('.fs_schema .change_to_week').addClass('disabled').html('Veckoschema kan inte visas').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
 								};
 								
 							} else {
@@ -364,7 +389,7 @@ fs_schema_public = {
 							
 									fs_schema_public.change_to_day();
 									
-									jQuery('.fs_schema .change_to_week').addClass('disabled').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
+									jQuery('.fs_schema .change_to_week').addClass('disabled').html('Veckoschema kan inte visas').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
 								};
 								
 							} else {
@@ -387,7 +412,7 @@ fs_schema_public = {
 							
 								fs_schema_public.change_to_day();
 								
-								jQuery('.fs_schema .change_to_week').addClass('disabled').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
+								jQuery('.fs_schema .change_to_week').addClass('disabled').html('Veckoschema kan inte visas').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
 								
 							} else {
 							
@@ -432,7 +457,7 @@ fs_schema_public = {
 		
 		jQuery('.fs_schema .login_btn ').css( 'display', 'inline' );
 					
-		jQuery('.fs_schema .login_book_event ').css( 'display', 'inline-block' );
+		jQuery('.fs_schema .login_book_event ').css( 'display', 'inline' );
 		
 		jQuery('.fs_schema .logout_btn ').css( 'display', 'none' );
 					
@@ -440,11 +465,15 @@ fs_schema_public = {
 		
 		jQuery('.fs_schema .login.dialogue .header').html('Logga in');
 		
-		jQuery('.fs_schema .change_to_week').removeClass('disabled').attr('title', '');
+		jQuery('.fs_schema .change_to_week').removeClass('disabled').html('Växla till veckoschema').attr('title', '');
 		
 		jQuery('.fs_schema .my_bookings').css( 'display', 'none' );
 							
 		jQuery('.fs_schema .update_schema').css( 'display', 'none' );
+							
+		jQuery('.fs_schema .navigation.above_schema').removeClass( 'logged_in' );
+		
+		jQuery('.fs_schema ').removeClass( 'logged_in' );
 		
 		if ( fs_schema_public.show_my_bookings === true ) fs_schema_public.close_my_bookings();
 	},
@@ -512,6 +541,8 @@ fs_schema_public = {
 	walk : function ( step ) {
 	
 		if (  fs_schema_public.is_busy == false ) {
+		
+			fs_schema_public.close_event();
 		
 			jQuery('.fs_schema .week_progress').css('display', 'block');
 		
@@ -627,8 +658,6 @@ fs_schema_public = {
 						jQuery('.fs_button.previous').css('display', 'none'); 
 						
 						jQuery('.fs_button.next').css('display', 'none'); 
-						
-						jQuery('.fs_schema .login_info').css('margin-left', '0px'); 
 				
 						jQuery('.fs_schema .entry.openable').click( function( ev_data ) { fs_schema_public.open_event ( this ); });
 						
@@ -661,8 +690,6 @@ fs_schema_public = {
 		jQuery('.fs_button.previous').css('display', 'inline'); 
 				
 		jQuery('.fs_button.next').css('display', 'inline'); 
-		
-		jQuery('.fs_schema .login_info').css('margin-left', '10px'); 
 		
 		if ( fs_schema_public.num_days == 7 ) {
 		
@@ -708,8 +735,6 @@ fs_schema_public = {
 			
 			
 			// get some variables from DOM
-						
-			var bookable_slots = jQuery( event_el ).attr( 'data-bookableslots' );
 			
 			var waitinglistsize =  jQuery( event_el ).attr( 'data-waitinglistsize' );
 
@@ -717,27 +742,39 @@ fs_schema_public = {
 			
 			var entry_status = jQuery( event_el ).attr( 'data-status' );
 			
+			var bookableslots = jQuery( event_el ).attr( 'data-bookableslots' );
 			
-	
+			
 			// calculate event window position and animation
 			
-			win_top = jQuery(document).scrollTop();
+			win_top = jQuery(document).scrollTop() - jQuery('.fs_schema').offset().top;
 			
-			win_width =  jQuery(window).width();
-		
-			if ( win_width < 320 ) event_target_x = - (( 320 - win_width ) / 2);
-			
-			else event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
-
 			event_el_position_top = jQuery( event_el ).position().top;
 			
-			event_target_y = event_el_position_top > 30 ? event_el_position_top - 150 : 0;
+			if ( fs_schema_public.responsive == 'mobile' ) { 
+			
+				event_target_y = win_top;
+				
+				event_target_x = 0;
+				
+			} else if (  fs_schema_public.responsive == 'mobile_landscape' ) {
+			
+				event_target_y = win_top;
+			
+				event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
+				
+			} else {
+			
+				event_target_y = event_el_position_top > 30 ? event_el_position_top - 250 : 0;
+			
+				event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
+			}
 			
 			if ( event_target_y < win_top ) event_target_y = win_top;
 			
 			event_current_x = ( (jQuery( event_el ).parent().parent().attr('data-day') -1 ) * fs_schema_public.day_width ) + jQuery( event_el ).position().left - ( fs_schema_public.day_width / 2);
 			
-			event_current_y = jQuery( event_el ).position().top - 80; // - fs_schema_public.day_width;
+			event_current_y = jQuery( event_el ).position().top; // - fs_schema_public.day_width;
 			
 			event_diff_x = event_target_x-event_current_x;
 			
@@ -762,11 +799,14 @@ fs_schema_public = {
 			
 			jQuery( '.fs_schema .open_event .date span' ).html( jQuery( event_el ).attr( 'data-startdate' ));
 			
-			jQuery( '.fs_schema .open_event .time span' ).html( jQuery( event_el ).attr( 'data-start' ) + '-' + jQuery( event_el ).attr( 'data-end' ));
+			jQuery( '.fs_schema .open_event .time span' ).html( jQuery( event_el ).attr( 'data-start' ) + '&#8211;' + jQuery( event_el ).attr( 'data-end' ));
 			
 			jQuery( '.fs_schema .open_event .staff span' ).html( jQuery( event_el ).attr( 'data-staff' ));
 			
 			jQuery( '.fs_schema .open_event .room span' ).html( jQuery( event_el ).attr( 'data-room' ));
+			
+			jQuery( '.fs_schema .open_event .totalslots span' ).html( jQuery( event_el ).attr( 'data-totalslots' ) );
+						
 						
 				
 			// reset all buttons and other visual things
@@ -787,9 +827,11 @@ fs_schema_public = {
 			
 			jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'none' );
 			
+			jQuery( '.fs_schema .open_event .bookableslots' ).css( 'display', 'none' );
+			
 			jQuery( '.fs_schema .open_event .waitinglist' ).css( 'display', 'none' );
 			
-			jQuery( '.fs_schema .open_event .bookableslots').css('display', 'none');
+			jQuery( '.fs_schema .open_event .dropin' ).css( 'display', 'none' );
 					
 
 
@@ -808,26 +850,6 @@ fs_schema_public = {
 			jQuery( '.fs_schema .open_event .entry_info_not_opened_yet' ).css( 'display', entry_status == 'not_opened_yet' ? 'block' : 'none' );
 			
 			jQuery( '.fs_schema .open_event .entry_info_closed' ).css( 'display', entry_status == 'closed' ? 'block' : 'none' );
-			
-					
-		
-			// show/hide free slots and drop ins
-			
-			if ( bookable_slots != -1 ) {
-			
-				var bookable_slots_html = bookable_slots;
-				
-				var dropin_slots = jQuery( event_el ).attr( 'data-dropinslots' );
-				
-				if ( dropin_slots != '-1' ) bookable_slots_html =bookable_slots_html + ' (' + dropin_slots + ' drop-in)';
-			
-				jQuery( '.fs_schema .open_event .bookableslots span' ).html( bookable_slots_html );
-				
-				if ( entry_status != 'dropin' ) 
-
-					jQuery( '.fs_schema .open_event .bookableslots').css('display', 'block');
-			
-			} 
 
 
 
@@ -842,13 +864,23 @@ fs_schema_public = {
 			
 			// put info into and show/hide waitinglist
 			
-			if ( (waitinglistposition != '' && waitinglistposition != '0' && waitinglistposition != '-1' ) && fs_schema_public.password != '' ) {
+			if ( (waitinglistsize != '' && waitinglistsize != '0' && waitinglistsize != '-1' ) ) {
 			
-				jQuery( '.fs_schema .open_event .waitinglist span' ).html( waitinglistsize );
+				jQuery( '.fs_schema .open_event .waitinglist span' ).html( waitinglistsize + ' i kö' );
 			
 				jQuery( '.fs_schema .open_event .waitinglist' ).css( 'display', 'block' );
-				
 			}
+			
+			
+			// put info into and show/hide bookable slots
+			
+			if ( bookableslots != '' && bookableslots != '0' && bookableslots != '-1' ) {
+			
+				jQuery( '.fs_schema .open_event .bookableslots span' ).html( bookableslots );
+			
+				jQuery( '.fs_schema .open_event .bookableslots' ).css( 'display', 'block' );
+			}
+			
 			
 			
 			// if user is logged in, show login info and hide log in form
@@ -858,8 +890,7 @@ fs_schema_public = {
 				jQuery( '.fs_schema .open_event .loggedin' ).css( 'display', 'block' );
 				
 				jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'none' );
-			
-			
+				
 			
 			// if user is NOT logged in, show log in form if the event is bookable
 			
@@ -889,7 +920,7 @@ fs_schema_public = {
 				
 				if (waitinglistposition != '' && waitinglistposition != '0' ) 
 				
-					jQuery( '.fs_schema .open_event .booked_info' ).addClass('reserve').html('Du har reservplats ' + waitinglistposition + ' av ' + waitinglistsize + '.');
+					jQuery( '.fs_schema .open_event .booked_info' ).addClass('reserve').html('Du har reservplats ' + waitinglistposition + '.');
 				
 				else 
 					
@@ -914,8 +945,6 @@ fs_schema_public = {
 					// if there are no free slots, user has to book a waiting-list
 					
 					if ( jQuery( event_el ).attr( 'data-bookableslots' ) < 1 ) {
-
-						jQuery( '.fs_schema .open_event .waitinglist').css('display', 'block');
 						
 						
 						// user is logged in
@@ -923,14 +952,12 @@ fs_schema_public = {
 						if ( fs_schema_public.password != '' ) jQuery( '.fs_schema .open_event .book_waitinglist' ).css( 'display', 'inline' );
 						
 						// user is not logged in
-						else jQuery( '.fs_schema .open_event .login_book_waitinglist' ).css( 'display', 'inline-block' );
+						else jQuery( '.fs_schema .open_event .login_book_waitinglist' ).css( 'display', 'inline' );
 					
 					
 					// user can book this! Bingo.
 					
 					} else {
-
-						jQuery( '.fs_schema .open_event .waitinglist').css('display', 'none');
 						
 					
 						// user is logged in
@@ -946,7 +973,16 @@ fs_schema_public = {
 						
 							jQuery( '.fs_schema .open_event .loginform' ).css( 'display', 'block' );
 							
-							jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'inline-block' );	
+							jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'inline' );
+							
+							if ( fs_schema_public.clear_creds == true ) {
+							
+								jQuery( '.fs_schema .open_event .loginform .username input' ).val('');
+							
+								jQuery( '.fs_schema .open_event .loginform .password input' ).val('');
+							}
+				
+							jQuery( '.fs_schema .open_event .loginform .username input' ).focus();	
 						}
 					}
 				}
@@ -1011,7 +1047,7 @@ fs_schema_public = {
 			
 			if ( fs_schema_public.fallback_url  != '' ) 
 			
-				message = message + '<div class="fallback_url">Om du tror att felet är en bugg kan du prova att använda den alternativa bokningsfunktionen på <a href="' + fs_schema_public.fallback_url  + '">' + fs_schema_public.fallback_url  + '</a>.</div>';
+				message = message + '<div class="fallback_url">Om du tror att felet är en bugg kan du prova att använda <a href="' + fs_schema_public.fallback_url  + '">den alternativa bokningsfunktionen</a>.</div>';
 			
 		} else jQuery( big_message ).removeClass ( 'error' );
 		
@@ -1160,6 +1196,8 @@ fs_schema_public = {
 							
 							jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Avbokad');
 							
+							jQuery( fs_schema_public.open_event_el ).attr( 'title',  '');
+							
 							fs_schema_public.close_event();
 					
 							fs_schema_public.show_hud ( 'Avbokat!' );
@@ -1236,7 +1274,7 @@ fs_schema_public = {
 						
 						jQuery( fs_schema_public.open_event_el ).attr( 'data-waitinglistsize',  data.waitinglistsize );
 						
-						jQuery( fs_schema_public.open_event_el ).attr( 'title',  'Du har reservplats ' + data.waitinglistposition + ' av ' + data.waitinglistposition );
+						jQuery( fs_schema_public.open_event_el ).attr( 'title',  'Du är reserv.');
 						
 						jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Reservplats');
 
@@ -1257,7 +1295,7 @@ fs_schema_public = {
 					
 						fs_schema_public.change_to_day();
 							
-						jQuery('.fs_schema .change_to_week').addClass('disabled').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
+						jQuery('.fs_schema .change_to_week').addClass('disabled').html('Veckoschema kan inte visas').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
 						
 					} else {
 						
@@ -1325,53 +1363,56 @@ fs_schema_public = {
 	
 	
 	close_event : function () {
-		
-		jQuery( '.fs_schema .open_event' )
-				
-			.css( 'transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-o-transition' , '0.1s')
-			
-			.css( '-webkit-transform', 'translate(0px, 0px) scale(0.1)').css( '-moz-transform', 'translate(0px, 0px) scale(0.1)').css( 'transform', 'translate(0px, 0px) scale(0.1)');
-			
-		window.setTimeout(function() {
-			
-			jQuery( '.fs_schema .open_event' )
-			
-				.css( 'display', 'none')
-			
-				.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
-				
-				.removeClass ( 'open' );
-				
-				if ( fs_schema_public.animate_source_on_close_event == true ) {
-
-					jQuery( fs_schema_public.open_event_el )
-						
-						.removeClass ( fs_schema_public.remove_source_class_on_close_event )
-						
-						.addClass ( fs_schema_public.add_source_class_on_close_event )
-						
-						.css( '-webkit-transform', 'translate(-5px, -5px) scale(1.5)').css( '-moz-transform', 'translate(-5px, -5px) scale(1.5)').css( 'transform', 'translate(-5px, -5px) scale(1.5)');
-		
-					window.setTimeout(function() {
-					
-						jQuery( fs_schema_public.open_event_el )
-					
-							.css( '-webkit-transform', 'translate(0px, 0px) scale(1)').css( '-moz-transform', 'translate(0px, 0px) scale(1)').css( 'transform', 'translate(0px, 0px) scale(1)');					
-					
-					}, 100);
 	
-					fs_schema_public.open_event_id = 0;
+		if ( jQuery( '.fs_schema .open_event' ).length > 0 ) {
+		
+			jQuery( '.fs_schema .open_event' )
 					
-					if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
-					
-				} else {
+				.css( 'transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-o-transition' , '0.1s')
 				
-					fs_schema_public.open_event_id = 0;
+				.css( '-webkit-transform', 'translate(0px, 0px) scale(0.1)').css( '-moz-transform', 'translate(0px, 0px) scale(0.1)').css( 'transform', 'translate(0px, 0px) scale(0.1)');
+				
+			window.setTimeout(function() {
+				
+				jQuery( '.fs_schema .open_event' )
+				
+					.css( 'display', 'none')
+				
+					.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
 					
-					if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
-				}
+					.removeClass ( 'open' );
+					
+					if ( fs_schema_public.animate_source_on_close_event == true ) {
+	
+						jQuery( fs_schema_public.open_event_el )
+							
+							.removeClass ( fs_schema_public.remove_source_class_on_close_event )
+							
+							.addClass ( fs_schema_public.add_source_class_on_close_event )
+							
+							.css( '-webkit-transform', 'translate(-5px, -5px) scale(1.5)').css( '-moz-transform', 'translate(-5px, -5px) scale(1.5)').css( 'transform', 'translate(-5px, -5px) scale(1.5)');
 			
-			}, 100);
+						window.setTimeout(function() {
+						
+							jQuery( fs_schema_public.open_event_el )
+						
+								.css( '-webkit-transform', 'translate(0px, 0px) scale(1)').css( '-moz-transform', 'translate(0px, 0px) scale(1)').css( 'transform', 'translate(0px, 0px) scale(1)');					
+						
+						}, 100);
+		
+						fs_schema_public.open_event_id = 0;
+						
+						if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
+						
+					} else {
+					
+						fs_schema_public.open_event_id = 0;
+						
+						if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
+					}
+				
+				}, 100);
+		}
 	},
 	
 	
@@ -1396,6 +1437,14 @@ fs_schema_public = {
 		
 		if ( jQuery('.fs_schema.day').length > 0 ) fs_schema_public.num_days = 1;
 		
+		switch (jQuery( '.fs_schema .responsive_target').css('width')) {
+		
+			case '1px': fs_schema_public.responsive = 'mobile'; break;
+			
+			case '2px': fs_schema_public.responsive = 'mobile_landscape'; break;
+			
+			case '3px': fs_schema_public.responsive = 'tablet'; break;
+		}
 	},
 	
 	
@@ -1427,7 +1476,7 @@ fs_schema_public = {
 		
 			var message = 'Din webbläsare är för gammal för att kunna visa schemat. Vänligen uppdatera webbläsaren till en nyare version.';
 			
-			if ( fs_schema_public.fallback_url  != '' ) message = message + '<span>Tills dess kan du också använda den alternativa bokningsfunktionen på <a href="' + fs_schema_public.fallback_url  + '">' + fs_schema_public.fallback_url  + '</a>.</span>';
+			if ( fs_schema_public.fallback_url  != '' ) message = message + '<span>Tills dess kan du också använda <a href="' + fs_schema_public.fallback_url  + '">den alternativa bokningsfunktionen</a>.</span>';
 		
 			jQuery ( '.fs_schema' ).html('<div class="fs_schema_error">' + message + '</div>');
 

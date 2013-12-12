@@ -12,13 +12,17 @@
 
 .fs_schema 								{ z-index: 1; padding-left: 30px; position: relative; }
 
+.fs_schema .responsive_target					{ width: 0px;}
+
+.fs_schema.day								{ padding-left: 0px; }
+
 .fs_schema .weeks							{ position: relative; clear: both; }
 
 .fs_schema .days							{ position: relative; left: 0px; top: 0px; }
 
 .fs_schema .day 							{ width: 200px;  float: left; border: 1px solid #F2F2F2; margin-bottom: 20px; position: relative; }
 
-.fs_schema.day .day, .fs_schema.bookings .day 	{ width: 100%; }
+.fs_schema.day .day, .fs_schema.bookings .day 	{ width: 99%; }
 
 .fs_schema .day .head						{ margin: 0px; padding: 6px 2px 6px 7px; font-size: 12px; background-color: #000; color: #fff; height: 14px; line-height: 16px; }
 
@@ -46,22 +50,16 @@
 										  
 .fs_schema .entries .entry.selected			{ border: 10px solid #000; }
 
-.fs_schema .entries .entry.fully_booked,
+.fs_schema .entry_info_cancelled,
 
-.fs_schema .entries .entry.cancelled,
+.fs_schema .entry_info_full,
 
-.entry_info_cancelled,
-
-.entry_info_full,
-
-.entry_info_closed							{ background-color: #fb9999; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f9b0b0), to(#fb9999)); background: -webkit-linear-gradient(top, #f9b0b0, #fb9999); 
+.fs_schema .entry_info_closed					{ background-color: #fb9999; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f9b0b0), to(#fb9999)); background: -webkit-linear-gradient(top, #f9b0b0, #fb9999); 
 									       background: -moz-linear-gradient(top, #f9b0b0, #fb9999); background: -ms-linear-gradient(top, #f9b0b0, #fb9999); background: -o-linear-gradient(top, #f9b0b0, #fb9999); }
 
-.fs_schema .entries .entry.notbookable,
+.fs_schema .entry_info_not_opened_yet,
 
-.entry_info_not_opened_yet,
-
-.entry_info_not_bookable						{ background-color: #ffae95; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcc6a5), to(#ffae95)); background: -webkit-linear-gradient(top, #fcc6a5, #ffae95); 
+.fs_schema .entry_info_not_bookable			{ background-color: #ffae95; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcc6a5), to(#ffae95)); background: -webkit-linear-gradient(top, #fcc6a5, #ffae95); 
 									       background: -moz-linear-gradient(top, #fcc6a5, #ffae95); background: -ms-linear-gradient(top, #fcc6a5, #ffae95); background: -o-linear-gradient(top, #fcc6a5, #ffae95); }
 
 .fs_schema .entries .entry.reserve,
@@ -73,16 +71,16 @@
 
 .fs_schema .entries .entry.booked,
 
-.booked_info 								{ background-color: #c5e7c7; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#d1eed2), to(#c5e7c7)); background: -webkit-linear-gradient(top, #d1eed2, #c5e7c7); 
+.fs_schema .booked_info 						{ background-color: #c5e7c7; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#d1eed2), to(#c5e7c7)); background: -webkit-linear-gradient(top, #d1eed2, #c5e7c7); 
 									       background: -moz-linear-gradient(top, #d1eed2, #c5e7c7); background: -ms-linear-gradient(top, #d1eed2, #c5e7c7); background: -o-linear-gradient(top, #d1eed2, #c5e7c7); }
 
-.fs_schema .entries .entry.dropin,
-
-.entry_info_dropin 							{ background-color: #fbe5a0; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcebb6), to(#fbe5a0)); background: -webkit-linear-gradient(top, #fcebb6, #fbe5a0); 
+.fs_schema .entry_info_dropin 				{ background-color: #fbe5a0; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcebb6), to(#fbe5a0)); background: -webkit-linear-gradient(top, #fcebb6, #fbe5a0); 
 									       background: -moz-linear-gradient(top, #fcebb6, #fbe5a0); background: -ms-linear-gradient(top, #fcebb6, #fbe5a0); background: -o-linear-gradient(top, #fcebb6, #fbe5a0); }
 
 
-.fs_schema .entries .entry.cancelled			{ text-decoration:line-through !important; }
+.fs_schema .entries .entry.cancelled,
+
+.fs_schema .entries .entry.notbookable			{ text-decoration:line-through !important; }
 																
 .fs_schema .entries .entry.before_now 			{ color: #aaa; } 
 
@@ -117,9 +115,9 @@
 
 .fs_schema .day:hover .hours					{ background-color: #f7f7f7; }
 
-.fs_schema .day .day_clock					{ position: absolute; top: 0px; display: block; left: -28px; top: 0px; width: 26px; background-color: #EBEBEB; height: 100%; margin-top: -2px; margin-left: -3px; padding: 2px; margin-bottom: -2px; }
+.fs_schema .day .day_clock					{ font-size: 12px; position: absolute; top: 0px; display: block; left: -28px; top: 0px; width: 28px; background-color: #EBEBEB; height: 100%; margin-top: -2px; margin-left: -3px; padding: 2px 2px 2px 0px; margin-bottom: -2px; }
 
-.fs_schema .day .day_clock.this_hour			{ background-color: #eb2220; color: #fff; }
+.fs_schema .day .day_clock.this_hour			{ color: #eb2220; }
 
 .fs_schema .day .clock:last-child.day_clock		{ }
 
@@ -148,29 +146,40 @@
 									       background: -moz-linear-gradient(top, #f8f8f8, #EBEBEB); background: -ms-linear-gradient(top, #fbfbfb, #EBEBEB); background: -o-linear-gradient(top, #fbfbfb, #EBEBEB);
 									       -webkit-box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6); -moz-box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6)); box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6); }
 
-.fs_schema .dialogue div						{ position: relative; margin-bottom: 4px; font-size: 14px; line-height: 18px; }
+.fs_schema .dialogue div						{ position: relative; margin-bottom: 4px; font-size: 14px; line-height: 18px; clear: both; }
 
-.fs_schema .dialogue div span					{ position: absolute; left: 0px; margin-left: 100px; }
+.fs_schema .dialogue div span					{ width: 140px; float: right;}
 
 .fs_schema .dialogue div span.two				{ position: absolute; left: 0px; margin-left: 140px; }
 
 .fs_schema .dialogue .header 					{ font-size: 18px; font-weight: bold; text-shadow: 1px 1px 1px #ccc; margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
 
-.fs_schema .dialogue .loginform				{ margin-top: 10px; }
+.fs_schema .dialogue .loginform				{ margin-top: 10px; margin-bottom: 20px; }
 
-.fs_schema .dialogue .loginform input			{ border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; padding: 4px; border: 1px solid #D5D5D5;
+.fs_schema .dialogue.login .loginform			{ margin-bottom: 30px; }
+
+.fs_schema .dialogue .loginform > div			{ font-size: 12px; }
+
+.fs_schema .dialogue .loginform input			{ border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; padding: 4px; border: 1px solid #D5D5D5; width: 130px; 
 										  -moz-box-shadow: inset 0 1px 1px rgba( 0,0,0,0.5); -webkit-box-shadow: inset 0 1px 1px rgba( 0,0,0,0.5); box-shadow: inset 0 1px 1px rgba( 0,0,0,0.5); }
 
 .fs_schema .dialogue .loginform input.error		{ background: rgba(255,245,87,0.5); }
 
-.fs_schema .dialogue .loginform > div			{ height: 22px; font-size: 12px; }
+.fs_schema .dialogue .loginform span			{ width: 100%; float: none; }
 
-.fs_schema .dialogue .buttons					{ position: relative; top: 10px; text-align: right; }
+.fs_schema .dialogue .loginform input			{ width: 251px; }
+
+.fs_schema .dialogue .loginform div 			{ height: inherit; }
+
+.fs_schema .dialogue .loggedin				{ margin-bottom: 20px; }
+
+.fs_schema .dialogue .buttons					{ text-align: right; position: relative; }
 
 .fs_schema .dialogue .buttons .fs_button		{ margin-left: 5px; line-height: 18px; }
 
 .fs_schema .dialogue .buttons .logout			{ float: left; margin-left: 0px; display: none; }
 
+.fs_schema .dialogue .buttons .close_login_form	{ font-weight: normal; color: #555; }
 
 .fs_schema .dialogue img.close				{ cursor: pointer;  transition: 0.2s; -moz-transition: 0.15s; -webkit-transition: 0.1s; -o-transition: 0.1s; position: absolute; right: 20px; top: 10px; }
 									       
@@ -182,9 +191,9 @@
 
 .fs_schema .dialogue .progress				{ display: none; position: absolute; top: 0px; left: 0px; width: 300px; height: 100%; background-color: rgba(255,255,255,0.9); margin-bottom: 0px; }
 
-.fs_schema .dialogue .progress img				{ position: absolute; left: 126px; top: 100px; }
+.fs_schema .dialogue .progress img				{ position: absolute; left: 126px; top: 130px; }
 
-.fs_schema .dialogue .progress .doingwhat		{ position: absolute; top: 170px; left: 0px; width: 300px; text-align: center; font-size: 12px; font-weight: bold; }
+.fs_schema .dialogue .progress .doingwhat		{ position: absolute; top: 200px; left: 0px; width: 300px; text-align: center; font-size: 12px; font-weight: bold; }
 
 
 .fs_schema .big_message 						{ display: none; position: absolute !important; top: 0px; left: 0px; width: 300px; height: 100%; background-color: #eee; }
@@ -206,15 +215,17 @@
 									 	   -webkit-box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6); -moz-box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6)); box-shadow: 4px 10px 20px rgba(0,0, 0, 0.6); }
 
 
-.fs_schema .login							{ display: none; width: 260px; top: 0px; transition: 0.2s; -moz-transition: 0.15s; -webkit-transition: 0.1s; -o-transition: 0.1s; }
+.fs_schema .login							{ display: none; width: 260px; top: 0px; height: 190px; transition: 0.2s; -moz-transition: 0.15s; -webkit-transition: 0.1s; -o-transition: 0.1s; }
+
+.fs_schema.logged_in .login					{ height: inherit !important; }
 
 .fs_schema .login .progress					{ height: 100%; }
 
-.fs_schema .login .progress img				{ top: 55px; }
+.fs_schema .login .progress img				{ top: 85px; }
 
-.fs_schema .login .progress .doingwhat			{ top: 115px; }
+.fs_schema .login .progress .doingwhat			{ top: 145px; }
 
-.fs_schema .login .big_message				{ height: 170px; }
+.fs_schema .login .big_message				{ height: 230px; }
 
 .fs_schema .login .big_message .fallback_url		{ display: none; }
 
@@ -225,19 +236,27 @@
 
 .fs_schema .open_event 						{ display: none; width: 260px;}
 
-.fs_schema .open_event .time 					{ }
+.fs_schema .open_event .time 					{ margin-bottom: 5px;  border-bottom: 1px solid #ddd; padding-bottom: 8px; }
 
-.fs_schema .open_event .staff 				{ }
+.fs_schema .open_event .totalslots 			{ }
+
+.fs_schema .open_event .staff 				{ margin-bottom: 5px;  border-bottom: 1px solid #ddd; padding-bottom: 8px; } 
+
+.fs_schema .open_event .right_now 				{ }
 
 .fs_schema .open_event .bookableslots 			{ }
 
+.fs_schema .open_event .dropin 				{ }
+
 .fs_schema .open_event .waitinglist 			{ }
 
-.fs_schema .open_event .divider				{ border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+.fs_schema .open_event .divider				{ border-bottom: 1px solid #ddd; margin: 10px 0px; }
 
-.fs_schema .open_event .room 					{ margin-bottom: 5px;  border-bottom: 1px solid #ddd; padding-bottom: 8px;}
+.fs_schema .open_event .room 					{ }
 
 .fs_schema .open_event .loggedin 				{ font-size: 12px; display: none; }
+
+.fs_schema .open_event .entry_info	, 
 
 .fs_schema .open_event .booked_info			{ display: none; font-weight: bold; margin: 10px -5px 5px; padding: 8px 5px; text-align: center; 
 										  border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
@@ -247,20 +266,38 @@
 
 .fs_schema .open_event .no_booking 			{ font-size: 12px; margin-top: 10px; }
 
-.fs_schema .open_event .entry_info				{ left: -20px; padding: 4px 20px; top: -5px; width: 260px; }
+.fs_schema .open_event .buttons .book_event,	
 
-.fs_schema .open_event .buttons .book_event		{ display: none; }
-
-.fs_schema .open_event .buttons .book_waitinglist	{ display: none; }
-
-.fs_schema .open_event .buttons .login_book_event	{ }
+.fs_schema .open_event .buttons .book_waitinglist,
 
 .fs_schema .open_event .login_book_waitinglist	{ display: none; }
 
+.fs_schema .open_event .buttons .login_book_event,
 
+.fs_schema .open_event .buttons .unbook_event,
 
-.fs_button								{ display: inline-block; padding: 5px 10px 6px; color: #fff; font-size: 13px; text-decoration: none; font-weight: bold; line-height: 1; text-shadow: 1px 1px 1px #777; position: relative; 
-										  background-color: rgba( 234, 235, 229, 0.6); color: #222; text-shadow: 1px 1px 1px #ccc; 
+.fs_schema .open_event .buttons .book_waitinglist,
+
+.fs_schema .open_event .buttons .book_event,
+
+.fs_schema .dialogue .buttons .login_btn		{ position: absolute; margin-left: 0px; left: 0px; top: -5px; text-shadow: none; }
+
+.fs_schema .open_event .buttons .login_book_event,
+
+.fs_schema .open_event .buttons .unbook_event,
+
+.fs_schema .open_event .buttons .book_waitinglist,
+
+.fs_schema .open_event .buttons .book_event,
+
+.fs_schema .dialogue .buttons .login_btn		{ background-color: #EB2220; color: #fff; }
+
+.fs_schema .open_event .buttons .unbook_event	{ background-color: #555; color: #fff; }
+
+.fs_schema .open_event .buttons .close_open_event	{ font-weight: normal; color: #555; }
+
+.fs_button								{ display: inline; padding: 5px 10px 6px; color: #fff; font-size: 13px; text-decoration: none; font-weight: bold; line-height: 1; position: relative; 
+										  white-space:nowrap; background-color: rgba( 234, 235, 229, 0.6); color: #222; /*text-shadow: 1px 1px 1px #ccc; */
 									       cursor: pointer; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; box-shadow: 0 1px 3px #999; -moz-box-shadow: 0 1px 3px #999; -webkit-box-shadow: 0 1px 3px #999; 
 									       transition: background 0.2s; -moz-transition: background 0.15s; -webkit-transition: background 0.1s; -o-transition: background 0.1s; }
 									       
@@ -274,13 +311,17 @@
 
 .fs_schema .navigation .fs_button				{ font-weight: normal;  margin-bottom: 15px;}
 
-.fs_schema .navigation .previous				{ float: left; }
+.fs_schema .navigation .previous				{ }
 
-.fs_schema .navigation .next					{ float: right; margin-right: 7px; }
+.fs_schema .navigation .next					{ float: right; margin-right: 7px; position: relative; top: -5px; }
 
 .fs_schema .navigation .login_info				{ margin-left: 10px;  transition: 0.2s; -moz-transition: 0.15s; -webkit-transition: 0.1s; -o-transition: 0.1s; }
 
 .fs_schema .navigation .change_to_day			{ margin-left: 10px; }
+
+.fs_schema .navigation .schema_print			{ margin-left: 10px; padding: 5px 0 6px; } 
+	
+.fs_schema .navigation .schema_print span		{ background: url(fs-schema-print-icon.png) no-repeat 10px 5px; padding: 5px 17px 6px;}
 
 .fs_schema .navigation .my_bookings			{ margin-left: 10px; display: none; }
 
@@ -313,3 +354,199 @@
 .fs_schema .week_debug						{ display: none; } 
 
 .fs_schema .debug							{ display: none; border: 1px dotted #000; padding: 10px; background-color: #eee;}
+
+
+
+
+
+
+
+/*/////////////////////////////////////////////////////////////////
+
+	RESPONSIVE CSS
+   	Mobil, bredden flödar mellan 320-767px (optimera för bredd 320px)
+   	
+//////////////////////////////////////////////////////////////////*/
+
+@media only screen and (max-width: 767px) {
+
+.fs_schema .navigation.above_schema 						{ height: 80px; }
+
+.fs_schema .navigation.above_schema.logged_in.show_my_bookings 	{ height: 120px; }
+
+.fs_schema .navigation.above_schema .previous 				{ float: none; position: absolute; right: 10px; }
+
+.fs_schema .navigation.above_schema .next 					{ float: none; margin-right: 0px; position: absolute; right: 10px; top: 40px; }
+
+.fs_schema .navigation.above_schema .login_info 				{ margin-left: 0px; left: 10px; position: absolute; top: 0; }
+
+.fs_schema .navigation.above_schema .change_to_day,
+
+.fs_schema .navigation.above_schema .change_to_week 			{ left: 0; margin-left: 10px; position: absolute; top: 40px; }
+
+.fs_schema .navigation .my_bookings 						{ left: 0; margin-left: 10px; position: absolute; top: 80px; }
+
+.fs_schema .navigation .update_schema 						{ position: absolute; right:  10px; top:  80px; }
+
+.fs_schema.day .navigation.below_schema .fs_button.previous		{ margin-left: 10px; }
+
+.fs_button											{ padding-top: 7px; padding-bottom: 8px; }
+
+.cache_status, .show_debug								{ display: none; }
+
+.fs_schema.day .entries .entry .product, 
+
+.fs_schema.bookings .entries .entry .product					{ font-size: 15px; top: 20px; }
+
+.fs_schema.day .entries .entry .staffroom, 
+
+.fs_schema.bookings .entries .entry .staffroom				{ top: 40px; font-size: 12px; }
+
+.fs_schema .navigation .schema_print						{ display: none; }
+
+}
+
+
+/*/////////////////////////////////////////////////////////////////
+
+	RESPONSIVE CSS
+   	Mobile 320px (Portrait)
+   	
+//////////////////////////////////////////////////////////////////*/
+
+@media only screen and (max-width: 479px) {
+
+.fs_schema .responsive_target								{ width: 1px;}
+
+.fs_schema .fs_button.previous span						{ display: none; }
+
+.fs_schema .fs_button.next span							{ display: none; }
+										
+.fs_schema .login										{ width: 238px; }										
+
+.fs_schema .dialogue .loginform input						{ width: 130px; }
+
+.fs_schema .dialogue .progress							{ width: 100%; }
+
+.fs_schema .week_overlay									{ width: 280px; }
+
+.fs_schema .dialogue .message								{ width: 258px; } 
+
+.fs_schema .login_info.fs_button span						{ display: none; }
+
+.fs_schema .big_message									{ width: 278px; }
+
+.fs_schema .open_event									{ width: 242px; }
+
+.fs_schema.day .day, .fs_schema.bookings .day				{ width: 302px; }
+
+}
+
+
+
+
+/*/////////////////////////////////////////////////////////////////
+
+	RESPONSIVE CSS
+   	Mobile Landscape Size to Tablet Portrait (devices and browsers)
+   	
+//////////////////////////////////////////////////////////////////*/
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+.fs_schema .responsive_target								{ width: 2px;}
+
+}
+
+
+
+
+
+/*/////////////////////////////////////////////////////////////////
+
+	RESPONSIVE CSS
+   	Tablet (Portrait) Bredd: 768px.
+   	
+//////////////////////////////////////////////////////////////////*/
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+.fs_schema .responsive_target								{ width: 3px;}
+
+}
+
+
+
+
+/*/////////////////////////////////////////////////////////////////
+
+	PRINT
+   	
+//////////////////////////////////////////////////////////////////*/
+
+@media print {
+
+header, 
+
+#gap,
+
+#footerLeft,
+
+#footerRight,
+
+#social,
+
+footer,
+
+#wpadminbar,
+
+.fs_schema .cache_status,
+
+.fs_schema .show_debug,
+
+.fs_schema .navigation,
+
+.fs_schema .about,
+
+.fs_schema .week_overlay,
+
+.week_progress,
+
+.fs_schema .big_message,
+
+.fs_schema .dialogue 									{ display: none !important; }
+
+body													{ background: none; }
+
+#wrapper												{ background: none; border: 0; box-shadow: none; margin: 0px; width: inherit; }
+
+#content												{ margin: 0px; padding-bottom 0px; margin-bottom: 0px; }
+
+.fs_schema .day.today .head 								{ background-color: #000; }
+
+.fs_schema .entries .entry,
+
+.fs_schema .entry_info_cancelled,
+
+.fs_schema .entry_info_full,
+
+.fs_schema .entry_info_closed,
+
+.fs_schema .entry_info_not_opened_yet,
+
+.fs_schema .entry_info_not_bookable,
+
+.fs_schema .entries .entry.reserve,
+
+.fs_schema .entries .entry.booked,
+
+.fs_schema .entry_info_dropin								{ background: #fafafa !important; }
+
+.fs_schema .entries .entry.before_now 						{ color: #000; }
+
+.fs_schema .entries .entry.notbookable						{ text-decoration:none !important; }
+
+}
+
+
+

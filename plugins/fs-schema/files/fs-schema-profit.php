@@ -586,9 +586,11 @@ class fs_schema_profit {
 					
 					'enddatetime'			=> (string) $activity->e,
 					
+					'totalslots'			=> (string) $activity->s,
+					
 					'freeslots'			=> (string) $activity->sl,
 					
-					'bookableslots'		=> (string) $activity->rsl,
+					'bookableslots'		=> (string) $activity->sl,
 					
 					'dropinslots'			=> '-1', // unknown
 					

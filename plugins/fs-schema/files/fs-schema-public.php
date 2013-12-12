@@ -12,7 +12,7 @@
 
 class fs_schema_public {
 
-	private $version 			= 'Alfa-version 0.97';
+	private $version 			= 'Beta-version 0.98';
 	
 	// PRoFIt
 	
@@ -21,13 +21,13 @@ class fs_schema_public {
 	//private $default_password	= '20898';
 
 	// BRP
-	//private $default_username	= 'klas@ehnemark.com';
+	private $default_username	= 'klas@ehnemark.com';
 	
-	//private $default_password	= 'test1280';	
+	private $default_password	= 'test1280';	
 
-	private $default_username	= '';
+	//private $default_username	= '';
 	
-	private $default_password	= '';
+	//private $default_password	= '';
 	
 	
 
@@ -59,6 +59,10 @@ class fs_schema_public {
 		wp_register_script	( 'fs-schema-public-script', 	plugins_url('fs-schema') . '/files/fs-schema-public-script.js' );
 
 		wp_register_style 	( 'fs-schema-public-style', 	plugins_url('fs-schema') . '/files/fs-schema-public-styles.css' );
+	
+		//wp_register_script	( 'fs-schema-public-script', 	plugins_url('fs-schema-test') . '/files/fs-schema-public-script.js' );
+
+		//wp_register_style 	( 'fs-schema-public-style', 	plugins_url('fs-schema-test') . '/files/fs-schema-public-styles.css' );
 		
 		wp_enqueue_script 	( 'fs-schema-public-script' );
 		
@@ -178,7 +182,7 @@ class fs_schema_public {
 				
 				if ( $settings['fs_booking_fallback_url'] != '' ) 
 				
-					$output 	.= '<span>Om felet består, prova att använda den alternativa bokningsfunktionen på <a href="' . $settings['fs_booking_fallback_url']  . '">' . $settings['fs_booking_fallback_url']  . '</a>.</span>';
+					$output 	.= '<span>Om felet består, prova att använda <a href="' . $settings['fs_booking_fallback_url']  . '">den alternativa bokningsfunktionen</a>.</span>';
 			
 				$output 		.= '</div>' . $this->about_html();
 				
@@ -206,7 +210,9 @@ class fs_schema_public {
 			
 			$num_entries					= count( $s['schema'] );
 			
-			$weekdays 					= array ( 'ulldag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag', 'söndag' );
+			$weekdays 					= array ( 'ulldag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag' );
+			
+			$month_names 					= array ( 'ullmo', 'jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug' , 'sep' , 'okt' , 'nov' , 'dec'  );
 			
 			$week_activities 				= array();
 			
@@ -261,9 +267,10 @@ class fs_schema_public {
 				
 				$output 					.= '<div class="' . $class_name . '" data-day-width="' . $day_width_px . '" data-hours-width="' . $hours_width_px . '" >';
 				
-				$output					.= '<div class="navigation"><div class="fs_button previous">&lt;&nbsp;Föregående ' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</div>';
+				$output					.= '<div class="navigation above_schema' . ( $settings['fs_schema_show_my_bookings'] == 'YES' ? ' show_my_bookings' : '' ) . '">';
 				
-				
+				$output					.= '<div class="fs_button previous">&lt;&nbsp;Föregående <span>' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</span></div>';
+			
 				if ( $r['booking'] == '1' )	
 				
 					$output 				.= '<div class="login_info fs_button">Logga in...</div>';
@@ -280,7 +287,9 @@ class fs_schema_public {
 				
 				$output 					.= '<div class="change_to_day fs_button ' . ( $r['enableday'] != true ? ' disabled' : '' ) . '" ' .  ( $r['type'] == 'day' ? 'style="display: none;" ' : '' ) . '>Växla till lista</div>';
 				
-				$output					.= '<div class="fs_button next">Nästa ' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '&nbsp;&gt;</div></div>';
+				$output 					.= '<div class="schema_print fs_button" title="Skriv ut schemat"><span></span></div>';
+		
+				$output					.= '<div class="fs_button next">Nästa <span>' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</span> &nbsp;&gt;</div></div>';
 				
 				$output					.= '<div class="weeks">';
 			
@@ -387,7 +396,7 @@ class fs_schema_public {
 				
 				$output 			.= ( $num_days == 1 ? '' : 'width: ' . $day_width_px . 'px;' ) . ' ">';
 				
-				$head_title		= ( $r['type'] == 'week' ?  $weekdays[ $d ] . ' ' . date('j/n', $day_date) : ( $r['type'] == 'day' ? $weekdays[ date ( 'N' , $s['start_date '] )] . ' ' . date('j/n', $day_date) : 'Mina bokningar (under utveckling - får ej användas live)' ) );
+				$head_title		= ( $r['type'] == 'week' ?  $weekdays[ $d ] . ' ' . date('j', $day_date) . ' ' . $month_names[date('n', $day_date)] : ( $r['type'] == 'day' ? $weekdays[ date ( 'N' , $s['start_date '] )] . ' ' . date('j/n', $day_date) : 'Mina bokningar (under utveckling - får ej användas live)' ) );
 				
 				$output 			.= '<div class="head">' . $head_title . '</div>';
 				
@@ -436,11 +445,15 @@ class fs_schema_public {
 							
 							$entry_data 			    .= ' data-staff="' . $entry['staff'] . '" data-room="' . $entry['room'] . '" data-freeslots="' . $entry['freeslots'] . '"';
 							
+							$entry_data 			    .= ' data-totalslots="' . $entry['totalslots'] . '"';
+							
 							$entry_data 			    .= ' data-bookableslots="' . $entry['bookableslots'] . '" data-dropinslots="' . $entry['dropinslots'] . '"';
 							
 							$entry_data 			    .= ' data-waitinglistsize="' . $entry['waitinglistsize'] . '" data-waitinglistposition="' . $entry['waitinglistposition'] . '"';
 							
-							$entry_data 			    .= ' data-startdate="' . $weekdays[ $d ] . ' ' . date('j/n Y', $day_date)  . '" data-datestamp="' . date( 'Y-m-d', $day_date)  . '"';
+							$entry_data 			    .= ' data-startdate="' . $weekdays[ $d ] . ' ' . date('j', $day_date) . ' ' . $month_names[date('n', $day_date)] . ' ' . date('Y', $day_date)  . '"';
+							
+							$entry_data 			    .= ' data-datestamp="' . date( 'Y-m-d', $day_date)  . '"';
 							
 							$entry_data 			    .= ' data-bookingid="' . $entry['bookingid'] . '" data-h="' . $h . '" data-bookingtype="' . $entry['bookingtype'] . '"';
 							
@@ -477,7 +490,7 @@ class fs_schema_public {
 							
 								$entry_class			.= ' before_now';
 								
-								$title				= ' Den här händelsen har redan varit. ';
+								$title				= ' Passet har varit. ';
 							
 							} else {
 							
@@ -505,9 +518,9 @@ class fs_schema_public {
 										
 											$entry_class			.= ' reserve';
 											
-											$title				.= 'Du har reservplats ' . $entry['waitinglistposition'] . '  av ' . $entry['waitinglistposition'];
+											$title				.= 'Du är reserv.'; // . $entry['waitinglistposition'] . '  av ' . $entry['waitinglistposition'];
 											
-											$booking_info 			.= 'Du har reservplats ' . $entry['waitinglistposition'] . '  av ' . $entry['waitinglistposition'];										
+											$booking_info 			.= 'Du är reserv.'; // . $entry['waitinglistposition'] . '  av ' . $entry['waitinglistposition'];										
 											
 											break;
 									} 
@@ -528,7 +541,7 @@ class fs_schema_public {
 										
 											$entry_class			.= ' dropin';
 											
-											$title				.= 'Endast dropin. ';
+											$title				.= 'Drop-in. ';
 										
 											break;
 											
@@ -561,6 +574,12 @@ class fs_schema_public {
 											$entry_class			.= ' notbookable';
 											
 											$title				.= 'Går inte att boka än. ';
+											
+											break;
+											
+										default:
+										
+											$title				.= 'Går att boka. ';
 											
 											break;
 									}
@@ -606,7 +625,9 @@ class fs_schema_public {
 			
 			if ( $r['no_wrapper'] === false ) {
 			
-				$output 		.= '<div class="navigation"><div class="fs_button previous">&lt;&nbsp;Föregående ' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</div><div class="fs_button next">Nästa ' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '&nbsp;&gt;</div></div>';
+				$output 		.= '<div class="navigation below_schema"><div class="fs_button previous">&lt;&nbsp;Föregående <span>' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</span></div>';
+				
+				$output 		.= '<div class="fs_button next">Nästa <span>' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</span>&nbsp;&gt;</div></div>';
 				
 				$output 		.= $this->about_html();
 				
@@ -632,9 +653,9 @@ class fs_schema_public {
 										<!--<div class="save_me_cookie"><label for="save_me"><input type="checkbox" id="save_me" disabled> Förbli inloggad på den här datorn</label></div>-->
 									</div>
 									<div class="buttons">
-										<div class="fs_button close_login_form">Avbryt</div>
 										<div class="fs_button login_btn">Logga in</div>
 										<div class="fs_button logout_btn">Logga ut</div>
+										<div class="fs_button close_login_form">Avbryt</div>
 									</div>
 									<div class="message"></div>
 									<div class="progress"><img src="' . plugins_url('fs-schema') . '/files/fs-schema-progress.gif" /><div class="doingwhat">Loggar in...</div></div>
@@ -645,23 +666,26 @@ class fs_schema_public {
 				$output 		.= '<div class="open_event dialogue">
 								<div class="header">Rubrik</div>
 								<div class="date">Datum:<span>x</span></div>
-								<div class="time">Tid:<span>x</span></div>
+								<div class="time">Klockan:<span>x</span></div>
 								<div class="room">Lokal:<span>x</span></div>
+								<div class="totalslots">Platser:<span>x</span></div> 
 								<div class="staff">Ledare:<span>x</span></div>
-								<div class="bookableslots">Lediga platser:<span>x</span></div>
-								<div class="waitinglist">Reservkö:<span>x</span></div>
-								<div class="divider"></div>';
+								<div class="right_now">Just nu</div>
+								<div class="bookableslots">Bokningsbara:<span>x</span></div>
+								<div class="dropin">Drop-in:<span>Information saknas</span></div>
+								<div class="waitinglist">Reserver:<span>x</span></div>';
 								
 				if ( $r['booking'] == '1' ) {				
 				
-					$output 	 .= '<div class="booked_info">Du är inbokad.</div>
-								<div class="entry_info entry_info_dropin">På detta pass gäller endast dropin.</div>
+					$output 	 .= '<div class="entry_info entry_info_dropin">På detta pass gäller endast dropin.</div>
 								<div class="entry_info entry_info_full">Passet är fullbokat.</div>
 								<div class="entry_info entry_info_reserve">Fullt. Du kan boka en reservplats.</div>
 								<div class="entry_info entry_info_cancelled">Passet är inställt.</div>
 								<div class="entry_info entry_info_not_bookable">Passet går inte att boka för tillfället.</div>
 								<div class="entry_info entry_info_not_opened_yet">Passet går inte att boka än.</div>
 								<div class="entry_info entry_info_closed">Passet är stängt för bokning.</div>
+								<div class="divider"></div>
+								<div class="booked_info">Du är inbokad.</div>
 								<div class="loggedin"></div>
 								<div class="loginform">
 									<div class="username">Användarnamn:<span><input type="text" value="' . $this->default_username . '" /></span></div>
@@ -674,12 +698,13 @@ class fs_schema_public {
 									<div class="fs_button unbook_event">Avboka</div>
 									<div class="fs_button login_book_event">Logga in och boka</div>
 									<div class="fs_button login_book_waitinglist">Boka reservplats</div>
-									<div class="fs_button close_open_event">Stäng</div>
+									<div class="fs_button close_open_event">Avbryt</div>
 								</div>';
 								
 				} else { 
 				
-					$output 	.= ' <div class="no_booking">Schemat visas utan möjlighet till booking.</div>
+					$output 	.= ' <div class="divider"></div>
+								<div class="no_booking">Bokning på nätet är avstängd.</div>
 								<div class="buttons">
 									<div class="fs_button close_open_event">Stäng</div>
 								</div>';
@@ -692,7 +717,7 @@ class fs_schema_public {
 							</div>';
 							
 			
-				$output 		.= '</div>';
+				$output 		.= '<div class="responsive_target"></div></div>';
 				
 			}
 		}
@@ -893,7 +918,7 @@ class fs_schema_public {
 		
 		if ( $settings['fs_schema_show_debug'] == 'YES' )
 		
-			$output .= '<span class="cache_status">' . $fs_schema->data->last_cache_status . '</span>. <span class="show_debug" style="text-decoration: underline; cursor: pointer; ">Visa Debug</span></pre>';
+			$output .= '<span class="cache_status">' . $fs_schema->data->last_cache_status . '</span> <span class="show_debug" style="text-decoration: underline; cursor: pointer; ">Visa Debug</span></pre>';
 		
 		return $output;	
 	}
