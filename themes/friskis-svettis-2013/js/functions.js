@@ -6,7 +6,7 @@ $(document).ready(function()
             content_width:      1000,
             content_height:     400,
             auto:       true,
-            interval:   5000,
+            interval:   8000,
 			transition_speed: 1500,
             transition: 'fade',
             continuous: true,
@@ -15,6 +15,13 @@ $(document).ready(function()
         });
     }
 	
+	$( window ).resize(function() {
+		alert(width());
+		if(width() > 1000)
+			alert("TJA");
+		
+		
+	});
 
 
 	$('#mainMenuButton').click(

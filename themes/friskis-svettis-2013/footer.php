@@ -26,21 +26,20 @@
 					<?php endif; 
 				echo '</div>';
 			?>
-			</div>		
 		</div>
 </div>
 <footer>
-		<nav id="footerMenu">
-			<?php wp_nav_menu( array('menu' => 'Sidfotsmeny' )); ?>
-		</nav>
-		<div id="copyright">
-			Producerad av <a href="http://strop.se">Strop Digital Studio</a> | Copyright © 2013 Friskis&amp;Svettis
-		</div>
-	<div id="mobileFooter">
-			Copyright © 2013 Friskis&amp;Svettis<br>
-			Producerad av <a href="http://strop.se">Strop Digital Studio</a>
+	<nav id="footerMenu">
+		<?php wp_nav_menu( array('menu' => 'Sidfotsmeny' )); ?>
+	</nav>
+	<div id="copyright">
+		Producerad av <a href="http://strop.se">Strop Digital Studio</a> | Copyright © 2013 Friskis&amp;Svettis
 	</div>
-	</footer>
-	<?php wp_footer(); ?>
+	<div id="mobileFooter">
+		Copyright © 2013 Friskis&amp;Svettis<br>
+		Producerad av <a href="http://strop.se">Strop Digital Studio</a>
+	</div>
+</footer>
+<?php wp_footer(); ?>
 </body>
 </html>
