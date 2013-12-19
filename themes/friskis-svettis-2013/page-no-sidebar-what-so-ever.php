@@ -10,7 +10,7 @@ get_header();
 	
 	<div id="mainContentNoSidebarWhatSoEver" class="mainContent">
 		<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
-			<?php do_action('posts_logout_link', 'Logga ut från lösenordsskyddade sidor'); ?>
+			<?php do_action('posts_logout_link', 'Logga ut från lösenordsskyddade sidor', 'logout_link'); ?>
 			<?php the_content(); 
 		endwhile;?>
 	</div>
