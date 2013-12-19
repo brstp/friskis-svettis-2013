@@ -33,11 +33,11 @@
 		<?php wp_nav_menu( array('menu' => 'Sidfotsmeny' )); ?>
 	</nav>
 	<div id="copyright">
-		Producerad av <a href="http://strop.se">Strop Digital Studio</a> | Copyright © 2013 Friskis&amp;Svettis
+		Producerad av <a href="http://strop.se" rel="nofollow">Strop Digital Studio</a> | Copyright © 2013 Friskis&amp;Svettis
 	</div>
 	<div id="mobileFooter">
 		Copyright © 2013 Friskis&amp;Svettis<br>
-		Producerad av <a href="http://strop.se">Strop Digital Studio</a>
+		Producerad av <a href="http://strop.se"rel="nofollow">Strop Digital Studio</a>
 	</div>
 </footer>
 <?php wp_footer(); ?>
