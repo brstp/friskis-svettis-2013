@@ -34,7 +34,7 @@ get_header(); ?>
 		</div>
 	
 	</div>
-	<div id="mainContent">
+	<div id="mainContent" class="mainContent">
 	<h1>Sökresultat för "<?php echo get_search_query(); ?>"</h1>
              <?php
             

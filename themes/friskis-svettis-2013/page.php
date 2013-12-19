@@ -55,7 +55,7 @@ get_header();
 		</ul>
 		
 	</div>	
-	<div id="mainContent">
+	<div id="mainContent" class="mainContent">
 		<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 			<?php the_content(); 
 		endwhile;?>

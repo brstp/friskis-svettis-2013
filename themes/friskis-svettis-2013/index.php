@@ -46,5 +46,5 @@ get_header();
                 ?>
             </div>
         </div>
-</div><!-- .maincontent -->
+</div><!-- .content -->
 <?php get_footer(); ?>

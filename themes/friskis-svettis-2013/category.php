@@ -25,7 +25,7 @@ get_header(); ?>
 		</div>
 		
 	</div>
-	<div id="mainContent" style="margin-bottom: 50px;">
+	<div id="mainContent" class="mainContent" style="margin-bottom: 50px;">
 	<h1>Kategori: <?php
 		$category = get_the_category(); 
 		echo $category[0]->cat_name;

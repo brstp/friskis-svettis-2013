@@ -37,7 +37,7 @@ get_header(); ?>
 			?>
 		</ul>
 	</div>
-	<div id="mainContent" style="margin-bottom: 50px;">
+	<div id="mainContent" class="mainContent" style="margin-bottom: 50px;">
              <?php
             /* Output the latest "Ordförande har ordet"
              */

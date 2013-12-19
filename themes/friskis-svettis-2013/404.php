@@ -35,7 +35,7 @@ get_header();
 	
 		
 	</div>
-	<div id="mainContent">
+	<div id="mainContent" class="mainContent">
 		<h1>Error 404</h1>
 		<h2>Sidan du försökte nå kan inte hittas.</h2>
 		<p>Gå tillbaks till <a href="<?php echo HOME_URI; ?>">startsidan</a> eller använd sökformuläret högst upp på sidan för att försöka hitta rätt.</p>

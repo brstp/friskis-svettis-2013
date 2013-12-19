@@ -61,7 +61,7 @@ get_header();
 	
 		
 	</div>	
-	<div id="mainContentNoSidebar">
+	<div id="mainContentNoSidebar" class="mainContent">
 		<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 			<?php the_content(); 
 		endwhile;?>
