@@ -173,7 +173,7 @@ h3 , h2.widgettitle, h2.widget_recent_comments,  h2.widget_categories, h2.widget
 	clear:both;
 }	
 	
-	#mainContent h3 {
+	.mainContent h3 {
 		font-family: 'Georgia', serif;
 		background:transparent;
 		font-weight: bold;
@@ -367,11 +367,11 @@ nav#mainMenu {
 	margin-left: 20px;
 	}
 	
-		#mainContent h1 {
+		.mainContent h1 {
 			margin-top: 0;
 		}
 	
-		#mainContent ul li {
+		.mainContent ul li {
 			margin-bottom: 12px;
 		}
 	
@@ -382,7 +382,7 @@ nav#mainMenu {
 			background: #bc2327;
 		}
 		
-		#mainContent hr, #mainContentNoSidebar hr {
+		.mainContent hr {
 			display: block;
 			width: 130px;
 			height: 8px;
@@ -810,6 +810,12 @@ table#wp-calendar{
 	width:73%;
 	float:right;	
 }
+
+#mainContentNoSidebarWhatSoEver{
+	width:100%;
+	float:right;	
+}
+
 
 .clearfix:after {
 		content: ".";
@@ -1734,11 +1740,11 @@ header {
 		clear:both;
 	}
 	
-		#mainContent img {
+		.mainContent img {
 			width: 100%!important;
 		}
 		
-		#mainContent p {
+		.mainContent p {
 			padding-left: 4px;
 		}
 	
