@@ -56,6 +56,8 @@ fs_schema_public = {
 	
 	last_step : 0,
 	
+	schema_offset_top : 0,
+	
 	book_event_after_login : false,
 	
 	book_waitinglist_after_login : false,
@@ -94,6 +96,8 @@ fs_schema_public = {
 			
 			jQuery( '.fs_schema .open_event .unbook_event' ).click( function() { fs_schema_public.unbook_event (); });
 			
+			jQuery( '.fs_schema .open_event .unbook_waitinglist' ).click( function() { fs_schema_public.unbook_event (); });
+			
 			jQuery('.fs_schema .big_message .close_btn').click( function() { fs_schema_public.close_dialogue_big_message (); });
 			
 			jQuery('.fs_schema .navigation .previous').click( function() { fs_schema_public.previous (); });
@@ -125,6 +129,8 @@ fs_schema_public = {
 			fs_schema_public.show_hud( jQuery('.fs_schema .days').attr('data-week') );
 			
 			jQuery(document).keydown( function(e) { fs_schema_public.key_down ( e.keyCode ); });
+			
+			fs_schema_public.log_in_by_cookie();
 			
 		}
 	},
@@ -256,15 +262,19 @@ fs_schema_public = {
 	
 
 	
-	login : function () {
+	login : function ( username, password ) {
 	
 		username_ = jQuery('.fs_schema .dialogue.open .username input');
 		
 		password_ = jQuery('.fs_schema .dialogue.open .password input');
-	
-		username = jQuery( username_ ).val();
 		
-		password = jQuery( password_ ).val();
+		if (!username || !password ) {
+	
+			username = jQuery( username_ ).val();
+			
+			password = jQuery( password_ ).val();
+			
+		}
 		
 		jQuery( username_, password_ ).removeClass('error');
 		
@@ -325,6 +335,13 @@ fs_schema_public = {
 						fs_schema_public.session_key = data.session_key;
 						
 						fs_schema_public.forceday = data.forceday;
+						
+						
+						// set cookie with login
+						fs_schema_public.create_cookie('un', username, 365);
+						
+						fs_schema_public.create_cookie('pw', password, 365);
+						
 					
 						fs_schema_public.close_login();
 						
@@ -360,47 +377,17 @@ fs_schema_public = {
 						
 						if ( fs_schema_public.book_event_after_login == true ) {
 						
-							if ( data.forceday && fs_schema_public.num_days == 7 ) {
-							
-								fs_schema_public.after_book_event = function() {
-							
-									fs_schema_public.change_to_day();
-									
-									jQuery('.fs_schema .change_to_week').addClass('disabled').html('Veckoschema kan inte visas').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
-								};
+							if ( data.forceday && fs_schema_public.num_days == 7 ) { fs_schema_public.after_book_event = function() { fs_schema_public.disable_change_to_week(true); };
 								
-							} else {
-							
-								fs_schema_public.after_book_event = function() {
-								
-									fs_schema_public.refresh();
-									
-								};
-							
-							}
+							} else { fs_schema_public.after_book_event = function() { fs_schema_public.refresh(); }; }
 						
 							fs_schema_public.book_event();
 							
 						} else if ( fs_schema_public.book_waitinglist_after_login == true ) {
 						
-							if ( data.forceday && fs_schema_public.num_days == 7 ) {
-							
-								fs_schema_public.after_book_event = function() {
-							
-									fs_schema_public.change_to_day();
-									
-									jQuery('.fs_schema .change_to_week').addClass('disabled').html('Veckoschema kan inte visas').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
-								};
+							if ( data.forceday && fs_schema_public.num_days == 7 ) { fs_schema_public.after_book_event = function() { fs_schema_public.disable_change_to_week(true); };
 								
-							} else {
-							
-								fs_schema_public.after_book_event = function() {
-								
-									fs_schema_public.refresh();
-									
-								};
-							
-							}
+							} else { fs_schema_public.after_book_event = function() { fs_schema_public.refresh(); }; }
 						
 							fs_schema_public.book_waitinglist();
 							
@@ -408,17 +395,9 @@ fs_schema_public = {
 					
 							fs_schema_public.is_busy = false;
 							
-							if ( data.forceday && fs_schema_public.num_days == 7 ) { 
-							
-								fs_schema_public.change_to_day();
+							if ( data.forceday && fs_schema_public.num_days == 7 ) {  fs_schema_public.disable_change_to_week(true);
 								
-								jQuery('.fs_schema .change_to_week').addClass('disabled').html('Veckoschema kan inte visas').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
-								
-							} else {
-							
-								fs_schema_public.refresh();
-								
-							}
+							} else { fs_schema_public.refresh(); }
 						}
 						
 						if ( fs_schema_public.book_event_after_login == false && fs_schema_public.book_waitinglist_after_login == false ) fs_schema_public.show_hud ( 'Inloggad' );
@@ -428,6 +407,34 @@ fs_schema_public = {
 			
 				});
 		
+		}
+	},
+	
+	
+	disable_change_to_week : function ( change_to_day ) {
+	
+		if ( change_to_day === true ) { 
+		
+			fs_schema_public.change_to_day();
+			
+			jQuery('.fs_schema .change_to_week').css('display','inline').addClass('disabled');
+		}
+		
+		jQuery('.fs_schema .message_above_schema').css('display','block').html('Du som är inloggad kan tyvärr inte se veckoschemat. Det beror på begränsningar i bokningsssytemet. Du kan <span class="logout_text">logga ut</span> för att se veckoschemat eller stega fram dag för dag.');
+
+		jQuery('.fs_schema .logout_text ').click( function() { fs_schema_public.logout (); });
+	},
+	
+	
+	log_in_by_cookie : function () {
+	
+		var username = fs_schema_public.read_cookie('un');
+		
+		var password = fs_schema_public.read_cookie('pw');
+		
+		if ( username && password && username != '' && password != '' && username != 'undefined' && password != 'undefined' ) {
+			
+			fs_schema_public.login ( username, password );
 		}
 	},
 	
@@ -442,6 +449,10 @@ fs_schema_public = {
 		fs_schema_public.personid = 0;
 		
 		fs_schema_public.refresh();
+		
+		fs_schema_public.erase_cookie('un');
+		
+		fs_schema_public.erase_cookie('pw');
 	
 		fs_schema_public.close_login();
 		
@@ -462,10 +473,12 @@ fs_schema_public = {
 		jQuery('.fs_schema .logout_btn ').css( 'display', 'none' );
 					
 		jQuery('.fs_schema .book_event ').css( 'display', 'none' );
+			
+		jQuery('.message_above_schema').css('display', 'none'); 
 		
 		jQuery('.fs_schema .login.dialogue .header').html('Logga in');
 		
-		jQuery('.fs_schema .change_to_week').removeClass('disabled').html('Växla till veckoschema').attr('title', '');
+		jQuery('.fs_schema .change_to_week').css('display','inline').removeClass('disabled');
 		
 		jQuery('.fs_schema .my_bookings').css( 'display', 'none' );
 							
@@ -636,6 +649,8 @@ fs_schema_public = {
 				fs_schema_public.show_my_bookings = true;
 			
 				jQuery('.fs_schema .change_to_day').css('display', 'none');
+			
+				jQuery('.message_above_schema').css('display', 'none'); 
 				
 				jQuery('.fs_schema .my_bookings').html('Visa schemat');
 			
@@ -699,6 +714,8 @@ fs_schema_public = {
 			
 		} else { 
 		
+			if ( fs_schema.forceday == true ) fs_schema.disable_change_to_week (false);
+		
 			jQuery('.fs_schema').addClass('day');
 			
 			jQuery('.fs_button.change_to_week').css('display', 'inline');
@@ -706,7 +723,6 @@ fs_schema_public = {
 		}
 		
 		fs_schema_public.refresh();
-	
 	},
 	
 	
@@ -745,13 +761,14 @@ fs_schema_public = {
 			var bookableslots = jQuery( event_el ).attr( 'data-bookableslots' );
 			
 			
+			
 			// calculate event window position and animation
 			
 			win_top = jQuery(document).scrollTop() - jQuery('.fs_schema').offset().top;
 			
 			event_el_position_top = jQuery( event_el ).position().top;
 			
-			if ( fs_schema_public.responsive == 'mobile' ) { 
+			/*if ( fs_schema_public.responsive == 'mobile' ) { 
 			
 				event_target_y = win_top;
 				
@@ -763,18 +780,33 @@ fs_schema_public = {
 			
 				event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
 				
-			} else {
+			} else {*/
 			
-				event_target_y = event_el_position_top > 30 ? event_el_position_top - 250 : 0;
+			if ( fs_schema_public.responsive != '' ) {
 			
 				event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
+				
+				event_target_y = win_top;
+			
+			} else {
+			
+				event_target_y = event_el_position_top > 30 ? event_el_position_top - 350 : 0;
+			
+				event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
+				
+				if ( win_top > fs_schema_public.schema_offset_top ) {
+				
+					if ( event_target_y < win_top ) event_target_y = win_top;
+				
+				} else {
+				
+					if ( event_target_y < win_top + fs_schema_public.schema_offset_top ) event_target_y = win_top + fs_schema_public.schema_offset_top;
+				}
 			}
 			
-			if ( event_target_y < win_top ) event_target_y = win_top;
+			event_current_x = jQuery(event_el).offset().left - fs_schema_public.offsetleft; /*( (jQuery( event_el ).parent().parent().attr('data-day') -1 ) * fs_schema_public.day_width ) + jQuery( event_el ).position().left - ( fs_schema_public.day_width / 2);*/
 			
-			event_current_x = ( (jQuery( event_el ).parent().parent().attr('data-day') -1 ) * fs_schema_public.day_width ) + jQuery( event_el ).position().left - ( fs_schema_public.day_width / 2);
-			
-			event_current_y = jQuery( event_el ).position().top; // - fs_schema_public.day_width;
+			event_current_y = jQuery( event_el ).position().top - 80; // - fs_schema_public.day_width;
 			
 			event_diff_x = event_target_x-event_current_x;
 			
@@ -784,16 +816,27 @@ fs_schema_public = {
 			// set values into the DOM
 			
 			jQuery('.fs_schema .dialogue.open').hide().removeClass('open');
-		
-			jQuery( '.fs_schema .open_event' )
+			
+			if ( fs_schema_public.responsive != '' ) {
+			
+				jQuery( '.fs_schema .open_event' )
 			
 				.addClass('open')
 			
-				.css( 'display', 'block').css('top', event_current_y ).css('left', event_current_x )
+				.css( 'display', 'block').css('top',  event_target_y ).css('left', event_target_x);
 				
-				.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
+			} else {
+		
+				jQuery( '.fs_schema .open_event' )
 				
-				.css( '-webkit-transform', 'scale(0.1)').css( '-moz-transform', 'scale(0.1)').css( 'transform', 'scale(0.1)');
+					.addClass('open')
+				
+					.css( 'display', 'block').css('top', event_current_y ).css('left', event_current_x )
+					
+					.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
+					
+					.css( '-webkit-transform', 'scale(0.1)').css( '-moz-transform', 'scale(0.1)').css( 'transform', 'scale(0.1)');
+			}
 
 			jQuery( '.fs_schema .open_event .header' ).html( jQuery( event_el ).attr( 'data-product' ));
 			
@@ -822,6 +865,8 @@ fs_schema_public = {
 			jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
 			
 			jQuery( '.fs_schema .open_event .unbook_event' ).css( 'display', 'none' );
+			
+			jQuery( '.fs_schema .open_event .unbook_waitinglist' ).css( 'display', 'none' );
 			
 			jQuery( '.fs_schema .open_event .unbook_waitinglist' ).css( 'display', 'none' );
 			
@@ -912,8 +957,19 @@ fs_schema_public = {
 				jQuery( '.fs_schema .open_event .login_book_event' ).css( 'display', 'none' );
 				
 				jQuery( '.fs_schema .open_event .booked_info' ).css( 'display', 'block' );
+				
+				if ( waitinglistposition != '' && waitinglistposition != '0' ) {
 					
-				jQuery( '.fs_schema .open_event .unbook_event' ).css( 'display', 'inline' );
+					jQuery( '.fs_schema .open_event .unbook_waitinglist' ).css( 'display', 'inline' );
+					
+					jQuery( '.fs_schema .open_event .booked_info' ).addClass('reserve');
+					
+				} else {
+					
+					jQuery( '.fs_schema .open_event .unbook_event' ).css( 'display', 'inline' );
+					
+					jQuery( '.fs_schema .open_event .booked_info' ).removeClass('reserve');
+				}
 				
 				
 				// if booking is a reserve list, show that, otherwise not
@@ -988,19 +1044,26 @@ fs_schema_public = {
 				}
 			}
 
-			window.setTimeout(function() {
+			if ( fs_schema_public.responsive == '' ) {
 			
-				jQuery( '.fs_schema .open_event' )
+				window.setTimeout(function() {
 				
-					.css('transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-o-transition' , '0.1s')
+					jQuery( '.fs_schema .open_event' )
 					
-					.css( '-webkit-transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)')
+						.css('transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-o-transition' , '0.1s')
+						
+						.css( '-webkit-transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)')
+						
+						.css( '-moz-transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)')
+						
+						.css( 'transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)');
 					
-					.css( '-moz-transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)')
+					}, 100);
 					
-					.css( 'transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)');
-				
-				}, 100);
+			} else {
+			
+				jQuery('html, body').animate({scrollTop:jQuery( '#open_event_dialogue' ).offset().top}, 'slow');
+			}
 		}
 	},
 	
@@ -1276,7 +1339,7 @@ fs_schema_public = {
 						
 						jQuery( fs_schema_public.open_event_el ).attr( 'title',  'Du är reserv.');
 						
-						jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Reservplats');
+						jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Du är reserv.');
 
 					}
 					
@@ -1291,24 +1354,15 @@ fs_schema_public = {
 				
 				if ( refresh_after_booked == true ) {
 				
-					if ( fs_schema_public.forceday && fs_schema_public.num_days == 7 ) {
+					if ( fs_schema_public.forceday && fs_schema_public.num_days == 7 ) { fs_schema_public.disable_change_to_week(true); 
 					
-						fs_schema_public.change_to_day();
-							
-						jQuery('.fs_schema .change_to_week').addClass('disabled').html('Veckoschema kan inte visas').attr('title',  'Profit bokningssystem kan inte visa veckoschemat utan bara en dag i taget när man är inloggad.');
-						
-					} else {
-						
-						fs_schema_public.refresh();
-					
-					}
+					} else { fs_schema_public.refresh(); }
 				
 				} else {
 				
 					fs_schema_public.after_book_event ();
 						
 					fs_schema_public.after_book_event = function() {};
-					
 				}
 					
 				jQuery( '.fs_schema .debug').html( data.debug );
@@ -1366,52 +1420,82 @@ fs_schema_public = {
 	
 		if ( jQuery( '.fs_schema .open_event' ).length > 0 ) {
 		
-			jQuery( '.fs_schema .open_event' )
-					
-				.css( 'transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-o-transition' , '0.1s')
-				
-				.css( '-webkit-transform', 'translate(0px, 0px) scale(0.1)').css( '-moz-transform', 'translate(0px, 0px) scale(0.1)').css( 'transform', 'translate(0px, 0px) scale(0.1)');
-				
-			window.setTimeout(function() {
-				
+			if ( fs_schema_public.responsive == '' ) {
+			
 				jQuery( '.fs_schema .open_event' )
+						
+					.css( 'transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-o-transition' , '0.1s')
+					
+					.css( '-webkit-transform', 'translate(0px, 0px) scale(0.1)').css( '-moz-transform', 'translate(0px, 0px) scale(0.1)').css( 'transform', 'translate(0px, 0px) scale(0.1)');
+					
+				window.setTimeout(function() {
+					
+					jQuery( '.fs_schema .open_event' )
+					
+						.css( 'display', 'none')
+					
+						.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
+						
+						.removeClass ( 'open' );
+						
+						if ( fs_schema_public.animate_source_on_close_event == true ) {
+		
+							jQuery( fs_schema_public.open_event_el )
+								
+								.removeClass ( fs_schema_public.remove_source_class_on_close_event )
+								
+								.addClass ( fs_schema_public.add_source_class_on_close_event )
+								
+								.css( '-webkit-transform', 'translate(-5px, -5px) scale(1.5)').css( '-moz-transform', 'translate(-5px, -5px) scale(1.5)').css( 'transform', 'translate(-5px, -5px) scale(1.5)');
 				
+							window.setTimeout(function() {
+							
+								jQuery( fs_schema_public.open_event_el )
+							
+									.css( '-webkit-transform', 'translate(0px, 0px) scale(1)').css( '-moz-transform', 'translate(0px, 0px) scale(1)').css( 'transform', 'translate(0px, 0px) scale(1)');					
+							
+							}, 100);
+			
+							fs_schema_public.open_event_id = 0;
+							
+							if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
+							
+						} else {
+						
+							fs_schema_public.open_event_id = 0;
+							
+							if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
+						}
+					
+					}, 100);
+					
+			} else {
+			
+				jQuery( '.fs_schema .open_event' )
+					
 					.css( 'display', 'none')
-				
-					.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
 					
 					.removeClass ( 'open' );
-					
-					if ( fs_schema_public.animate_source_on_close_event == true ) {
-	
-						jQuery( fs_schema_public.open_event_el )
-							
-							.removeClass ( fs_schema_public.remove_source_class_on_close_event )
-							
-							.addClass ( fs_schema_public.add_source_class_on_close_event )
-							
-							.css( '-webkit-transform', 'translate(-5px, -5px) scale(1.5)').css( '-moz-transform', 'translate(-5px, -5px) scale(1.5)').css( 'transform', 'translate(-5px, -5px) scale(1.5)');
 			
-						window.setTimeout(function() {
-						
-							jQuery( fs_schema_public.open_event_el )
-						
-								.css( '-webkit-transform', 'translate(0px, 0px) scale(1)').css( '-moz-transform', 'translate(0px, 0px) scale(1)').css( 'transform', 'translate(0px, 0px) scale(1)');					
-						
-						}, 100);
+				if ( fs_schema_public.animate_source_on_close_event == true ) {
 		
-						fs_schema_public.open_event_id = 0;
+					jQuery( fs_schema_public.open_event_el )
 						
-						if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
+						.removeClass ( fs_schema_public.remove_source_class_on_close_event )
 						
-					} else {
+						.addClass ( fs_schema_public.add_source_class_on_close_event );
+	
+					fs_schema_public.open_event_id = 0;
 					
-						fs_schema_public.open_event_id = 0;
-						
-						if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
-					}
+					if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
+					
+				} else {
 				
-				}, 100);
+					fs_schema_public.open_event_id = 0;
+					
+					if ( fs_schema_public.refresh_on_close_event == true ) fs_schema_public.refresh();
+				}
+			}
 		}
 	},
 	
@@ -1427,6 +1511,8 @@ fs_schema_public = {
 		
 		fs_schema_public.fallback_url = jQuery ( '.fs_schema .fs_booking_fallback_url').html();
 		
+		fs_schema_public.schema_offset_top = jQuery('.fs_schema').offset().top;
+		
 		jQuery( '.fs_schema .week_overlay' ).css('left', ((fs_schema_public.schema_width/2)-150));
 		
 		jQuery( '.fs_schema .big_message.week_message' ).css('left', ((fs_schema_public.schema_width/2)-150));
@@ -1436,6 +1522,8 @@ fs_schema_public = {
 		if ( jQuery('.fs_schema.enableweek ').length > 0 ) fs_schema_public.enableweek = true;
 		
 		if ( jQuery('.fs_schema.day').length > 0 ) fs_schema_public.num_days = 1;
+		
+		fs_schema_public.offsetleft = jQuery('#wrapper').offset().left + 100;
 		
 		switch (jQuery( '.fs_schema .responsive_target').css('width')) {
 		
@@ -1485,6 +1573,48 @@ fs_schema_public = {
 		return browser_ok;
 	},
 	
+	create_cookie : function (name, value, days) {
+	
+	    var expires;
+	
+	    if (days) {
+	    
+		   var date = new Date();
+		   
+		   date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		   
+		   expires = "; expires=" + date.toGMTString();
+		   
+	    } else {
+	    
+		   expires = "";
+	    }
+	    
+	    document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/";
+	},
+	
+	read_cookie : function (name) {
+	
+	    var nameEQ = escape(name) + "=";
+	    
+	    var ca = document.cookie.split(';');
+	    
+	    for (var i = 0; i < ca.length; i++) {
+	    
+		   var c = ca[i];
+		   
+		   while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+		   
+		   if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
+	    }
+	    
+	    return null;
+	},
+	
+	erase_cookie : function (name) {
+	
+	    fs_schema_public.create_cookie(name, "", -1);
+	},
 
 	ajax : function ( data, datatype, fn_success, fn_error ) {
 	

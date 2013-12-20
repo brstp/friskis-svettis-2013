@@ -14,8 +14,16 @@
 
 .brp_businessunitslist label input			{ position: relative; top: -2px; }
 
-.brp_businessunitslist label .buid			{ position: absolute; left: 255px; top: -3px; width: 30px; font-weight: bold; font-size: 90%; }
+.brp_businessunitslist label .buid			{ position: absolute; left: 255px; top: -3px; width: 30px; font-weight: bold; font-size: 90%; white-space:nowrap; }
 
 div.fs_shema_shortcode_help				{ display: none; }
 
 #fs_show_logs							{ margin-left: 10px; }
+
+.fs_schema_warning_keys td div			{ color: #000; background-color: #fcb3b3; border: 5px solid #592121; max-width: 1024px; padding: 10px; line-height: 12px; font-size: 11px !important;  }
+
+.fs_schema_warning_keys h2 				{ background-color: #592121; color: #FFFFFF !important; margin-top: 0; text-shadow: none; max-width: 1024px; display: block; padding: 2px 20px 0px 10px;  font-size: 14px;}
+
+.fs_schema_warning_keys ul				{ list-style: auto; line-height: 12px; margin-left: 12px; }
+
+.fs_schema_warning_keys td p				{ font-size: 11px !important; line-height: 14px; }

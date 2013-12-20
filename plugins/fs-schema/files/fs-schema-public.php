@@ -12,22 +12,11 @@
 
 class fs_schema_public {
 
-	private $version 			= 'Beta-version 0.98';
+	private $version 			= 'Beta-version 0.99';
 	
-	// PRoFIt
+	private $default_username	= '';
 	
-	//private $default_username	= 'klas@klas.se';
-	
-	//private $default_password	= '20898';
-
-	// BRP
-	private $default_username	= 'klas@ehnemark.com';
-	
-	private $default_password	= 'test1280';	
-
-	//private $default_username	= '';
-	
-	//private $default_password	= '';
+	private $default_password	= '';
 	
 	
 
@@ -40,7 +29,7 @@ class fs_schema_public {
 	public function __construct ( ) {
 
 		// Initialization stuff
-		//add_action( 'init', 								array ( $this, 'wordpress_init' ));
+		
 		add_action( 'wp_enqueue_scripts', 						array ( $this, 'load_scripts' ));
 					
 	}
@@ -289,7 +278,7 @@ class fs_schema_public {
 				
 				$output 					.= '<div class="schema_print fs_button" title="Skriv ut schemat"><span></span></div>';
 		
-				$output					.= '<div class="fs_button next">Nästa <span>' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</span> &nbsp;&gt;</div></div>';
+				$output					.= '<div class="fs_button next">Nästa <span>' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</span> &nbsp;&gt;</div></div><div class="message_above_schema"' . ( !get_option( 'fs_schema_valid_key' ) ? ' style="display: block;"' : '') . '>' . ( !get_option( 'fs_schema_valid_key' ) ? 'Detta schemat är inte kopplat till en giltig API-nyckel.' : '') . '</div>';
 				
 				$output					.= '<div class="weeks">';
 			
@@ -300,61 +289,64 @@ class fs_schema_public {
 			
 
 			// loop thru every schema entry and store the entry in the right position of a multidimensional array
-			foreach ( $s['schema'] as $entry ) {
-				
-				$start_time 				= fs_schema::get_date_from_string ( $entry['startdatetime'], true );
-				
-				$end_time 				= fs_schema::get_date_from_string ( $entry['enddatetime'] );
-				
-				$start_day 				= $num_days == 1 ? 1 : (int) date( 'N', $start_time );  // if show only one day, all events are at 'day 1'
-				
-				$start_hour 				= (int) date( 'H', $start_time );
-				
-				$end_hour 				= (int) date( 'H', $end_time );
-				
-				$start_minute				= (int) date ('i', $start_time );
-				
-				$end_minute				= (int) date ('i', $end_time );
-				
-				$before_now				= $start_time < $today_this_hour; 
-				
-				if ( $end_hour == $start_hour  )			$end_hour++;
-				
-				if ( $start_hour < $earliest_hour ) 		$earliest_hour = $start_hour;
-				
-				if ( $end_hour > $latest_hour ) 			$latest_hour = $end_hour;
-				
-				
-				if ( $start_day > 0 && $start_day <=$num_days && $start_hour > 0 && $start_hour <= 24 ) {
-				
-					$entry['_start_hour'] 				= $start_hour;
+			if ( is_Array ( $s['schema'] )) {
+			
+				foreach ( $s['schema'] as $entry ) {
 					
-					$entry['_end_hour'] 				= $end_hour;
+					$start_time 				= fs_schema::get_date_from_string ( $entry['startdatetime'], true );
 					
-					$entry['_start_minute']				= $start_minute;
+					$end_time 				= fs_schema::get_date_from_string ( $entry['enddatetime'] );
 					
-					$entry['_before_now']				= $before_now;
+					$start_day 				= $num_days == 1 ? 1 : (int) date( 'N', $start_time );  // if show only one day, all events are at 'day 1'
 					
-					if ( isset ( $week_activities[$start_day][$start_hour] )) array_push( $week_activities[$start_day][$start_hour], $entry );
+					$start_hour 				= (int) date( 'H', $start_time );
+					
+					$end_hour 				= (int) date( 'H', $end_time );
+					
+					$start_minute				= (int) date ('i', $start_time );
+					
+					$end_minute				= (int) date ('i', $end_time );
+					
+					$before_now				= $start_time < $today_this_hour; 
+					
+					if ( $end_hour == $start_hour  )			$end_hour++;
+					
+					if ( $start_hour < $earliest_hour ) 		$earliest_hour = $start_hour;
+					
+					if ( $end_hour > $latest_hour ) 			$latest_hour = $end_hour;
+					
+					
+					if ( $start_day > 0 && $start_day <=$num_days && $start_hour > 0 && $start_hour <= 24 ) {
+					
+						$entry['_start_hour'] 				= $start_hour;
 						
-					else $week_activities[$start_day][$start_hour] = array ( $entry );
-
-					
-					// add the number of entries that occupy the same hours
-					for ( $hour = $start_hour; $hour < $end_hour; $hour++ ) {
-					
-						if ( isset ( $week_hour_info[$start_day][$hour]['num_entries'] )) $week_hour_info[$start_day][$hour]['num_entries']++;
+						$entry['_end_hour'] 				= $end_hour;
 						
-						else $week_hour_info[$start_day][$hour]['num_entries'] = 1;
+						$entry['_start_minute']				= $start_minute;
 						
-						if ( !isset ( $day_hour_info[$hour]['max_entries'] )) $day_hour_info[$hour]['max_entries'] = 1;
+						$entry['_before_now']				= $before_now;
 						
-						if ( $day_hour_info[$hour]['max_entries'] < $week_hour_info[$start_day][$hour]['num_entries'] ) 
+						if ( isset ( $week_activities[$start_day][$start_hour] )) array_push( $week_activities[$start_day][$start_hour], $entry );
+							
+						else $week_activities[$start_day][$start_hour] = array ( $entry );
+	
 						
-							$day_hour_info[$hour]['max_entries'] = $week_hour_info[$start_day][$hour]['num_entries'];
+						// add the number of entries that occupy the same hours
+						for ( $hour = $start_hour; $hour < $end_hour; $hour++ ) {
+						
+							if ( isset ( $week_hour_info[$start_day][$hour]['num_entries'] )) $week_hour_info[$start_day][$hour]['num_entries']++;
+							
+							else $week_hour_info[$start_day][$hour]['num_entries'] = 1;
+							
+							if ( !isset ( $day_hour_info[$hour]['max_entries'] )) $day_hour_info[$hour]['max_entries'] = 1;
+							
+							if ( $day_hour_info[$hour]['max_entries'] < $week_hour_info[$start_day][$hour]['num_entries'] ) 
+							
+								$day_hour_info[$hour]['max_entries'] = $week_hour_info[$start_day][$hour]['num_entries'];
+						}
 					}
+					
 				}
-				
 			}
 			
 
@@ -387,6 +379,8 @@ class fs_schema_public {
 			for ( $d = 1; $d <= $num_days; $d++) {
 			
 				$day_date 		= $num_days == 7 ? mktime( 0, 0, 0, date ( "m", $date_week_start  ), date( "d", $date_week_start ) + $d - 1 , date( "Y", $date_week_start )) : date ( 'U', $s['start_date ']);
+				
+				$day_num			= $num_days == 7 ? $d : date ( 'N', $s['start_date ']);
 				
 				$today_class		= $today_date == $day_date ? ' today' : '';
 				
@@ -451,7 +445,7 @@ class fs_schema_public {
 							
 							$entry_data 			    .= ' data-waitinglistsize="' . $entry['waitinglistsize'] . '" data-waitinglistposition="' . $entry['waitinglistposition'] . '"';
 							
-							$entry_data 			    .= ' data-startdate="' . $weekdays[ $d ] . ' ' . date('j', $day_date) . ' ' . $month_names[date('n', $day_date)] . ' ' . date('Y', $day_date)  . '"';
+							$entry_data 			    .= ' data-startdate="' . $weekdays[ $day_num ] . ' ' . date('j', $day_date) . ' ' . $month_names[date('n', $day_date)] . ' ' . date('Y', $day_date)  . '"';
 							
 							$entry_data 			    .= ' data-datestamp="' . date( 'Y-m-d', $day_date)  . '"';
 							
@@ -648,9 +642,9 @@ class fs_schema_public {
 									<div class="header">Logga in</div>
 									<div class="loggedin"></div>
 									<div class="loginform">
-										<div class="username">Användarnamn:<span><input type="text" value="' . $this->default_username . '" /></span></div>
-										<div class="password">Lösenord:<span><input type="password" value="' . $this->default_password . '" /></span></div>
-										<!--<div class="save_me_cookie"><label for="save_me"><input type="checkbox" id="save_me" disabled> Förbli inloggad på den här datorn</label></div>-->
+										<div class="username">Användarnamn:<span><input type="text" value="' . $this->default_username . '" autocomplete="off" /></span></div>
+										<div class="password">Lösenord:<span><input type="password" value="' . $this->default_password . '" autocomplete="off" /></span></div>
+										<!--<div class="save_me_cookie"><label for="save_me"><input type="checkbox" id="save_me" disabled> Förbli inloggad</label></div>-->
 									</div>
 									<div class="buttons">
 										<div class="fs_button login_btn">Logga in</div>
@@ -663,7 +657,7 @@ class fs_schema_public {
 							    </div>
 								';
 				
-				$output 		.= '<div class="open_event dialogue">
+				$output 		.= '<div id="open_event_dialogue" class="open_event dialogue">
 								<div class="header">Rubrik</div>
 								<div class="date">Datum:<span>x</span></div>
 								<div class="time">Klockan:<span>x</span></div>
@@ -677,9 +671,9 @@ class fs_schema_public {
 								
 				if ( $r['booking'] == '1' ) {				
 				
-					$output 	 .= '<div class="entry_info entry_info_dropin">På detta pass gäller endast dropin.</div>
-								<div class="entry_info entry_info_full">Passet är fullbokat.</div>
-								<div class="entry_info entry_info_reserve">Fullt. Du kan boka en reservplats.</div>
+					$output 	 .= '<div class="entry_info entry_info_dropin">Endast dropin på detta pass.</div>
+								<div class="entry_info entry_info_full">Passet är fullt.</div>
+								<div class="entry_info entry_info_reserve">Passet är fullt.</div>
 								<div class="entry_info entry_info_cancelled">Passet är inställt.</div>
 								<div class="entry_info entry_info_not_bookable">Passet går inte att boka för tillfället.</div>
 								<div class="entry_info entry_info_not_opened_yet">Passet går inte att boka än.</div>
@@ -688,14 +682,15 @@ class fs_schema_public {
 								<div class="booked_info">Du är inbokad.</div>
 								<div class="loggedin"></div>
 								<div class="loginform">
-									<div class="username">Användarnamn:<span><input type="text" value="' . $this->default_username . '" /></span></div>
-									<div class="password">Lösenord:<span><input type="password" value="' . $this->default_password . '" /></span></div>
+									<div class="username">Användarnamn:<span><input type="text" value="' . $this->default_username . '" autocomplete="off" /></span></div>
+									<div class="password">Lösenord:<span><input type="password" value="' . $this->default_password . '" autocomplete="off" /></span></div>
 								</div>
 								<div class="buttons">
 									<div class="fs_button logout">Logga ut</div>
 									<div class="fs_button book_event">Boka</div>
 									<div class="fs_button book_waitinglist">Boka reservplats</div>
 									<div class="fs_button unbook_event">Avboka</div>
+									<div class="fs_button unbook_waitinglist">Avboka reservplats</div>
 									<div class="fs_button login_book_event">Logga in och boka</div>
 									<div class="fs_button login_book_waitinglist">Boka reservplats</div>
 									<div class="fs_button close_open_event">Avbryt</div>

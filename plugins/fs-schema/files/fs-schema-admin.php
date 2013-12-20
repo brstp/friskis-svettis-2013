@@ -168,7 +168,7 @@ class fs_schema_admin {
 			
 			$this->update_option_from_form ( 'fs_schema_show_my_bookings' );
 			
-			
+	
 			// remove any spaces in businessunitids
 			$fs_booking_bpi_businessunitids 	=  get_option( 'fs_booking_bpi_businessunitids' );
 			
@@ -182,6 +182,8 @@ class fs_schema_admin {
 		
 		// get saved settings
 		global $fs_schema;
+		
+		$this->check_valid_api();
 		
 		$settings = $fs_schema->data->settings();
 		
@@ -209,7 +211,6 @@ class fs_schema_admin {
 		$fs_schema_show_debug				= $settings[ 'fs_schema_show_debug' ];
 		
 		$fs_schema_show_my_bookings			= $settings[ 'fs_schema_show_my_bookings' ];
-		
 		
 		$fs_booking_bpi_businessunitids_html 	= $fs_schema->data->brp->get_businessunits ( 'BRP' );
 		
@@ -239,7 +240,37 @@ class fs_schema_admin {
 								</ul>
 							</div>
 						</td>
-					</tr>
+					</tr>';
+					
+		if ( !get_option( 'fs_schema_valid_key' )) echo '
+		
+					<tr valign="top" class="fs_schema_warning_keys">
+						<td colspan="2">
+							<h2>Varning</h2>
+							<div>
+								<p><strong>Kontrollera att du angivit korrekt API-nyckel och/eller anläggnings-ID.</strong></p>
+								<p>Schemat är inte avsett att använda med den API-nyckel <span class="">och/eller anläggnings-ID </span>du angett. Om du tror att du angivit korrekt värden och vill 
+								använda schemat för den här API-nyckeln, vänligen kontakta <a href="mailto:hello@klasehnemark.com">Klas Ehnemark</a> som har utvecklat schemat så att han kan lägga in stöd för din API-nyckel.</p>
+								<p>Schemat används idag av följande Friskis&Svettis-föreningar:
+								<ul>
+									<li>Danderyd (BRP)</li>
+									<li>Haninge (Profit)</li>
+									<li>Huddinge (Profit)</li>
+									<li>Lidingö (BRP)</li>
+									<li>Norrtälje (BRP)</li>
+									<li>Södertälje (BRP)</li>
+									<li>Täby (BRP)</li>
+									<li>Åkersberga (Profit)</li>
+								</ul>
+								</p>
+								<p class="fs_schema_warning_continue">
+									Om du trots detta använder schemat med denna API-nyckel accepterar du härmed något av följande:<br><ul><li><strong>Jag vill prova schemat med min nyckel utan att använda det publikt</strong>, <i>eller</i></li><li><strong>Jag är medveten om att jag inte får använda schemat men jag gör det ändå.</strong></li></ul>
+								</p>
+							</div>
+						</td>
+					</tr>';
+					
+		echo '
 				</table>
 				
 				<h2>Inställningar</h2>
@@ -257,7 +288,7 @@ class fs_schema_admin {
 						</td>
 					</tr>
 					
-					<tr valign="top" class="fs_schema_brp" ' . ( $fs_schema_integration != 'BRPs' ? ' style="display: none;"' : '' ) . '>
+					<tr valign="top" class="fs_schema_brp" ' . ( $fs_schema_integration != 'BRP' ? ' style="display: none;"' : '' ) . '>
 						<th scope="row"><label for="fs_schema_brp_server_url">BRP API-url</label></th>
 						<td>
 							<input name="fs_schema_brp_server_url" type="text" id="fs_schema_brp_server_url" value="' . $fs_schema_brp_server_url . '" class="regular-text" />
@@ -350,6 +381,40 @@ class fs_schema_admin {
 		
 	}
 
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// Private function: check valid api key
+	//
+	////////////////////////////////////////////////////////////////////////////////		
+		
+	private function check_valid_api() {
+	
+		global $fs_schema;
+		
+		$settings = $fs_schema->data->settings();
+		
+		switch ( $settings[ 'fs_schema_integration' ] ) {
+		
+			case 'BRP':
+			
+				// ..1.2..
+				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li5lYzY1YTVlNTZkZmQ0OTA4YjBhOTI4NDJkOThhMGRiYy4xYTA3ZmNlMWFjMjI0YTY2OWRjYWUwMjQxMmJjZDA4NC42YThhYTRjMWM2ZDg0ZTNmOWQxN2NlZDJhZTViZWM5My4zOTdmZGFlYzAwMGM0ZTMyODJiYzI1ODVkYjVmYTJiZS40OWY0YzhkNmI4OTg0NGEzYmJiMmEzYTgwMDg1NjE4Yi4='), '.'.$settings[ 'fs_booking_bpi_api_key' ].'.' ) );
+				
+				break;
+				
+				
+			case 'PROFIT':
+			
+				// ..1.2..
+				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li4xNDM3Lg=='), '.'.$settings[ 'fs_booking_profit_organization_unit' ].'.' ) );
+				
+				break;
+		}	
+	}
+
+
+
 	////////////////////////////////////////////////////////////////////////////////
 	//
 	// Private function: Update option from admin form
@@ -371,7 +436,6 @@ class fs_schema_admin {
 		}
 		
 		else delete_option( $option_name );
-	
 	}
 	
 } //End Class
