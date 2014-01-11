@@ -65,7 +65,7 @@ class fs_schema_admin {
 		
 		if ( get_current_screen()->id != 'settings_page_fs-schema' ) {
 			
-			$fs_schema_link = '<a href="options-general.php?page=fs-schema">Friskis & Svettis SCHEMA</a>';
+			$fs_schema_link = '<a href="options-general.php?page=fs-schema">Friskis&Svettis SCHEMA</a>';
 			
 			if ( get_option( 'fs_schema_integration' ) == 'BRP' ) {
 				
@@ -110,7 +110,7 @@ class fs_schema_admin {
 	
 	function wordpress_admin_menu () {
 
-		add_options_page ( 'FS-Schema', 'Friskis & Svettis Schema', 'administrator', 'fs-schema', array ( &$this, 'admin_page') );
+		add_options_page ( 'FS-Schema', 'Friskis&Svettis Schema', 'administrator', 'fs-schema', array ( &$this, 'admin_page') );
 		
 	}
 	
@@ -216,7 +216,7 @@ class fs_schema_admin {
 		
 	
 		echo 	'<div class="wrap"><form method="post" action=""><input type="hidden" name="submit_options_hidden" value="Y" />';
-		echo 	'<div id="icon-options-general" class="icon32"><br></div><h2>Friskis & Svettis Schema</h2>';
+		echo 	'<div id="icon-options-general" class="icon32"><br></div><h2>Friskis&Svettis Schema</h2>';
 		
 		wp_nonce_field ( 'update-options' );
 		
@@ -300,7 +300,7 @@ class fs_schema_admin {
 						<th scope="row"><label for="fs_schema_profit_server_url">Sökväg till Profit-servern</label></th>
 						<td>
 							<input name="fs_schema_profit_server_url" type="text" id="fs_schema_profit_server_url" value="' . $fs_schema_profit_server_url . '" class="regular-text" />
-							<p class="description">Ange sökvägen till den server som BRP/Profit ligger på. Ändra bara denna om du fått instruktioner från BRP/Profit.</p>
+							<p class="description">Ange sökvägen till den server som Profit ligger på. Ändra bara denna om du fått instruktioner från BRP/Profit.</p>
 						</td>
 					</tr>
 					
@@ -345,9 +345,9 @@ class fs_schema_admin {
 					</tr>
 					
 					<tr valign="top">
-						<th scope="row"><label for="fs_schema_update_inteval">Uppdateingsintervall</label></th>
+						<th scope="row"><label for="fs_schema_update_inteval">Uppdateringsintervall</label></th>
 						<td>
-							<input name="fs_schema_update_inteval" type="text" id="fs_schema_update_inteval" value="' . $fs_schema_update_inteval . '" class="small-text" /> minuter. <span id="clear_cache_cmd"><a href="javascript: fs_schema_admin.clear_cache();">Rensa cache nu</a></span>
+							<input name="fs_schema_update_inteval" type="text" id="fs_schema_update_inteval" value="' . $fs_schema_update_inteval . '" class="small-text" /> minuter. <span id="clear_cache_cmd"><a href="javascript: fs_schema_admin.clear_cache();">Uppdatera schemat från bokningssystemet nu</a></span>
 							<p class="description">Ange hur ofta Wordpress ska uppdatera schemat från bokningssystemet. 60 minuter är ganska rimligt.<br>När användaren är inloggad hämtas informationen alltid direkt, utan mellanlagring.</p>
 						</td>
 					</tr>
@@ -370,7 +370,7 @@ class fs_schema_admin {
 							<div></div>
 							<label for="fs_schema_show_my_bookings">
 							<input type="checkbox" name="fs_schema_show_my_bookings" id="fs_schema_show_my_bookings" 
-							value="YES"' . ( $fs_schema_show_my_bookings == 'YES' ? ' checked="checked"' : '' ) . '> <span style="position: relative; top: 2px; ">Visa inloggad användares bokningar i en lista (för utveckling, <u>får ej användas live</u>)</span>
+							value="YES"' . ( $fs_schema_show_my_bookings == 'YES' ? ' checked="checked"' : '' ) . '> <span style="position: relative; top: 2px; ">Visa inloggad användares bokningar i en lista (för utveckling, får ej användas live)</span>
 							</label>
 							<div></div>
 						</td>

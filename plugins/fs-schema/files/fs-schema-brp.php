@@ -655,7 +655,8 @@ class fs_schema_brp {
 				
 					case 'Personal': 		$staff 	.= (string) $resource->name; break;
 						
-					case 'Trningssalar':	$room 	.= (string) $resource->name; break;
+					case 'Trningssalar':
+					case 'Träningssalar': 	$room 	.= (string) $resource->name; break;
 				
 				}
 			
@@ -757,7 +758,7 @@ class fs_schema_brp {
 					
 					'bookableslots'		=> (string) $activity->bookableslots,
 					
-					'dropinslots'			=> (int) $activity->bookableslots - (int) $activity->freeslots,
+					'dropinslots'			=> -1, //(int) $activity->bookableslots - (int) $activity->freeslots,
 					
 					'waitinglistsize'		=> (string) $activity->waitinglistsize,
 					

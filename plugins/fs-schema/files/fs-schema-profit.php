@@ -736,11 +736,23 @@ class fs_schema_profit {
 		$settings = $fs_schema->data->settings();
 
 		$r['url']	 			= $settings[ 'fs_schema_profit_server_url' ];
-		$r['url']				= 'http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?wsdl';	
+		//$r['url']				= 'http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?wsdl';	
 		
 		
 		// Create the client instance
-		$client = new soapclient( $r['url'] );
+		try  { 
+		
+			$client = @new soapclient( $r['url'] );
+		
+		} 
+		
+		catch (SoapFault $exception) {
+		
+			$this->debug .= '<br>Det måste vara en felaktig adress i Bokningssystemets URL.';
+		
+			return new WP_Error('exec_soap_call_error', 'Det gick inte att få kontakt med bokningssystemets server. Servern verkar inte finnas.' );		
+
+		}
 
 		try  { 
 		
@@ -769,12 +781,17 @@ class fs_schema_profit {
 		
 		$this->debug .= '<br>Resultat från servern: ' . $result->processUnsafeResult;
 		
-		$xml_doc = simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $result->processUnsafeResult ) );
-
-		//if ( $xml_doc == '' ) return new WP_Error('exec_soap_call_error', 'Det gick inte att ladda xml-data.' );
+		$xml_doc = @simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $result->processUnsafeResult ) );
+			
+		if ( $xml_doc === false ) {
+		
+			$this->debug .= '<br>Det gick inte att ladda följande text som ett xml-dokument: ' . $result->processUnsafeResult ;
+		
+			return new WP_Error('exec_soap_call_error', 'Det gick inte att ladda xml-data.' );
+			
+		}
 		
 		return $xml_doc;	
-	
 	}
 	
 	

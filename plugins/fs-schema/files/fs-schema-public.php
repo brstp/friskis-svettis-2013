@@ -12,9 +12,9 @@
 
 class fs_schema_public {
 
-	private $version 			= 'Beta-version 0.99';
+	private $version 			= 'Beta-version 0.995';
 	
-	private $default_username	= '';
+	private $default_username	= ''; 
 	
 	private $default_password	= '';
 	
@@ -451,7 +451,7 @@ class fs_schema_public {
 							
 							$entry_data 			    .= ' data-bookingid="' . $entry['bookingid'] . '" data-h="' . $h . '" data-bookingtype="' . $entry['bookingtype'] . '"';
 							
-							$entry_data			    .= ' data-status="' . $entry['status'] . '"';
+							$entry_data			    .= ' data-status="' . $entry['status'] . '" data-hour_entry_count="' . $hour_entry_count . '"';
 							
 							$entry_class			    .= ' entry_' . $entry['status'];
 							
@@ -465,7 +465,7 @@ class fs_schema_public {
 							// calculate entry position from top
 							$entry_top				= '';
 							
-							if ( $h > $earliest_hour ) {
+							if ( $h > $earliest_hour || $hour_entry_count > 1 ) {
 							
 								// if week, based on what time it starts
 								if ( $r['type'] == 'week' )
@@ -571,6 +571,14 @@ class fs_schema_public {
 											
 											break;
 											
+										case 'reserve':
+										
+											$entry_class			.= '';
+											
+											$title				.= 'Reservplatser. ';
+											
+											break;
+											
 										default:
 										
 											$title				.= 'Går att boka. ';
@@ -664,7 +672,7 @@ class fs_schema_public {
 								<div class="room">Lokal:<span>x</span></div>
 								<div class="totalslots">Platser:<span>x</span></div> 
 								<div class="staff">Ledare:<span>x</span></div>
-								<div class="right_now">Just nu</div>
+								<!--<div class="right_now">Just nu</div>-->
 								<div class="bookableslots">Bokningsbara:<span>x</span></div>
 								<div class="dropin">Drop-in:<span>Information saknas</span></div>
 								<div class="waitinglist">Reserver:<span>x</span></div>';
