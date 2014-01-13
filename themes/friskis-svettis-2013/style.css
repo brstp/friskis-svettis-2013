@@ -1739,10 +1739,17 @@ header {
 		margin-left: 0px;
 		clear:both;
 	}
-	
+/*	
 		.mainContent img {
 			width: 100%!important;
 		}
+*/
+	#mainContent img {
+		width: 100%!important;
+	}
+	#mainContentNoSideBar img {
+		width: 100%!important;
+	}
 		
 		.mainContent p {
 			padding-left: 4px;
