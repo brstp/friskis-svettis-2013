@@ -825,6 +825,30 @@ table#wp-calendar{
 		visibility: hidden;
 }
 
+
+.recent_with_excerpt blockquoute {
+	margin-left: 0px;
+}
+
+.recent_with_excerpt h2 a {
+	color: #000;
+}
+
+.recent_with_excerpt h2 a:hover {
+	text-decoration: none;
+}
+
+.recent_with_excerpt .alignright {
+	float: left;
+	margin-left: 0px;
+	margin-top: 0px;
+}
+
+.recent_with_excerpt small {
+	font-size: 12px;
+}
+
+
  /* under 1010px */
 @media screen and (max-width: 1010px) {
 .yellow {
