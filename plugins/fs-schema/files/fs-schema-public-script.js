@@ -2,7 +2,7 @@
 
 	FS SCHEMA, Javascript for public pages
 
-	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
 
 //////////////////////////////////////////////////////////////////*/
@@ -139,7 +139,9 @@ fs_schema_public = {
 	
 	print : function () {
 	
-		jQuery('.fs_schema .big_message .close_btn').html('Skriv ut').css('left', '100px');
+		window.print();
+	
+		/*jQuery('.fs_schema .big_message .close_btn').html('Skriv ut').css('left', '100px');
 		
 		fs_schema_public.after_close_big_message = function() {
 		
@@ -149,7 +151,7 @@ fs_schema_public = {
 		
 		};
 	
-		fs_schema_public.display_dialogue_big_message ( 'Utskrift', 'Det bästa resultatet vid utskrift får du om du via skrivarinställningarna väljer att anpassa schemat storlek, så att hela schemat skrivs ut på en enda sida.', false);
+		fs_schema_public.display_dialogue_big_message ( 'Utskrift', 'Det bästa resultatet vid utskrift får du om du via skrivarinställningarna väljer att anpassa schemat storlek, så att hela schemat skrivs ut på en enda sida.', false);*/
 	},
 	
 	
@@ -1284,6 +1286,8 @@ fs_schema_public = {
 							
 							jQuery( fs_schema_public.open_event_el ).attr( 'data-waitinglistposition', '' );
 							
+							jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingtype', 'ordinary' );
+							
 							jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Avbokad');
 							
 							jQuery( fs_schema_public.open_event_el ).attr( 'title',  '');
@@ -1357,6 +1361,8 @@ fs_schema_public = {
 						refresh_after_booked = true;
 					
 					} else {
+					
+						jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingtype',  'waitinglist' );
 				
 						jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid',  data.bookingid );
 						
@@ -1590,7 +1596,7 @@ fs_schema_public = {
 		
 		if ( browser_ok  == false ) {
 		
-			var message = 'Din webbläsare är för gammal för att kunna visa schemat. Vänligen uppdatera webbläsaren till en nyare version.';
+			var message = 'Din webbläsare är för gammal för att kunna visa schemat. Vi rekommenderar att du använder senaste versionerna av någon av de vanligaste webbläsarna.';
 			
 			if ( fs_schema_public.fallback_url  != '' ) message = message + '<span>Tills dess kan du också använda <a href="' + fs_schema_public.fallback_url  + '">den alternativa bokningsfunktionen</a>.</span>';
 		

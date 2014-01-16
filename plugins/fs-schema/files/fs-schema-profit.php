@@ -3,7 +3,7 @@
 
 	FS SCHEMA, PHP Class - PROFIT
 
-	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
 	
 	
@@ -11,8 +11,7 @@
 	
 	%1$s	= session key
 	
-	username: klas@klas.se
-	password: 20898
+	XOR-encryption is not implemented
 	
 //////////////////////////////////////////////////////////////////*/
 
@@ -64,13 +63,13 @@ class fs_schema_profit {
 			 $schema = $this->update_schema( $r );
 		
 		} else {
-
+		
 			// get a cached or refreshed version of schema object
 			$schema					= $fs_schema->data->cached ( 'fs_schema_objects', array ( $this, 'update_schema' ), $r, false, $sub_cache_name );
 			
-			
+		
 			// if this version contains an error, force a refresh on cache
-			if ( $schema['error'] != '' ) 
+			if ( $schema['error'] != ''|| $schema === false ) 
 			
 				$schema				= $fs_schema->data->cached ( 'fs_schema_objects', array ( $this, 'update_schema' ), $r, true, $sub_cache_name );
 				
@@ -125,6 +124,8 @@ class fs_schema_profit {
 		
 			$result 		  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
 			
+			$this->debug 	 .= '<br>Resultat från anropet: ' . print_r( $result, true) ;
+			
 			
 			
 			// get user bookings so we can mark what events this user is booked at
@@ -140,11 +141,11 @@ class fs_schema_profit {
 			
 			$book_result 	  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
 			
-			$this->debug 	 .= '<br>Resultat från bokningen: ' . print_r( $book_result, true) ;
+			$this->debug 	 .= '<br>Resultat från anropet: ' . print_r( $book_result, true) ;
 			
 			if ( $book_result['error'] != '' ) {
 			
-				return $book_result;
+				return array_merge($r, $book_result);
 			
 			} else {
 			
@@ -171,11 +172,11 @@ class fs_schema_profit {
 			
 			$book_result 	  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
 			
-			$this->debug 	 .= '<br>Resultat från bokningen: ' . print_r( $book_result, true) ;
+			$this->debug 	 .= '<br>Resultat från anropet: ' . print_r( $book_result, true) ;
 			
 			if ( $book_result['error'] != '' ) {
 			
-				return $book_result;
+				return array_merge($r, $book_result);
 			
 			} else {
 			
@@ -185,13 +186,17 @@ class fs_schema_profit {
 					
 						$user_reserve_bookings[ (string) $booking->bookableobjectid ] = array ( 
 						
-							'bookingid' 	=> (string) $booking->BOOKINGID,
+							'bookingid' 	=> (string) $booking->RESERVEBOOKINGID,
 							
 							'position' 	=> (string) $booking->POSITION
 						);
 					}
 				}
 			}
+			
+			$this->debug 	 .= '<br>user_bookings: ' . print_r( $user_bookings, true) ;
+			
+			$this->debug 	 .= '<br>user_reserve_bookings: ' . print_r( $user_reserve_bookings, true) ;
 			
 		}
 
@@ -204,13 +209,13 @@ class fs_schema_profit {
 			
 		} else if ( $result['error'] != '' ) {
 		
-			$r = $result;
+			$r = array_merge($r, $result);
 		
 		} else {
 
 			$r['schema'] 		= $this->add_schema_xml ( $result['xml']->AndroidBookableObjects->bo, 'schema', $user_bookings, $user_reserve_bookings );
 		}
-		
+		//var_dump($r);
 		return $r;
 	}
 	
@@ -552,9 +557,20 @@ class fs_schema_profit {
 			
 			$reserve_position	= array_key_exists ( (string) $activity->BOID, $user_reserve_bookings) ? $user_reserve_bookings [ (string) $activity->BOID ]['position'] : '';
 			
-			$booking_type		= $booking_id != '' ? 'ordinary' : ( $reserve_booking_id != '' ? 'waitinglist' : '' );
-
+			$booking_type		= '';
 			
+			if (  $booking_id != '' ) {
+			
+				$booking_type 	= 'ordinary';
+			
+			} else if ( $reserve_booking_id != '' ) {
+			
+				$booking_type 	= 'waitinglist';
+				
+				$booking_id	= $reserve_booking_id;
+			
+			}
+
 			// put it together
 			array_push( $schema,
 			
@@ -839,27 +855,22 @@ class fs_schema_profit {
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
-	// ENCRYPT AND DECRYPT XOR
+	// ENCRYPT AND DECRYPT XOR, not implemented
 	//
 	////////////////////////////////////////////////////////////////////////////////
-		
-	public static function encrypt_decrypt_xor ( $text_to_encrypt ) {
-	
-		$output = '';
-		
+
+	private function encrypt_decrypt_XOR ($text_to_encrypt) {
+
 		$key = 129;
 		
+		$outText = ''; 
+
 		for ( $i = 0; $i < strlen($text_to_encrypt); $i++ ) {
-		
-			$char = $text_to_encrypt[ $i ];
-		
-			$char = chr(ord($char) ^ $key);
-			
-			$output .= $char;
+	
+			$outText .= chr($text_to_encrypt{$i} ^ $key);
 		}
-	
-		return $output;
-	
+		
+		return $outText;
 	}
 
 

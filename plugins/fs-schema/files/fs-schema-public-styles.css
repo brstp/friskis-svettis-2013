@@ -2,7 +2,7 @@
 
 	FS SCHEMA, CSS for public pages
 
-	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
 
 //////////////////////////////////////////////////////////////////*/
@@ -30,7 +30,7 @@
 
 .fs_schema.day .hours, .fs_schema.bookings .hours	{ display: none; }
 
-.fs_schema .hours .clock						{ border-top: 1px dotted #b8b8b8; font-size: 10px; padding: 2px 0px; position: relative; }
+.fs_schema .hours .clock						{ border-top: 1px dotted #b8b8b8; font-size: 10px; padding: 0px 0px; position: relative; }
 
 .fs_schema .entries							{ background-color: #aaf; margin-left: 0px; position: relative; }
 
@@ -363,7 +363,9 @@
 
 .fs_schema .navigation .change_to_week			{ margin-left: 10px; }
 
-.fs_schema .message_above_schema				{ display: none; font-size: 12px; border: 5px solid #000; padding: 5px; clear: both; position: relative; top: -8px; margin-right: 6px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
+.fs_schema .message_above_schema				{ display: none; font-size: 12px; padding: 5px; clear: both; position: relative; top: -8px; margin-right: 6px; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
+
+.fs_schema .message_above_schema.warning		{ border: 5px solid #000; background-color: #e7c5c5; }
 
 .change_to_day.disabled, .change_to_week.disabled	{ color: #ccc; text-shadow: 1px 1px 1px #fff; cursor: default; } 
 
@@ -575,7 +577,7 @@ body													{ background: none; }
 
 #content												{ margin: 0px; padding-bottom 0px; margin-bottom: 0px; }
 
-.fs_schema .day.today .head 								{ background-color: none; color: #000; }
+.fs_schema .day.today .head 								{ background-color: #fff; color: #000; }
 
 .fs_schema .day:hover .hours								{ background-color: none; }
 
@@ -607,6 +609,7 @@ body													{ background: none; }
 
 .fs_schema .entries .entry								{ border: 1px solid #000; }
 
+.fs_schema *											{ page-break-after: avoid; page-break-inside: avoid; }
 
 }
 
