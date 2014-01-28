@@ -3,7 +3,7 @@
 
 	FS SCHEMA, PHP Class - DATA
 
-	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
 
 //////////////////////////////////////////////////////////////////*/
@@ -382,11 +382,14 @@ class fs_schema_data {
 		
 		// get settings
 		$settings = $fs_schema->data->settings();
-//$force_update = true;	
+
 		$number_second_cache = $settings[ 'fs_schema_update_inteval' ];
-//$number_second_cache = 600;
-		$do_update = $force_update;
 		
+		//$force_update = true;	
+		//$number_second_cache = 600;
+		
+		$do_update = $force_update;
+
 		$cached_value = '';
 
 		if ( $do_update == false ) {
@@ -422,13 +425,13 @@ class fs_schema_data {
 			
 				if ( $cached_value['error'] != '' ) $save_results = false;
 				
-				$cached_value = $cached_value['xml'];
+				//$cached_value = $cached_value['xml'];
 			
 			}
 			
-			$cached_value = serialize ( $cached_value );
+			$cached_value_serialized = serialize ( $cached_value );
 			
-			if ( $sub_cache_name ) $cached_value = array ( $sub_cache_name => $cached_value );
+			if ( $sub_cache_name ) $cached_value_serialized = array ( $sub_cache_name => $cached_value_serialized );
 	
 			$cache_datestamp = strtotime('now');  // set new timestamp and if this is the first time option is set, add option otherwise update it
 			
@@ -437,22 +440,23 @@ class fs_schema_data {
 			else update_option ( $cache_name . '_datestamp', $cache_datestamp );
 			
 			// if this is the option is set, add option otherwise update it
-			if ( get_option( $cache_name . '_value' ) === false ) add_option( $cache_name . '_value', $cached_value, '', 'yes');
+			if ( get_option( $cache_name . '_value' ) === false ) add_option( $cache_name . '_value', $cached_value_serialized, '', 'yes');
 			
-			else update_option ( $cache_name . '_value', $cached_value );
+			else update_option ( $cache_name . '_value', $cached_value_serialized );
 			
 			$this->last_cache_status = 'Uppdaterar cache ' . $sub_cache_name;
+			
+			return $cached_value;
 		
 		} else {
 			
 			$this->last_cache_status = 'Använder cache ' . $sub_cache_name;
+			
+			if ( $sub_cache_name ) return unserialize ( $cached_value [$sub_cache_name ] );
+		
+			else return unserialize ( $cached_value );
 		
 		}
-		
-		if ( $sub_cache_name ) return unserialize ( $cached_value [$sub_cache_name ] );
-		
-		else return unserialize ( $cached_value );		
-
 	}
 	
 	
@@ -464,6 +468,8 @@ class fs_schema_data {
 	//////////////////////////////////////////////////////////////////////////////
 		
 	public function clear_cache() {
+		
+		delete_option( 'fs_schema_objects' );
 		
 		delete_option( 'fs_schema_objects_datestamp' );
 		

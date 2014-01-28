@@ -3,7 +3,7 @@
 
 	FS SCHEMA, PHP Class - SHORTCODES
 
-	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
 
 //////////////////////////////////////////////////////////////////*/
@@ -58,11 +58,10 @@ class fs_schema_shortcodes {
 			'enableweek'		=> $r['visavyknapp'] == '0' ? false : true,
 			'enableday'		=> $r['visavyknapp'] == '0' ? false : true,
 		);
-
+		
 		return  $fs_schema->public->render_schema ( $args );
 		
 	}
-
 }
 
 ?>

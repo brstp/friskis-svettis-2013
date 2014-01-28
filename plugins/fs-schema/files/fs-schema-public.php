@@ -3,7 +3,7 @@
 
 	FS SCHEMA, PHP Class - PUBLIC
 
-	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
 
 //////////////////////////////////////////////////////////////////*/
@@ -12,9 +12,9 @@
 
 class fs_schema_public {
 
-	private $version 			= 'Beta-version 0.99';
+	private $version 			= 'Beta-version 0.996';
 	
-	private $default_username	= '';
+	private $default_username	= ''; 
 	
 	private $default_password	= '';
 	
@@ -223,7 +223,7 @@ class fs_schema_public {
 			
 			$day_header_height_px			= 27;
 			
-			$hour_height_px				= 62;  //45
+			$hour_height_px				= 65;  //45
 			
 			$min_hour_height_px				= 20;
 			
@@ -278,7 +278,7 @@ class fs_schema_public {
 				
 				$output 					.= '<div class="schema_print fs_button" title="Skriv ut schemat"><span></span></div>';
 		
-				$output					.= '<div class="fs_button next">Nästa <span>' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</span> &nbsp;&gt;</div></div><div class="message_above_schema"' . ( !get_option( 'fs_schema_valid_key' ) ? ' style="display: block;"' : '') . '>' . ( !get_option( 'fs_schema_valid_key' ) ? 'Detta schemat är inte kopplat till en giltig API-nyckel.' : '') . '</div>';
+				$output					.= '<div class="fs_button next">Nästa <span>' . ( $num_days == 1 ? 'dag' : 'vecka' ) . '</span> &nbsp;&gt;</div></div><div class="message_above_schema' . ( !get_option( 'fs_schema_valid_key' ) ? ' warning" style="display: block;"' : '') . '">' . ( !get_option( 'fs_schema_valid_key' ) ? 'Detta schemat är inte kopplat till en giltig API-nyckel.' : '') . '</div>';
 				
 				$output					.= '<div class="weeks">';
 			
@@ -358,7 +358,7 @@ class fs_schema_public {
 				// calculate hour height
 				if ( isset ( $day_hour_info[ $h ]['max_entries'] ) && $day_hour_info[ $h ]['max_entries'] > 0 ) {
 				
-					$day_hour_info[ $h ]['height'] 		= $day_hour_info[ $h ]['max_entries']  * $hour_height_px; // hour height
+					$day_hour_info[ $h ]['height'] 		= $day_hour_info[ $h ]['max_entries']  * ( $hour_height_px + 1); // hour height
 					
 				} else {
 				
@@ -369,7 +369,7 @@ class fs_schema_public {
 				
 				
 				// accumulated hour height
-				$day_hour_info[ $h ]['acc_height']  		= $h > $earliest_hour ? $day_hour_info[ $h - 1 ]['acc_height'] + $day_hour_info[ $h -1 ]['height'] + 5 : 0;  
+				$day_hour_info[ $h ]['acc_height']  		= $h > $earliest_hour ? $day_hour_info[ $h - 1 ]['acc_height'] + $day_hour_info[ $h -1 ]['height'] + 1 : 0;  // 5
 
 			}
 			
@@ -384,7 +384,7 @@ class fs_schema_public {
 				
 				$today_class		= $today_date == $day_date ? ' today' : '';
 				
-				$day_height		= ( $r['type'] == 'week' ? ( $day_hour_info[ $latest_hour ]['acc_height'] + $day_header_height_px + $day_hour_info[ $latest_hour]['height'] + 5 ) : ( $num_entries * ( $hour_height_px + 1 ) ) + 20 );
+				$day_height		= ( $r['type'] == 'week' ? ( $day_hour_info[ $latest_hour ]['acc_height'] + $day_header_height_px + $day_hour_info[ $latest_hour]['height'] ) : ( $num_entries * ( $hour_height_px + 1 ) ) + 20 );
 			
 				$output 			.= '<div class="day day' . $d . ' ' . $today_class . '" data-day="' . $d . '" style="height: ' . $day_height . 'px; ';
 				
@@ -451,13 +451,13 @@ class fs_schema_public {
 							
 							$entry_data 			    .= ' data-bookingid="' . $entry['bookingid'] . '" data-h="' . $h . '" data-bookingtype="' . $entry['bookingtype'] . '"';
 							
-							$entry_data			    .= ' data-status="' . $entry['status'] . '"';
+							$entry_data			    .= ' data-status="' . $entry['status'] . '" data-hour_entry_count="' . $hour_entry_count . '"';
 							
 							$entry_class			    .= ' entry_' . $entry['status'];
 							
 							
 							// calculate entry height based on duration
-							$entry_height 				= ' height: ' . ( $hour_height_px + 4 ) . 'px;';
+							$entry_height 				= ' height: ' . ( $hour_height_px ) . 'px;';
 							
 							$entry_width 				= ( $num_days == 1 ? 'width: 100%;' : 'width: ' . ( $day_width_px ) . 'px;' );
 
@@ -465,7 +465,7 @@ class fs_schema_public {
 							// calculate entry position from top
 							$entry_top				= '';
 							
-							if ( $h > $earliest_hour ) {
+							if ( $h > $earliest_hour || $hour_entry_count > 1 ) {
 							
 								// if week, based on what time it starts
 								if ( $r['type'] == 'week' )
@@ -571,6 +571,14 @@ class fs_schema_public {
 											
 											break;
 											
+										case 'reserve':
+										
+											$entry_class			.= '';
+											
+											$title				.= 'Reservplatser. ';
+											
+											break;
+											
 										default:
 										
 											$title				.= 'Går att boka. ';
@@ -664,7 +672,7 @@ class fs_schema_public {
 								<div class="room">Lokal:<span>x</span></div>
 								<div class="totalslots">Platser:<span>x</span></div> 
 								<div class="staff">Ledare:<span>x</span></div>
-								<div class="right_now">Just nu</div>
+								<!--<div class="right_now">Just nu</div>-->
 								<div class="bookableslots">Bokningsbara:<span>x</span></div>
 								<div class="dropin">Drop-in:<span>Information saknas</span></div>
 								<div class="waitinglist">Reserver:<span>x</span></div>';

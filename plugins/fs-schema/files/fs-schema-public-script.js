@@ -2,7 +2,7 @@
 
 	FS SCHEMA, Javascript for public pages
 
-	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
 
 //////////////////////////////////////////////////////////////////*/
@@ -74,7 +74,9 @@ fs_schema_public = {
 	
 	after_book_event : function () {},
 	
-	init : function () {
+	after_close_big_message : function () {},
+	
+	init : function () { 
 	
 		fs_schema_public.set_values();
 			
@@ -124,7 +126,7 @@ fs_schema_public = {
 			
 			jQuery('.fs_schema .show_debug').click( function() { jQuery( '.fs_schema .debug').show(); jQuery('.fs_schema .show_debug').hide(); });
 			
-			jQuery('.fs_schema .schema_print').click( function() { window.print(); });
+			jQuery('.fs_schema .schema_print').click( function() { fs_schema_public.print(); });
 			
 			fs_schema_public.show_hud( jQuery('.fs_schema .days').attr('data-week') );
 			
@@ -133,6 +135,23 @@ fs_schema_public = {
 			fs_schema_public.log_in_by_cookie();
 			
 		}
+	},
+	
+	print : function () {
+	
+		window.print();
+	
+		/*jQuery('.fs_schema .big_message .close_btn').html('Skriv ut').css('left', '100px');
+		
+		fs_schema_public.after_close_big_message = function() {
+		
+			window.print();
+			
+			jQuery('.fs_schema .big_message .close_btn').html('OK').css('left', '110px');;
+		
+		};
+	
+		fs_schema_public.display_dialogue_big_message ( 'Utskrift', 'Det bästa resultatet vid utskrift får du om du via skrivarinställningarna väljer att anpassa schemat storlek, så att hela schemat skrivs ut på en enda sida.', false);*/
 	},
 	
 	
@@ -223,11 +242,11 @@ fs_schema_public = {
 				
 				.addClass('open')
 				
-				.css( '-webkit-transform', 'scale(1.1)').css( '-moz-transform', 'scale(1.1)').css( 'transform', 'scale(1.1)');
+				.css( '-webkit-transform', 'scale(1.1)').css( '-moz-transform', 'scale(1.1)').css( '-ms-transform', 'scale(1.1)').css( 'transform', 'scale(1.1)');
 				
 			window.setTimeout(function() {
 			
-				jQuery( '.fs_schema .login' ).css( '-webkit-transform', 'scale(1)').css( '-moz-transform', 'scale(1)').css( 'transform', 'scale(1)');
+				jQuery( '.fs_schema .login' ).css( '-webkit-transform', 'scale(1)').css( '-moz-transform', 'scale(1)').css( '-ms-transform', 'scale(1)').css( 'transform', 'scale(1)');
 				
 				jQuery( '.fs_schema .login.dialogue .loginform .username input' ).focus();
 				
@@ -246,10 +265,10 @@ fs_schema_public = {
 	
 		if ( jQuery( '.fs_schema .login' ).is(":visible") ) {
 	
-			jQuery('.fs_schema .login').css( '-webkit-transform', 'scale(1.05)').css( '-moz-transform', 'scale(1.05)').css( 'transform', 'scale(1.05)');
+			jQuery('.fs_schema .login').css( '-webkit-transform', 'scale(1.05)').css( '-moz-transform', 'scale(1.05)').css( '-ms-transform', 'scale(1.05)').css( 'transform', 'scale(1.05)');
 				
 			window.setTimeout(function() { 
-				jQuery( '.fs_schema .login' ).css( '-webkit-transform', 'scale(1)').css( '-moz-transform', 'scale(1)').css( 'transform', 'scale(1)');
+				jQuery( '.fs_schema .login' ).css( '-webkit-transform', 'scale(1)').css( '-moz-transform', 'scale(1)').css( '-ms-transform', 'scale(1)').css( 'transform', 'scale(1)');
 			}, 100);
 				
 			window.setTimeout(function() {
@@ -321,6 +340,13 @@ fs_schema_public = {
 						fs_schema_public.close_event_after_big_message = true;
 					
 						fs_schema_public.display_dialogue_big_message ( 'Fel.', data.message, true );
+						
+						
+						// remove any cookie with login
+						fs_schema_public.erase_cookie('un');
+						
+						fs_schema_public.erase_cookie('pw');
+						
 					
 						fs_schema_public.is_busy = false;
 					
@@ -767,21 +793,7 @@ fs_schema_public = {
 			win_top = jQuery(document).scrollTop() - jQuery('.fs_schema').offset().top;
 			
 			event_el_position_top = jQuery( event_el ).position().top;
-			
-			/*if ( fs_schema_public.responsive == 'mobile' ) { 
-			
-				event_target_y = win_top;
-				
-				event_target_x = 0;
-				
-			} else if (  fs_schema_public.responsive == 'mobile_landscape' ) {
-			
-				event_target_y = win_top;
-			
-				event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
-				
-			} else {*/
-			
+
 			if ( fs_schema_public.responsive != '' ) {
 			
 				event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
@@ -794,7 +806,7 @@ fs_schema_public = {
 			
 				event_target_x = ( fs_schema_public.schema_width / 2 ) - ( fs_schema_public.open_event_width / 2 );
 				
-				if ( win_top > fs_schema_public.schema_offset_top ) {
+				if ( win_top > fs_schema_public.schema_offset_top || jQuery(window).height() < 700 ) {
 				
 					if ( event_target_y < win_top ) event_target_y = win_top;
 				
@@ -833,9 +845,9 @@ fs_schema_public = {
 				
 					.css( 'display', 'block').css('top', event_current_y ).css('left', event_current_x )
 					
-					.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
+					.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none').css('-ms-transition' , 'none')
 					
-					.css( '-webkit-transform', 'scale(0.1)').css( '-moz-transform', 'scale(0.1)').css( 'transform', 'scale(0.1)');
+					.css( '-webkit-transform', 'scale(0.1)').css( '-moz-transform', 'scale(0.1)').css( 'ms-transform', 'scale(0.1)').css( 'transform', 'scale(0.1)');
 			}
 
 			jQuery( '.fs_schema .open_event .header' ).html( jQuery( event_el ).attr( 'data-product' ));
@@ -926,6 +938,19 @@ fs_schema_public = {
 				jQuery( '.fs_schema .open_event .bookableslots' ).css( 'display', 'block' );
 			}
 			
+			
+			// make some adjustements to bookable slots and waitinglist
+			
+			if ( bookableslots == '0' && ( waitinglistsize == '0' || waitinglistsize == '' )) {
+			
+				jQuery( '.fs_schema .open_event .waitinglist span' ).html( '0 i kö' );
+				
+				jQuery( '.fs_schema .open_event .bookableslots span' ).html( '0' );
+			
+				jQuery( '.fs_schema .open_event .waitinglist' ).css( 'display', 'block' );
+				
+				jQuery( '.fs_schema .open_event .bookableslots' ).css( 'display', 'block' );
+			}
 			
 			
 			// if user is logged in, show login info and hide log in form
@@ -1050,11 +1075,13 @@ fs_schema_public = {
 				
 					jQuery( '.fs_schema .open_event' )
 					
-						.css('transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-o-transition' , '0.1s')
+						.css('transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-ms-transition' , '0.1s').css('-o-transition' , '0.1s')
 						
 						.css( '-webkit-transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)')
 						
 						.css( '-moz-transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)')
+						
+						.css( '-ms-transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)')
 						
 						.css( 'transform', 'translate(' + event_diff_x + 'px, ' + event_diff_y + 'px) scale(1)');
 					
@@ -1127,6 +1154,8 @@ fs_schema_public = {
 		jQuery( '.fs_schema .big_message.open' ).css ( 'display', 'none' ).removeClass('open');
 		
 		 if ( fs_schema_public.close_event_after_big_message == true ) fs_schema_public.close_event(); 
+		 
+		 fs_schema_public.after_close_big_message();
 
 	},
 		
@@ -1257,6 +1286,8 @@ fs_schema_public = {
 							
 							jQuery( fs_schema_public.open_event_el ).attr( 'data-waitinglistposition', '' );
 							
+							jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingtype', 'ordinary' );
+							
 							jQuery( fs_schema_public.open_event_el ).find('.booking_info').css('display', 'block').html('Avbokad');
 							
 							jQuery( fs_schema_public.open_event_el ).attr( 'title',  '');
@@ -1330,6 +1361,8 @@ fs_schema_public = {
 						refresh_after_booked = true;
 					
 					} else {
+					
+						jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingtype',  'waitinglist' );
 				
 						jQuery( fs_schema_public.open_event_el ).attr( 'data-bookingid',  data.bookingid );
 						
@@ -1424,9 +1457,9 @@ fs_schema_public = {
 			
 				jQuery( '.fs_schema .open_event' )
 						
-					.css( 'transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-o-transition' , '0.1s')
+					.css( 'transition' , '0.1s').css('-moz-transition' , '0.1s').css('-webkit-transition' , '0.1s').css('-ms-transition' , '0.1s').css('-o-transition' , '0.1s')
 					
-					.css( '-webkit-transform', 'translate(0px, 0px) scale(0.1)').css( '-moz-transform', 'translate(0px, 0px) scale(0.1)').css( 'transform', 'translate(0px, 0px) scale(0.1)');
+					.css( '-webkit-transform', 'translate(0px, 0px) scale(0.1)').css( '-moz-transform', 'translate(0px, 0px) scale(0.1)').css( '-ms-transform', 'translate(0px, 0px) scale(0.1)').css( 'transform', 'translate(0px, 0px) scale(0.1)');
 					
 				window.setTimeout(function() {
 					
@@ -1434,7 +1467,7 @@ fs_schema_public = {
 					
 						.css( 'display', 'none')
 					
-						.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-o-transition' , 'none')
+						.css('transition' , 'none').css('-moz-transition' , 'none').css('-webkit-transition' , 'none').css('-ms-transition' , 'none').css('-o-transition' , 'none')
 						
 						.removeClass ( 'open' );
 						
@@ -1446,13 +1479,13 @@ fs_schema_public = {
 								
 								.addClass ( fs_schema_public.add_source_class_on_close_event )
 								
-								.css( '-webkit-transform', 'translate(-5px, -5px) scale(1.5)').css( '-moz-transform', 'translate(-5px, -5px) scale(1.5)').css( 'transform', 'translate(-5px, -5px) scale(1.5)');
+								.css( '-webkit-transform', 'translate(-5px, -5px) scale(1.5)').css( '-moz-transform', 'translate(-5px, -5px) scale(1.5)').css( '-ms-transform', 'translate(-5px, -5px) scale(1.5)').css( 'transform', 'translate(-5px, -5px) scale(1.5)');
 				
 							window.setTimeout(function() {
 							
 								jQuery( fs_schema_public.open_event_el )
 							
-									.css( '-webkit-transform', 'translate(0px, 0px) scale(1)').css( '-moz-transform', 'translate(0px, 0px) scale(1)').css( 'transform', 'translate(0px, 0px) scale(1)');					
+									.css( '-webkit-transform', 'translate(0px, 0px) scale(1)').css( '-moz-transform', 'translate(0px, 0px) scale(1)').css( '-ms-transform', 'translate(0px, 0px) scale(1)').css( 'transform', 'translate(0px, 0px) scale(1)');					
 							
 							}, 100);
 			
@@ -1548,6 +1581,7 @@ fs_schema_public = {
 			typeof ( style.MozTransform ) !== 'undefined'  ||
 			typeof ( style.OTransform ) !== 'undefined'  ||
 			typeof ( style.MsTransform ) !== 'undefined'  ||
+			typeof ( style.msTransform ) !== 'undefined'  ||
 			typeof ( style.transform ) !== 'undefined' ) == false ) 
 			
 			browser_ok  = false;
@@ -1555,14 +1589,14 @@ fs_schema_public = {
 		if (navigator.appName.indexOf("Microsoft")!=-1) {
 			
 			var ie_version = parseInt( navigator.userAgent.toLowerCase().split('msie')[1]);
-			
+
 			if ( ie_version < 9 ) browser_ok  = false;
 		
 		}
 		
 		if ( browser_ok  == false ) {
 		
-			var message = 'Din webbläsare är för gammal för att kunna visa schemat. Vänligen uppdatera webbläsaren till en nyare version.';
+			var message = 'Din webbläsare är för gammal för att kunna visa schemat. Vi rekommenderar att du använder senaste versionerna av någon av de vanligaste webbläsarna.';
 			
 			if ( fs_schema_public.fallback_url  != '' ) message = message + '<span>Tills dess kan du också använda <a href="' + fs_schema_public.fallback_url  + '">den alternativa bokningsfunktionen</a>.</span>';
 		

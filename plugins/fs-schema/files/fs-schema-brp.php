@@ -3,7 +3,7 @@
 
 	FS SCHEMA, PHP Class - BRP
 
-	Copyright (C) 2013 Klas Ehnemark (http://klasehnemark.com)
+	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)
 	This program is not free software.
 
 //////////////////////////////////////////////////////////////////*/
@@ -358,6 +358,8 @@ class fs_schema_brp {
 			curl_setopt( $ch, CURLOPT_POST, 1);
 			
 			curl_setopt( $ch, CURLOPT_POSTFIELDS, $post_data ); 
+			
+			$this->debug .= 'POST DATA: ' . print_r ($post_data, true ) . '<br>'; 
 		
 		}
 		
@@ -655,7 +657,9 @@ class fs_schema_brp {
 				
 					case 'Personal': 		$staff 	.= (string) $resource->name; break;
 						
-					case 'Trningssalar':	$room 	.= (string) $resource->name; break;
+					case 'Trningssalar':
+					case 'Lokal':
+					case 'Träningssalar': 	$room 	.= (string) $resource->name; break;
 				
 				}
 			
@@ -757,7 +761,7 @@ class fs_schema_brp {
 					
 					'bookableslots'		=> (string) $activity->bookableslots,
 					
-					'dropinslots'			=> (int) $activity->bookableslots - (int) $activity->freeslots,
+					'dropinslots'			=> -1, //(int) $activity->bookableslots - (int) $activity->freeslots,
 					
 					'waitinglistsize'		=> (string) $activity->waitinglistsize,
 					
@@ -793,6 +797,10 @@ class fs_schema_brp {
 					case '1007':
 						$obj['message'] .= 'Bokningen krockar med tidigare bokningar. ';
 						break;
+						
+					case '1102':
+						$obj['message'] .= 'Bokningssystemet förväntar sig ett anrop med angivna anläggninar, vilket administratören för webbplatsen inte har fyllt i. ';
+						break;	
 						
 					default:
 						$obj['message'] .= $err->message . ' Kod: ' . $err->code . ' Debuginfo: ' . $err->debuginfo;
@@ -871,6 +879,9 @@ class fs_schema_brp {
 	
 		break;
 	}
+	
+	
+
 	
 } //End Class
 
