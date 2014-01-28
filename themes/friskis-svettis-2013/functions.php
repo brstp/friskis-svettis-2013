@@ -96,8 +96,8 @@ function my_request_filter( $query_vars ) {
 }
 
 function new_excerpt_more($more) {
-	return '... <a href="' . get_permalink($post->ID).'">[read more]</a>';
-	} 
+	return '';
+		} 
 add_filter('excerpt_more', 'new_excerpt_more');
 
 
