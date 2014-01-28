@@ -95,6 +95,12 @@ function my_request_filter( $query_vars ) {
     return $query_vars;
 }
 
+function new_excerpt_more($more) {
+	return '... <a href="' . get_permalink($post->ID).'">[read more]</a>';
+	} 
+add_filter('excerpt_more', 'new_excerpt_more');
+
+
 // Add CSS file to admin section
 function mytheme_add_init() {
     if ( is_admin() ) {
