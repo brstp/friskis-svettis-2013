@@ -1,0 +1,256 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: friskis-svettis\n"
+"POT-Creation-Date: 2014-01-29 11:48+0100\n"
+"PO-Revision-Date: 2014-01-29 11:48+0100\n"
+"Last-Translator: \n"
+"Language-Team: Stefan Pettersson <stefan.pettersson@lumano.se>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.3\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: /Users/stefan/Development/friskis-svettis-2013/themes/"
+"friskis-svettis-2013\n"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/404.php:11
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/archive.php:14
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/category.php:9
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:638
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/page-home.php:47
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/page-no-sidebar.php:37
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/page.php:31
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/search.php:17
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/single-fs_news.php:15
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/single.php:9
+msgid "Nyheter"
+msgstr "News"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/404.php:22
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/archive.php:25
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/category.php:19
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop-news.php:17
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/page-home.php:19
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/page-home.php:40
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/page-home.php:56
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/page-no-sidebar.php:48
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/page.php:42
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/search.php:28
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/single-fs_news.php:25
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/single.php:19
+msgid "Läs mer"
+msgstr "Read more"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:18
+msgid ""
+"This post is password protected. Enter the password to view any comments."
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:42
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:61
+msgid "<span class=\"meta-nav\">&larr;</span> Older Comments"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:43
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:62
+msgid "Newer Comments <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:58
+msgid "För att kommentera"
+msgstr "To comment"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:58
+msgid "klicka här"
+msgstr "klick here"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:73
+msgid "Comments are closed."
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/footer.php:22
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/footer.php:25
+msgid "Följ oss på"
+msgstr "Follow us on"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/footer.php:36
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/footer.php:40
+msgid "Producerad av"
+msgstr "Produced by"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:14
+msgid "Primär navigation"
+msgstr "Primary navigation"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:15
+msgid "Sidfotsmeny"
+msgstr "Page Foot Menu"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:536
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:639
+msgid "Nyhet"
+msgstr "News"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:640
+msgid "Skapa ny"
+msgstr "Create new"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:641
+msgid "Skapa ny nyhet"
+msgstr "Create news item"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:642
+msgid "Redigera nyhet"
+msgstr "Edit news item"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:643
+msgid "Ny nyhet"
+msgstr "New news item"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:644
+msgid "Alla nyheter"
+msgstr "All news items"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:645
+msgid "Visa nyheter"
+msgstr "Show news"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:646
+msgid "Sök nyheter"
+msgstr "Search news"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:647
+msgid "Hittar inga nyheter"
+msgstr "Can't find any news items"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:648
+msgid "Hittar inga nyheter i papperskorgen"
+msgstr "Can't find any news items in the trashcan."
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:678
+msgid "A calendar of your site&#8217;s posts"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:679
+msgid "Calendar"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:705
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:760
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:866
+msgid "Title:"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:726
+msgid "Arbitrary text or HTML"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:728
+msgid "Text"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:765
+msgid "Automatically add paragraphs"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:779
+msgid "The most recent comments"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:780
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:821
+msgid "Recent Comments"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/functions.php:869
+msgid "Number of comments to show:"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/header.php:34
+#, php-format
+msgid "Page %s"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop-single.php:12
+msgid "Publicerad"
+msgstr "Published"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop-single.php:12
+msgid "av"
+msgstr "by"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop-single.php:12
+msgid "i"
+msgstr "in"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop-single.php:13
+msgid "Etiketter"
+msgstr "Tags"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:73
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:76
+msgid "More Galleries"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:79
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:101
+msgid "Leave a comment"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:79
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:101
+msgid "1 Comment"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:79
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:101
+msgid "% Comments"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:80
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:102
+msgid "Edit"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:95
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:121
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:122
+msgid "Pages:"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:136
+#, php-format
+msgid "<span class=\"%1$s\">Tagged</span> %2$s"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:154
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop.php:155
+msgid "Fler resultat  »"
+msgstr "More results"
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/sidebar-footer.php:12
+msgid "Displays a Facebook group "
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/sidebar-footer.php:14
+msgid "Facebook"
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/sidebar-footer.php:32
+#, php-format
+msgid "Hey their Sailor! My name is %1$s."
+msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/sidebar.php:39
+msgid "Meta"
+msgstr ""
