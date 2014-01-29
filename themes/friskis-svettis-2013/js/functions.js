@@ -15,13 +15,7 @@ $(document).ready(function()
         });
     }
 	
-	$( window ).resize(function() {
-		alert(width());
-		if(width() > 1000)
-			alert("TJA");
-		
-		
-	});
+
 
 
 	$('#mainMenuButton').click(
@@ -36,8 +30,6 @@ $(document).ready(function()
 	{
 		$('div#respond').toggle();
 	});
-
-	$('#footerLeft iframe, #footerRight iframe').before('<h3><span>Följ oss på Facebook!</span></h3>');
 	
 });
 

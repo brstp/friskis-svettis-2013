@@ -9,8 +9,8 @@
 	<?php
 		if(get_post_type( get_the_ID() ) != 'fs_news'):
 	?>
-			<h4>Publicerad <em><?php the_date(); ?></em> av <em><?php the_author(); ?></em> i <em><?php $category = get_the_category(); echo $category[0]->cat_name; ?></em></h4>
-			<h4>Etiketter: 
+			<h4><?php _e('Publicerad', 'friskis-svettis'); ?> <em><?php the_date(); ?></em> <?php _e('av', 'friskis-svettis'); ?> <em><?php the_author(); ?></em> <?php _e('i', 'friskis-svettis'); ?> <em><?php $category = get_the_category(); echo $category[0]->cat_name; ?></em></h4>
+			<h4><?php _e('Etiketter', 'friskis-svettis'); ?>: 
 			<?php
 			$posttags = get_the_tags();
 			if ($posttags) {

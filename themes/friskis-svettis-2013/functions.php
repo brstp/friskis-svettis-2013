@@ -7,6 +7,9 @@ define('THEME_CSS', THEME_URI . '/css');
 define('THEME_JS', THEME_URI . '/js');
 define('THEMELIB', TEMPLATEPATH . '/lib');
 
+load_theme_textdomain( 'friskis-svettis', templatepath.'/languages' );
+
+
 register_nav_menus( array(
         'primary' => __( 'Primär navigation', 'primary' ),
 		'footer' => __( 'Sidfotsmeny', 'footer-menu' )

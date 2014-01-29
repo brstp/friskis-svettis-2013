@@ -55,7 +55,7 @@
 					wp_list_comments();
 				?>
 			</ol>
-<p class="comm">För att kommentera, <span>klicka här</span></p>
+<p class="comm"><?php _e('För att kommentera', 'friskis-svettis'); ?>, <span><?php _e('klicka här', 'friskis-svettis'); ?></span></p>
 <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : // Are there comments to navigate through? ?>
 			<div class="navigation">
 				<div class="nav-previous"><?php previous_comments_link( __( '<span class="meta-nav">&larr;</span> Older Comments', 'twentyten' ) ); ?></div>

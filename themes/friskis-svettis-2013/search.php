@@ -14,7 +14,7 @@ get_header(); ?>
 	<div id="sidebar">
 		<div class="subSidebarBox">
 			<img class="yellow" src="<?php echo THEME_IMAGES; ?>/yellow.png" alt="tape">
-			<h3><span>Nyheter</span></h3>
+			<h3><span><?php _e('Nyheter', 'friskis-svettis'); ?></span></h3>
 				<ul>
 				<?php
 				$news_query = new WP_Query(array(
@@ -25,7 +25,7 @@ get_header(); ?>
 					?>
 					<li>
 						<h4><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
-						<p><a href="<?php the_permalink(); ?>"><?php echo get_the_excerpt(); ?>...</a> <a class="readMore" href="<?php the_permalink(); ?>">Läs mer »</a></p>
+						<p><a href="<?php the_permalink(); ?>"><?php echo get_the_excerpt(); ?>...</a> <a class="readMore" href="<?php the_permalink(); ?>"><?php _e('Läs mer', 'friskis-svettis'); ?> »</a></p>
 					</li>
 				<?php	
 					endwhile;

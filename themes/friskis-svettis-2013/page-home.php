@@ -16,7 +16,7 @@ get_header();
 							<?php
 								if(get_sub_field('page-link')):
 							?>
-								<div class="readMoreSlider"><a href="<?php the_sub_field('page-link'); ?>"><img src="<?php echo THEME_IMAGES; ?>/read-more.png" alt="Pil" title="Läs mer"></a></div>
+								<div class="readMoreSlider"><a href="<?php the_sub_field('page-link'); ?>"><img src="<?php echo THEME_IMAGES; ?>/read-more.png" alt="Pil" title="<?php _e('Läs mer', 'friskis-svettis'); ?>"></a></div>
 							<?php
 								endif;
 							?>
@@ -37,14 +37,14 @@ get_header();
 						<a href="<?php the_sub_field('page-link'); ?>"><img src="<?php the_sub_field('image'); ?>" alt="<?php the_sub_field('alt'); ?>" title="<?php the_sub_field('title'); ?>"></a>
 					</div>
 					<h2><a href="<?php the_sub_field('page-link'); ?>"><?php the_sub_field('headline'); ?></a></h2>
-					<p><a href="<?php the_sub_field('page-link'); ?>"><?php the_sub_field('text'); ?></a>  <a class="readMore" href="<?php the_sub_field('page-link'); ?>">Läs mer »</a></p>
+					<p><a href="<?php the_sub_field('page-link'); ?>"><?php the_sub_field('text'); ?></a>  <a class="readMore" href="<?php the_sub_field('page-link'); ?>"><?php _e('Läs mer', 'friskis-svettis'); ?> »</a></p>
 				</div>
 				<?php endwhile;
 				endif; ?>
 			</div>
 			<div class="sidebarBox">
 				<img class="yellow" src="<?php echo THEME_IMAGES; ?>/yellow.png" alt="tape">
-				<h3><span>Nyheter</span></h3>
+				<h3><span><?php _e('Nyheter', 'friskis-svettis'); ?></span></h3>
 				<ul>
 					<?php
 						$args = array( 'post_type' => 'fs_news', 'posts_per_page' => 5 );
@@ -53,7 +53,7 @@ get_header();
 					?>
 						<li>
 							<h4><a href="<?php the_permalink(); ?>#mainContent"><?php the_title(); ?></a></h4>
-							<p><a href="<?php the_permalink(); ?>#mainContent"><?php echo get_the_excerpt(); ?>...</a> <a class="readMore" href="<?php the_permalink(); ?>#mainContent">Läs mer »</a></p>
+							<p><a href="<?php the_permalink(); ?>#mainContent"><?php echo get_the_excerpt(); ?>...</a> <a class="readMore" href="<?php the_permalink(); ?>#mainContent"><?php _e('Läs mer', 'friskis-svettis'); ?> »</a></p>
 						</li>
 					<?php
 						endwhile;
