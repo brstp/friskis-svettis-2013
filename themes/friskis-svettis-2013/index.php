@@ -12,9 +12,7 @@
 update_option('current_page_template','index');
 get_header();
 ?>
-<div class="masthead">
-    <img src="<?php echo THEME_IMAGES ?>/masthead.png" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
-</div>
+
 <div class="content">
         <div class="content-main left">
              <?php
