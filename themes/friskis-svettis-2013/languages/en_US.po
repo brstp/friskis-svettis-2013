@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: friskis-svettis\n"
-"POT-Creation-Date: 2014-01-29 11:48+0100\n"
-"PO-Revision-Date: 2014-01-29 11:48+0100\n"
+"POT-Creation-Date: 2014-01-31 11:51+0100\n"
+"PO-Revision-Date: 2014-01-31 11:51+0100\n"
 "Last-Translator: \n"
 "Language-Team: Stefan Pettersson <stefan.pettersson@lumano.se>\n"
 "Language: en_US\n"
@@ -177,6 +177,10 @@ msgstr ""
 #, php-format
 msgid "Page %s"
 msgstr ""
+
+#: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/header.php:89
+msgid "Huvudmeny"
+msgstr "Main Menu"
 
 #: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/loop-single.php:12
 msgid "Publicerad"
