@@ -110,7 +110,7 @@ class fs_schema_admin {
 	
 	function wordpress_admin_menu () {
 
-		add_options_page ( 'FS-Schema', 'Friskis&Svettis Schema', 'administrator', 'fs-schema', array ( &$this, 'admin_page') );
+		add_options_page ( 'FS-Schema', 'FS-Schema', 'administrator', 'fs-schema', array ( &$this, 'admin_page') );
 		
 	}
 	
@@ -213,14 +213,14 @@ class fs_schema_admin {
 		$fs_schema_show_my_bookings			= $settings[ 'fs_schema_show_my_bookings' ];
 		
 		$fs_booking_bpi_businessunitids_html 	= $fs_schema->data->brp->get_businessunits ( 'BRP' );
-		
+				
 	
 		echo 	'<div class="wrap"><form method="post" action=""><input type="hidden" name="submit_options_hidden" value="Y" />';
-		echo 	'<div id="icon-options-general" class="icon32"><br></div><h2>Friskis&Svettis Schema</h2>';
+		echo 	'<div id="icon-options-general" class="icon32"><br></div><h2>FS-Schema</h2>';
 		
 		wp_nonce_field ( 'update-options' );
 		
-		echo		'<p>Dessa inställningar gör det möjligt att använda följande s.k. shortcode för att generera schema och bokningsmöjligheter på din Frisiks & Svettis Wordpress sajt:</p>
+		echo		'<p>Dessa inställningar gör det möjligt att använda följande s.k. shortcode för att generera schema och bokningsmöjligheter på din Friskis&Svettis Wordpress sajt:</p>
 
 				<table class="form-table" cellspacing="0">
 					<tr>
@@ -240,37 +240,7 @@ class fs_schema_admin {
 								</ul>
 							</div>
 						</td>
-					</tr>';
-					
-		if ( !get_option( 'fs_schema_valid_key' )) echo '
-		
-					<tr valign="top" class="fs_schema_warning_keys">
-						<td colspan="2">
-							<h2>Varning</h2>
-							<div>
-								<p><strong>Kontrollera att du angivit korrekt API-nyckel och/eller anläggnings-ID.</strong></p>
-								<p>Schemat är inte avsett att använda med den API-nyckel <span class="">och/eller anläggnings-ID </span>du angett. Om du tror att du angivit korrekt värden och vill 
-								använda schemat för den här API-nyckeln, vänligen kontakta <a href="mailto:hello@klasehnemark.com">Klas Ehnemark</a> som har utvecklat schemat så att han kan lägga in stöd för din API-nyckel.</p>
-								<p>Schemat används idag av följande Friskis&Svettis-föreningar:
-								<ul>
-									<li>Danderyd (BRP)</li>
-									<li>Haninge (Profit)</li>
-									<li>Huddinge (Profit)</li>
-									<li>Lidingö (BRP)</li>
-									<li>Norrtälje (BRP)</li>
-									<li>Södertälje (BRP)</li>
-									<li>Täby (BRP)</li>
-									<li>Åkersberga (Profit)</li>
-								</ul>
-								</p>
-								<p class="fs_schema_warning_continue">
-									Om du trots detta använder schemat med denna API-nyckel accepterar du härmed något av följande:<br><ul><li><strong>Jag vill prova schemat med min nyckel utan att använda det publikt</strong>, <i>eller</i></li><li><strong>Jag är medveten om att jag inte får använda schemat men jag gör det ändå.</strong></li></ul>
-								</p>
-							</div>
-						</td>
-					</tr>';
-					
-		echo '
+					</tr>
 				</table>
 				
 				<h2>Inställningar</h2>
@@ -342,8 +312,27 @@ class fs_schema_admin {
 							<input name="fs_booking_profit_organization_unit" type="text" id="fs_booking_profit_organization_unit" value="' . $fs_booking_profit_organization_unit . '" class="regular-text" />
 							<p class="description">Ange det anläggnings-id som Profit har tillhandahållit din förening.</p>
 						</td>
-					</tr>
+					</tr>';
 					
+					
+								
+		if ( !get_option( 'fs_schema_valid_key' )) echo '
+		
+					<tr valign="top" class="fs_schema_warning_keys">
+						<td colspan="2">
+							<div>
+								<p><strong>Kontrollera att du angivit korrekt API-nyckel och/eller anläggnings-ID.</strong></p>
+								<p>Schemat är inte avsett att använda med den API-nyckel <span class="">och/eller anläggnings-ID </span>du angett. Om du tror att du angivit korrekt värden och vill 
+								använda schemat för den här API-nyckeln, vänligen kontakta <a href="mailto:hello@klasehnemark.com">Klas Ehnemark</a> som har utvecklat schemat så att han kan lägga in stöd för din API-nyckel.</p>
+								<p>FS-Schema är ett kommersiellt wordpressplugin som utvecklats och ägs av <a href="mailto:hello@klasehnemark.com">Klas Ehnemark</a>. Denna version av FS-Schema är licensierad till och får användas av 
+								Friskis&Svettis-föreningarna i Danderyd (BRP), Haninge (Profit), Huddinge (Profit), Lidingö (BRP), Norrtälje (BRP), Södertälje (BRP), Täby (BRP) och Åkersberga (Profit). Namnet inom parantes 
+								är vilket bokningssystem respektive förening använder. Kontakta <a href="mailto:hello@klasehnemark.com">Klas Ehnemark</a> om du har problem att använda schemat eller om du vill få en licens för att utvärdera schemat.</p>
+							</div>
+						</td>
+					</tr>';
+					
+					
+		echo '
 					<tr valign="top">
 						<th scope="row"><label for="fs_schema_update_inteval">Uppdateringsintervall</label></th>
 						<td>
@@ -407,7 +396,7 @@ class fs_schema_admin {
 			case 'PROFIT':
 			
 				// ..1.2..
-				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li4xNDM3Lg=='), '.'.$settings[ 'fs_booking_profit_organization_unit' ].'.' ) );
+				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li4xNDM3LjEzODIuMTQ4MC4u'), '.'.$settings[ 'fs_booking_profit_organization_unit' ].'.' ) );
 				
 				break;
 		}	
@@ -437,6 +426,7 @@ class fs_schema_admin {
 		
 		else delete_option( $option_name );
 	}
+
 	
 } //End Class
 ?>
