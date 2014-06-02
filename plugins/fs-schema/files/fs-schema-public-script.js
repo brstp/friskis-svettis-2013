@@ -786,6 +786,8 @@ fs_schema_public = {
 			
 			var bookableslots = jQuery( event_el ).attr( 'data-bookableslots' );
 			
+			var dropinslots = jQuery( event_el ).attr( 'data-dropinslots' );
+			
 			
 			
 			// calculate event window position and animation
@@ -938,6 +940,22 @@ fs_schema_public = {
 				jQuery( '.fs_schema .open_event .bookableslots' ).css( 'display', 'block' );
 			}
 			
+
+			// put info into and show/hide dropin slots
+			
+			has_dropin = false;
+			
+			if ( dropinslots != '' && dropinslots != '0' && dropinslots != '-1' ) {
+			
+				jQuery( '.fs_schema .open_event .dropin span' ).html( dropinslots );
+			
+				jQuery( '.fs_schema .open_event .dropin' ).css( 'display', 'block' );
+				
+				jQuery( '.fs_schema .open_event .waitinglist' ).css( 'display', 'none' );
+				
+				has_dropin = true;
+			}
+			
 			
 			// make some adjustements to bookable slots and waitinglist
 			
@@ -947,7 +965,7 @@ fs_schema_public = {
 				
 				jQuery( '.fs_schema .open_event .bookableslots span' ).html( '0' );
 			
-				jQuery( '.fs_schema .open_event .waitinglist' ).css( 'display', 'block' );
+				jQuery( '.fs_schema .open_event .waitinglist' ).css( 'display', has_dropin == true ? 'none' : 'block' );
 				
 				jQuery( '.fs_schema .open_event .bookableslots' ).css( 'display', 'block' );
 			}

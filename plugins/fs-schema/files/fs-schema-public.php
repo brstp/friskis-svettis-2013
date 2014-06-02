@@ -12,7 +12,7 @@
 
 class fs_schema_public {
 
-	private $version 			= 'Beta-version 0.996';
+	private $version 			= 'version 1.0';
 	
 	private $default_username	= ''; 
 	
@@ -48,10 +48,6 @@ class fs_schema_public {
 		wp_register_script	( 'fs-schema-public-script', 	plugins_url('fs-schema') . '/files/fs-schema-public-script.js' );
 
 		wp_register_style 	( 'fs-schema-public-style', 	plugins_url('fs-schema') . '/files/fs-schema-public-styles.css' );
-	
-		//wp_register_script	( 'fs-schema-public-script', 	plugins_url('fs-schema-test') . '/files/fs-schema-public-script.js' );
-
-		//wp_register_style 	( 'fs-schema-public-style', 	plugins_url('fs-schema-test') . '/files/fs-schema-public-styles.css' );
 		
 		wp_enqueue_script 	( 'fs-schema-public-script' );
 		
@@ -424,7 +420,7 @@ class fs_schema_public {
 							
 						
 							// entry data
-							$entry_class 				= $products = $title = $booking_info = '';
+							$entry_class 				= $products = $title = $booking_info = $time_postfix = '';
 							
 							if ( is_Array ( $entry['products']  )) {
 							
@@ -535,6 +531,8 @@ class fs_schema_public {
 										
 											$entry_class			.= ' dropin';
 											
+											$time_postfix			.= ' Enbart dropin';
+											
 											$title				.= 'Drop-in. ';
 										
 											break;
@@ -590,13 +588,15 @@ class fs_schema_public {
 							
 							
 							// create the entry html object
+							$time_postfix				= '';  // don't show any time postfix
+							
 							$entries_field 			.= '<div class="entry' . $entry_class . '" title="' . $title . '" style="' . $entry_top . $entry_width . $entry_height . '"' . $entry_data  . '>';
 							
 							$entries_field 			.= '<div class="time">';
 							
 							if ( $r['type'] == 'bookings' ) $entries_field .= $weekdays[ date ( 'N' , $s['start_date '] )] . ' ' . date('j/n, Y', $day_date) . ' kl. ';
 							
-							$entries_field 			.= str_replace ( ':', '.', $entry['starttime']) . '-' . str_replace ( ':', '.', $entry['endtime'])  . '</div>';
+							$entries_field 			.= str_replace ( ':', '.', $entry['starttime']) . '-' . str_replace ( ':', '.', $entry['endtime'])  . $time_postfix . '</div>';
 							
 							$entries_field 			.= '<div class="product">' . $products . '</div>';
 							
@@ -899,7 +899,7 @@ class fs_schema_public {
 	
 		$settings = $fs_schema->data->settings();
 		
-		$output = '<div class="about">Schema ' . $this->version . ' av <a href="http://klasehnemark.com">Klas Ehnemark</a>, kopplat till ';
+		$output = '<div class="about">F&S Schema ' . $this->version . ' av <a href="http://klasehnemark.com">Klas Ehnemark</a>, kopplat till ';
 		
 		//$output = '<pre class="about">FS-Schema ' . $this->version . ', kopplat till ';
 		
@@ -908,12 +908,12 @@ class fs_schema_public {
 			default:
 			case 'BRP':
 			
-				$output .= '<a href="http://www.brpsystems.se">BRP</a>. ';
+				$output .= 'BRP.'; //<a href="http://www.brpsystems.se">BRP</a>. ';
 				break;
 				
 			case 'PROFIT':
 			
-				$output .= '<a href="http://www.pastelldata.se">Profit</a>. ';
+				$output .= 'Profit.'; //<a href="http://www.pastelldata.se">Profit</a>. ';
 				break;	
 		}
 		

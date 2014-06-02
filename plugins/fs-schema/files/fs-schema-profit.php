@@ -608,7 +608,7 @@ class fs_schema_profit {
 					
 					'bookableslots'		=> (string) $activity->sl,
 					
-					'dropinslots'			=> '-1', // unknown
+					'dropinslots'			=>  (string) $activity->dsl, // '-1', // unknown
 					
 					'waitinglistsize'		=> '-1', // unknown
 					
@@ -618,7 +618,7 @@ class fs_schema_profit {
 					
 					'bookingtype'			=> $booking_type,
 					
-					'status'				=> strtolower( (string) $activity->bookbuttonstatus )
+					'status'				=> strtolower( (string) $activity->bookbuttonstatus ) // BOOK, DROPIN (endast dropin), RESERVE, NOTBOOKABLE, CANCELLED, FULL, CLOSED
 				)
 			);
 		}
