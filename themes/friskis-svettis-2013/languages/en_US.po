@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: friskis-svettis\n"
-"POT-Creation-Date: 2014-01-31 11:51+0100\n"
-"PO-Revision-Date: 2014-01-31 11:51+0100\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2014-03-17 10:55+0100\n"
+"PO-Revision-Date: 2014-03-18 07:05+0100\n"
+"Last-Translator: Stefan Pettersson <stefan.pettersson@lumano.se>\n"
 "Language-Team: Stefan Pettersson <stefan.pettersson@lumano.se>\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
@@ -66,7 +66,7 @@ msgstr "To comment"
 
 #: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:58
 msgid "klicka här"
-msgstr "klick here"
+msgstr "click here"
 
 #: /Users/stefan/Development/friskis-svettis-2013/themes/friskis-svettis-2013/comments.php:73
 msgid "Comments are closed."
