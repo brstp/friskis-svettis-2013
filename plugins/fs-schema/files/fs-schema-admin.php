@@ -388,7 +388,7 @@ class fs_schema_admin {
 			case 'BRP':
 			
 				// ..1.2..
-				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li5lYzY1YTVlNTZkZmQ0OTA4YjBhOTI4NDJkOThhMGRiYy4xYTA3ZmNlMWFjMjI0YTY2OWRjYWUwMjQxMmJjZDA4NC42YThhYTRjMWM2ZDg0ZTNmOWQxN2NlZDJhZTViZWM5My4zOTdmZGFlYzAwMGM0ZTMyODJiYzI1ODVkYjVmYTJiZS40OWY0YzhkNmI4OTg0NGEzYmJiMmEzYTgwMDg1NjE4Yi4='), '.'.$settings[ 'fs_booking_bpi_api_key' ].'.' ) );
+				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li5lYzY1YTVlNTZkZmQ0OTA4YjBhOTI4NDJkOThhMGRiYy4xYTA3ZmNlMWFjMjI0YTY2OWRjYWUwMjQxMmJjZDA4NC42YThhYTRjMWM2ZDg0ZTNmOWQxN2NlZDJhZTViZWM5My4zOTdmZGFlYzAwMGM0ZTMyODJiYzI1ODVkYjVmYTJiZS40OWY0YzhkNmI4OTg0NGEzYmJiMmEzYTgwMDg1NjE4Yi5lODVjMDYzYTI1MjQ0MmNjOTQ1MmIzMTA1MzM1NDkzZC4u'), '.'.$settings[ 'fs_booking_bpi_api_key' ].'.' ) );
 				
 				break;
 				

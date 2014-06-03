@@ -12,7 +12,7 @@
 
 class fs_schema_public {
 
-	private $version 			= 'version 1.0';
+	private $version 			= 'version 1.0.1';
 	
 	private $default_username	= ''; 
 	
