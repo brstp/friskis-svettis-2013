@@ -909,7 +909,17 @@ fs_schema_public = {
 			jQuery( '.fs_schema .open_event .entry_info_not_opened_yet' ).css( 'display', entry_status == 'not_opened_yet' ? 'block' : 'none' );
 			
 			jQuery( '.fs_schema .open_event .entry_info_closed' ).css( 'display', entry_status == 'closed' ? 'block' : 'none' );
-
+			
+			
+			
+			// add entry message if there is one
+			
+			entry_message = jQuery( event_el ).attr( 'data-message' );
+			
+			if ( entry_message != '' ) jQuery( '.fs_schema .open_event .entry_message' ).html( entry_message ).css( 'display', 'block' );
+			
+			else jQuery( '.fs_schema .open_event .entry_message' ).html( '' ).css( 'display', 'none' );
+			
 
 
 			// determine if the event is bookable

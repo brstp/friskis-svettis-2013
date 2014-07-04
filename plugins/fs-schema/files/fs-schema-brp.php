@@ -780,7 +780,9 @@ class fs_schema_brp {
 					
 					'bookingtype'			=> $booking_type,
 					
-					'status'				=> strtolower( $entry_status )
+					'status'				=> strtolower( $entry_status ),
+					
+					'message'				=> (string) $activity->externalmessage
 				)
 			);
 		}	

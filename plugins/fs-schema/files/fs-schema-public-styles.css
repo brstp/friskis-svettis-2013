@@ -73,9 +73,13 @@
 									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d1eed2', endColorstr='#c5e7c7');}
 
 /*.fs_schema .entries .entry.dropin,*/
-.fs_schema .entry_info_dropin 				{ background-color: #fbe5a0; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcebb6), to(#fbe5a0)); background: -webkit-linear-gradient(top, #fcebb6, #fbe5a0); 
+.fs_schema .entry_info_dropin					{ background-color: #fbe5a0; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcebb6), to(#fbe5a0)); background: -webkit-linear-gradient(top, #fcebb6, #fbe5a0); 
 									       background: -moz-linear-gradient(top, #fcebb6, #fbe5a0); background: -ms-linear-gradient(top, #fcebb6, #fbe5a0); background: -o-linear-gradient(top, #fcebb6, #fbe5a0); 
 									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fcebb6', endColorstr='#fbe5a0');}
+
+.fs_schema .entry_message 					{ background-color: #aec3ff; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#aec3ff), to(#cfdbfe)); background: -webkit-linear-gradient(top, #aec3ff, #cfdbfe); 
+									       background: -moz-linear-gradient(top, #aec3ff, #cfdbfe); background: -ms-linear-gradient(top, #aec3ff, #cfdbfe); background: -o-linear-gradient(top, #aec3ff, #cfdbfe); 
+									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aec3ff', endColorstr='#cfdbfe');}
 
 .fs_schema .entries .entry.reserve,
 

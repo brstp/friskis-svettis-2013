@@ -618,7 +618,9 @@ class fs_schema_profit {
 					
 					'bookingtype'			=> $booking_type,
 					
-					'status'				=> strtolower( (string) $activity->bookbuttonstatus ) // BOOK, DROPIN (endast dropin), RESERVE, NOTBOOKABLE, CANCELLED, FULL, CLOSED
+					'status'				=> strtolower( (string) $activity->bookbuttonstatus ), // BOOK, DROPIN (endast dropin), RESERVE, NOTBOOKABLE, CANCELLED, FULL, CLOSED
+					
+					'message'				=> ''
 				)
 			);
 		}

@@ -12,7 +12,7 @@
 
 class fs_schema_public {
 
-	private $version 			= 'version 1.0.1';
+	private $version 			= 'version 1.0.2';
 	
 	private $default_username	= ''; 
 	
@@ -447,7 +447,7 @@ class fs_schema_public {
 							
 							$entry_data 			    .= ' data-bookingid="' . $entry['bookingid'] . '" data-h="' . $h . '" data-bookingtype="' . $entry['bookingtype'] . '"';
 							
-							$entry_data			    .= ' data-status="' . $entry['status'] . '" data-hour_entry_count="' . $hour_entry_count . '"';
+							$entry_data			    .= ' data-status="' . $entry['status'] . '" data-message="' . $entry['message'] . '" data-hour_entry_count="' . $hour_entry_count . '"';
 							
 							$entry_class			    .= ' entry_' . $entry['status'];
 							
@@ -686,6 +686,7 @@ class fs_schema_public {
 								<div class="entry_info entry_info_not_bookable">Passet går inte att boka för tillfället.</div>
 								<div class="entry_info entry_info_not_opened_yet">Passet går inte att boka än.</div>
 								<div class="entry_info entry_info_closed">Passet är stängt för bokning.</div>
+								<div class="entry_info entry_message"></div>
 								<div class="divider"></div>
 								<div class="booked_info">Du är inbokad.</div>
 								<div class="loggedin"></div>
