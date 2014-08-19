@@ -570,6 +570,21 @@ class fs_schema_profit {
 				$booking_id	= $reserve_booking_id;
 			
 			}
+			
+			// fix dropin logic
+			
+			$dropinslots		= (string) $activity->dsl;
+			
+			$totalslots		= (string) $activity->s;
+			
+			$status			= strtolower( (string) $activity->bookbuttonstatus );
+			
+			if ( $dropinslots != '0' && $dropinslots != '-1' && $dropinslots != '' && $totalslots == '0' ) {
+			
+				$status		= 'dropin';
+				
+				$totalslots	= $dropinslots;
+			}
 
 			// put it together
 			array_push( $schema,
@@ -602,13 +617,13 @@ class fs_schema_profit {
 					
 					'enddatetime'			=> (string) $activity->e,
 					
-					'totalslots'			=> (string) $activity->s,
+					'totalslots'			=> $totalslots,
 					
 					'freeslots'			=> (string) $activity->sl,
 					
 					'bookableslots'		=> (string) $activity->sl,
 					
-					'dropinslots'			=>  (string) $activity->dsl, // '-1', // unknown
+					'dropinslots'			=> $dropinslots, 
 					
 					'waitinglistsize'		=> '-1', // unknown
 					
@@ -618,7 +633,7 @@ class fs_schema_profit {
 					
 					'bookingtype'			=> $booking_type,
 					
-					'status'				=> strtolower( (string) $activity->bookbuttonstatus ), // BOOK, DROPIN (endast dropin), RESERVE, NOTBOOKABLE, CANCELLED, FULL, CLOSED
+					'status'				=> $status, // BOOK, DROPIN (endast dropin), RESERVE, NOTBOOKABLE, CANCELLED, FULL, CLOSED
 					
 					'message'				=> ''
 				)
