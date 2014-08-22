@@ -474,6 +474,8 @@ class fs_schema_data {
 		delete_option( 'fs_schema_objects_datestamp' );
 		
 		delete_option( 'fs_schema_objects_value' );
+		
+		delete_option( 'profit_session_key');
 	}
 
 	

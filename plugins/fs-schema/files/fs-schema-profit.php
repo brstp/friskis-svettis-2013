@@ -97,7 +97,7 @@ class fs_schema_profit {
 		// if no username, get schema as guest
 		if ( $r['username'] == '' || $r['password'] == '' || $r['session_key'] == '' ) {
 		
-			$this->debug 	 .= '<br>Påbörjar anrop till Profit som Gäst';
+			$this->add_debug ('Påbörjar anrop till Profit som Gäst');
 			
 			$xmls  		  = '<ProfitAndroid command="FetchBookableObjectsFiltered">
 								<GUID>%1$s</GUID>
@@ -113,7 +113,7 @@ class fs_schema_profit {
 		
 		} else {
 
-			$this->debug 	 .= '<br>Påbörjar anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'];
+			$this->add_debug ( 'Påbörjar anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key']);
 					
 			$xmls  		  = '<ProfitAndroid command="FetchBookableObjects">
 								<GUID>%1$s</GUID>
@@ -124,13 +124,13 @@ class fs_schema_profit {
 		
 			$result 		  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
 			
-			$this->debug 	 .= '<br>Resultat från anropet: ' . print_r( $result, true) ;
+			$this->add_debug ( 'Resultat från anropet: ' . print_r( $result, true)) ;
 			
 			
 			
 			// get user bookings so we can mark what events this user is booked at
 			
-			$this->debug 	 .= '<br>Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta bokningarna';
+			$this->add_debug ( 'Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta bokningarna' );
 
 			$xmls  		  = '<ProfitAndroid command="FetchBookings">
 								<GUID>%1$s</GUID>
@@ -141,7 +141,7 @@ class fs_schema_profit {
 			
 			$book_result 	  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
 			
-			$this->debug 	 .= '<br>Resultat från anropet: ' . print_r( $book_result, true) ;
+			$this->add_debug ( 'Resultat från anropet: ' . print_r( $book_result, true)) ;
 			
 			if ( $book_result['error'] != '' ) {
 			
@@ -161,7 +161,7 @@ class fs_schema_profit {
 			
 			// get user waitinglist bookings so we can mark what events this user is on waiting list
 			
-			$this->debug 	 .= '<br>Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta reservlistbokningarna';
+			$this->add_debug ( 'Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta reservlistbokningarna' );
 
 			$xmls  		  = '<ProfitAndroid command="FetchReserveBookings">
 								<GUID>%1$s</GUID>
@@ -172,7 +172,7 @@ class fs_schema_profit {
 			
 			$book_result 	  = $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
 			
-			$this->debug 	 .= '<br>Resultat från anropet: ' . print_r( $book_result, true) ;
+			$this->add_debug ( 'Resultat från anropet: ' . print_r( $book_result, true)) ;
 			
 			if ( $book_result['error'] != '' ) {
 			
@@ -194,9 +194,9 @@ class fs_schema_profit {
 				}
 			}
 			
-			$this->debug 	 .= '<br>user_bookings: ' . print_r( $user_bookings, true) ;
+			$this->add_debug ( 'user_bookings: ' . print_r( $user_bookings, true)) ;
 			
-			$this->debug 	 .= '<br>user_reserve_bookings: ' . print_r( $user_reserve_bookings, true) ;
+			$this->add_debug ( 'user_reserve_bookings: ' . print_r( $user_reserve_bookings, true)) ;
 			
 		}
 
@@ -240,13 +240,13 @@ class fs_schema_profit {
 			<Password>' . $password . '</Password>
 		</ProfitAndroid>';
 		
-		$this->debug 				.= '<br>Påbörjar bokning av aktivitet hos Profit som inloggad användare ' . $username;
+		$this->add_debug ( 'Påbörjar bokning av aktivitet hos Profit som inloggad användare ' . $username );
 		
 		$result 					= $this->make_soap_call ( $xmls, $session_key, $username, $password );
 		
 		if ( $result['error'] 		== '' && isset ( $result['xml']->status )) {
 		
-			$this->debug .= '<br>We have a response with status ' . $result['xml']->status;
+			$this->add_debug ( 'We have a response with status ' . $result['xml']->status );
 		
 			if ( $result['xml']->status != 'OK' ) {
 		
@@ -262,14 +262,16 @@ class fs_schema_profit {
 		
 		} else {
 		
-			$this->debug .= '<br>Profit didnt give us any status in the response.';
+			$this->add_debug ( 'Profit didnt give us any status in the response.', true );
 		
 			$result['error'] 		= 'YES';
 				
 			$result['message'] 		= 'Det gick inte att boka. Profit Bokningssystem svarade inte.';		
 		}
 		
-		$result['debug'] 			= $this->debug . '<br>' . print_r($result, true);
+		$this->add_debug ( print_r($result, true));
+		
+		$result['debug'] 			= $this->debug;
 		
 		return $result;
 
@@ -296,17 +298,17 @@ class fs_schema_profit {
 			<Password>' . $password . '</Password>
 		</ProfitAndroid>';
 		
-		$this->debug 				.= '<br>Påbörjar avbokning av bokning ' . $bookingid . ' hos Profit som inloggad användare ' . $username;
+		$this->add_debug ( 'Påbörjar avbokning av bokning ' . $bookingid . ' hos Profit som inloggad användare ' . $username );
 		
 		$result 					= $this->make_soap_call ( $xmls, $session_key, $username, $password );
 		
 		if ( $result['error'] 		== '' && isset ( $result['xml']->status )) {
 		
-			$this->debug .= '<br>We have a response with status ' . $result['xml']->status;
+			$this->add_debug ( 'We have a response with status ' . $result['xml']->status );
 		
 			if ( strpos ( (string) $result['xml']->status, 'registrerad' ) === false ) {
 			
-				$this->debug .= '<br>Cannot find registrerad in the response';
+				$this->add_debug ( 'Cannot find registrerad in the response', true );
 		
 				$result['error'] 		= 'YES';
 			
@@ -315,14 +317,16 @@ class fs_schema_profit {
 		
 		} else {
 		
-			$this->debug .= '<br>Profit didnt give us any status in the response.';
+			$this->add_debug ( 'Profit didnt give us any status in the response.', true );
 		
 			$result['error'] 		= 'YES';
 				
 			$result['message'] 		= 'Det gick inte att avboka. Profit Bokningssystem svarade inte.';		
 		}
 		
-		$result['debug'] 			= $this->debug . '<br>' . print_r($result, true);
+		 $this->add_debug ( print_r($result, true) );
+		
+		$result['debug'] 			= $this->debug;
 		
 		return $result;
 
@@ -350,13 +354,13 @@ class fs_schema_profit {
 			<Password>' . $password . '</Password>
 		</ProfitAndroid>';
 		
-		$this->debug 				.= '<br>Påbörjar bokning av reservplats på aktivitet hos Profit som inloggad användare ' . $username;
+		$this->add_debug ( 'Påbörjar bokning av reservplats på aktivitet hos Profit som inloggad användare ' . $username );
 		
 		$result 					= $this->make_soap_call ( $xmls, $session_key, $username, $password );
 		
 		if ( $result['error'] 		== '' && isset ( $result['xml']->status )) {
 		
-			$this->debug .= '<br>We have a response with status ' . $result['xml']->status;
+			$this->add_debug ( 'We have a response with status ' . $result['xml']->status );
 		
 			if ( $result['xml']->status != 'OK' ) {
 		
@@ -372,14 +376,16 @@ class fs_schema_profit {
 		
 		} else {
 		
-			$this->debug .= '<br>Profit didnt give us any status in the response.';
+			$this->add_debug ( 'Profit didnt give us any status in the response.', true );
 		
 			$result['error'] 		= 'YES';
 				
 			$result['message'] 		= 'Det gick inte att boka. Profit Bokningssystem svarade inte.';		
 		}
 		
-		$result['debug'] 			= $this->debug . '<br>' . print_r($result, true);
+		$this->add_debug ( print_r($result, true) );
+		
+		$result['debug'] 			= $this->debug;
 		
 		return $result;	
 	}
@@ -406,11 +412,11 @@ class fs_schema_profit {
 								<Password>' . $password . '</Password>
 							</ProfitAndroid>';
 		
-		$this->debug 		  .= '<br>Påbörjar förfrågan om att avboka reservbokningen ' . $bookingid . ' hos Profit som inloggad användare ' . $username;
+		$this->add_debug ( 'Påbörjar förfrågan om att avboka reservbokningen ' . $bookingid . ' hos Profit som inloggad användare ' . $username );
 		
 		$result 		   	  = $this->make_soap_call( $xmls, $session_key, $username, $password );
 		
-		$this->debug 		  .= '<br>Resultat från bokningen: ' . print_r( $result, true) ;
+		$this->add_debug ( 'Resultat från bokningen: ' . print_r( $result, true)) ;
 		
 		if ( $result['xml']->status != 'OK' ) {
 	
@@ -420,7 +426,9 @@ class fs_schema_profit {
 		
 		} 
 		
-		$result['debug'] 	   = $this->debug . '<br>' . print_r($result, true);
+		$this->add_debug ( print_r($result, true));
+		
+		$result['debug'] 	   = $this->debug;
 	
 		return $result;
 	}
@@ -448,7 +456,7 @@ class fs_schema_profit {
 			<Licenskey>' . $settings['fs_booking_profit_3part_licence_key'] . '</Licenskey>
 		</ProfitAndroid>';
 		
-		$this->debug 			.= '<br>Påbörjar anrop till Profit som inloggad användare ' . $username;
+		$this->add_debug ( 'Påbörjar anrop till Profit som inloggad användare ' . $username );
 		
 		$result 				= $this->make_soap_call( $xmls );
 		
@@ -475,7 +483,9 @@ class fs_schema_profit {
 		
 		}
 		
-		$result['debug'] 				= $this->debug . print_r($result, true);
+		$this->add_debug (print_r($result, true));
+		
+		$result['debug'] 				= $this->debug;
 		
 		return $result;
 	}
@@ -495,7 +505,7 @@ class fs_schema_profit {
 	
 		// get user bookings so we can mark what events this user is booked at
 		
-		$this->debug 		.= '<br>Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta bokningarna';
+		$this->add_debug ( 'Fortsätter anrop till Profit som autentierad anvädnare, session_key ' . $r['session_key'] . ' för att hämta bokningarna' );
 
 		$xmls = '<ProfitAndroid command="FetchBookings">
 			<GUID>%1$s</GUID>
@@ -506,7 +516,7 @@ class fs_schema_profit {
 		
 		$book_result 			= $this->make_soap_call( $xmls, $r['session_key'], $r['username'], $r['password'] );
 		
-		$this->debug 		.= '<br>Resultat från bokningen: ' . print_r( $book_result, true) ;
+		$this->add_debug ( 'Resultat från bokningen: ' . print_r( $book_result, true)) ;
 		
 		if ( $book_result['error'] != '' ) {
 		
@@ -582,9 +592,14 @@ class fs_schema_profit {
 			if ( $dropinslots != '0' && $dropinslots != '-1' && $dropinslots != '' && $totalslots == '0' ) {
 			
 				$status		= 'dropin';
-				
-				$totalslots	= $dropinslots;
+	
 			}
+			
+			
+			// fix total slots
+			
+			$totalslots	= (int) $totalslots + (int) $dropinslots;
+			
 
 			// put it together
 			array_push( $schema,
@@ -625,7 +640,7 @@ class fs_schema_profit {
 					
 					'dropinslots'			=> $dropinslots, 
 					
-					'waitinglistsize'		=> '-1', // unknown
+					'waitinglistsize'		=> (int) $activity->rs - (int)  $activity->rsl,
 					
 					'waitinglistposition'	=> $reserve_position,
 					
@@ -653,7 +668,7 @@ class fs_schema_profit {
 	
 	private function make_soap_call ( $xml_command, $session_key = '', $username = '', $password = '', $num_retry = 0 ) {
 	
-		$this->debug .= '<br>Make soap call, session_key: ' . $session_key . ', username: ' . $username . ', password:' . $password;
+		$this->add_debug ( 'Make soap call, session_key: ' . $session_key . ', username: ' . $username . ', password:' . $password );
 	
 		$output = array( 'error' => '', 'message' => '', 'xml' => false, 'new_session_key' => '', 'debug' => '' );
 	
@@ -662,7 +677,7 @@ class fs_schema_profit {
 		
 			$session_key = get_option('profit_session_key');
 			
-			$this->debug .= '<br>Get key from option: ' . $session_key;
+			$this->add_debug ( 'Get key from option: ' . $session_key );
 
 			// if no session guid has been stored, login and get a new one and store it in the database
 			if ( $session_key == '' ) {
@@ -679,7 +694,7 @@ class fs_schema_profit {
 					
 				} else {
 				
-					$this->debug .= '<br>Getting new key from login: ' . $session_key;
+					$this->add_debug ( 'Getting new key from login: ' . $session_key );
 					
 					update_option( 'profit_session_key', $session_key );
 					
@@ -694,13 +709,13 @@ class fs_schema_profit {
 		
 			if ( $session_key == '' ) {
 			
-				$this->debug .= '<br>Session key is empty, trying to get a new one from : ' . $username;
+				$this->add_debug ( 'Session key is empty, trying to get a new one from : ' . $username );
 			
 				$user_login =  $this->login ( $username, $password );
 				
 				if ( $user_login['error'] != '' ) {
 				
-					$this->debug .= '<br>Error while trying to login again.';
+					$this->add_debug ( 'Error while trying to login again.', true );
 				
 					$output['error'] 	= 'YES';
 			
@@ -712,7 +727,7 @@ class fs_schema_profit {
 				
 					$session_key = $user_login['session_key'];
 				
-					$this->debug .= '<br>Getting new key from login: ' . $session_key;
+					$this->add_debug ( 'Getting new key from login: ' . $session_key );
 				
 					$output['new_session_key'] = $session_key;				
 				}
@@ -729,13 +744,13 @@ class fs_schema_profit {
 			
 				if ( $username == '' && $password == '' ) update_option( 'profit_session_key', '' ); // empty guest session key
 				
-				$this->debug .= '<br>Session maybe has expired, going back in and try again';
+				$this->add_debug ( 'Session maybe has expired, going back in and try again', true );
 				
 				$output = $this->make_soap_call (  $xml_command, '', $username, $password, 1 );
 			
 			} else {
 		
-				$this->debug .= '<br>Felmeddelande från profit: ' . $result->get_error_message();
+				$this->add_debug ( 'Felmeddelande från profit: ' . $result->get_error_message(), true );
 			
 				$output['error'] 	= 'YES';
 			
@@ -762,26 +777,27 @@ class fs_schema_profit {
 	
 	private function exec_soap_call ( $xml_command ) {
 
-		$this->debug .= '<br>exec_soap_call: ' . $xml_command;
+		$this->add_debug ( 'exec_soap_call:||' . $xml_command );
 		
 		global $fs_schema;
 		
 		$settings = $fs_schema->data->settings();
 
-		$r['url']	 			= $settings[ 'fs_schema_profit_server_url' ];
-		//$r['url']				= 'http://bookapi.pastell16.pastelldata.se/v4186/MobileServices.asmx?wsdl';	
+		$r['url']	 			= $settings[ 'fs_schema_profit_server_url' ];	
 		
 		
 		// Create the client instance
 		try  { 
 		
 			$client = @new soapclient( $r['url'] );
+			
+			$this->add_debug ( 'Skapar en koppling till URL ' . $r['url'] );
 		
 		} 
 		
 		catch (SoapFault $exception) {
 		
-			$this->debug .= '<br>Det måste vara en felaktig adress i Bokningssystemets URL.';
+			$this->add_debug ( 'Det måste vara en felaktig adress i Bokningssystemets URL.', true );
 		
 			return new WP_Error('exec_soap_call_error', 'Det gick inte att få kontakt med bokningssystemets server. Servern verkar inte finnas.' );		
 
@@ -793,8 +809,6 @@ class fs_schema_profit {
 		} 
 		
 		catch (SoapFault $exception) { 
-		
-			//$this->debug .= '<br>Soap Exception: ' . print_r( $exception, true);
 			
 			switch ( $exception->getMessage() ) {
 			
@@ -805,23 +819,30 @@ class fs_schema_profit {
 			
 				default:
 					
-					$this->debug .= '<br>Felet orsakades av anropet: ' . $client->__getLastRequest();
+					$this->add_debug ( 'Felet orsakades av anropet: ' . $client->__getLastRequest(), true);
 					return new WP_Error('exec_soap_call_error', $exception->getMessage() );
 					break;
 					
 			}
 		} 
 		
-		$this->debug .= '<br>Resultat från servern: ' . $result->processUnsafeResult;
+		//$this->add_debug ( 'Resultat från servern: ' . $result->processUnsafeResult );
 		
 		$xml_doc = @simplexml_load_string( iconv( "UTF-8", "UTF-8//IGNORE",  $result->processUnsafeResult ) );
 			
 		if ( $xml_doc === false ) {
 		
-			$this->debug .= '<br>Det gick inte att ladda följande text som ett xml-dokument: ' . $result->processUnsafeResult ;
+			$this->add_debug ( 'Det gick inte att ladda följande text som ett xml-dokument: ' . $result->processUnsafeResult, true );
 		
 			return new WP_Error('exec_soap_call_error', 'Det gick inte att ladda xml-data.' );
 			
+		} else {
+		
+			$dom = dom_import_simplexml($xml_doc)->ownerDocument;
+			
+			$dom->formatOutput = true;
+			
+			$this->add_debug ( 'Resultat från servern: ' . $dom->saveXML() );
 		}
 		
 		return $xml_doc;	
@@ -843,7 +864,7 @@ class fs_schema_profit {
 		
 		$settings = $fs_schema->data->settings();
 
-		$this->debug .= '<br>Soap_Login as guest';
+		$this->add_debug ( 'Soap_Login as guest' );
 	
 		$xml_command = '<ProfitAndroid command="UsualAuthenticate">
 						<globalunit>' . $settings['fs_booking_profit_organization_unit'] . '</globalunit>
@@ -856,7 +877,7 @@ class fs_schema_profit {
 	
 		if ( is_wp_error ( $result )) {
 		
-			$this->debug .= '<br>Det går inte att logga in på Profit bokingssystem: ' .  $result->get_error_message();
+			$this->add_debug ( 'Det går inte att logga in på Profit bokingssystem: ' .  $result->get_error_message(), true );
 			
 			return new WP_Error('soap_login_error', 'Det går inte att logga in på Profit bokingssystem: ' .  $result->get_error_message() );
 		
@@ -889,6 +910,20 @@ class fs_schema_profit {
 		
 		return $outText;
 	}
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// ADD TO LOG STRING
+	//
+	////////////////////////////////////////////////////////////////////////////////
+
+	private function add_debug ( $string, $error = false ) {
+	
+		$this->debug .= ( $error == true ? '<b>' : '' ) . '<br><br>Profit:' . str_replace( '||', '<br>', str_replace ( '>', '&gt;', str_replace ( '<', '&lt;', $string ))) . ( $error == true ? '</b>' : '' );
+
+	}
+
 
 
 } //End Class
