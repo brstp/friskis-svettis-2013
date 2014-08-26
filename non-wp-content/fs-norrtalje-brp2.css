@@ -1,0 +1,230 @@
+.ctop, .cbottom { 
+  display: none; 
+	}
+	
+.ccenter {
+  margin: 0px;
+	padding: 0px;}
+	
+.cleft {
+	width: 100%;
+	/*background-color: grey;*/
+	letter-spacing: 0;
+	margin: 0 0 36px -10px;
+	border: none;
+	height: inherit;
+	min-height: inherit;
+}
+
+.cright {
+	float: right;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	border: none;
+}
+
+.tabellrubrik {
+	background-color: inherit;
+	width: 100%;
+}
+
+br#menu {
+	display: none;
+}
+
+a, a:visited {
+	color: #bc2327 !important;
+	text-decoration: none;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+}
+
+a:hover {
+	color: #bc2327 !important;
+	text-decoration: underline;
+}
+
+input {
+	font-size: 14px;
+}
+
+input[type=text], input[type=password]
+{
+	float: left;
+	border: 2px solid #ddd;
+	border-radius: 5px 0 0 5px;
+	padding: 5px;
+	width: 173px;
+	height: 16px;
+}
+
+input[type=button], input[type=submit]
+{
+  padding: 6px 30px;
+	margin-right: 0px;
+	border-radius: 5px;
+	border: 2px solid #ddd;
+	color: #fff;
+	display: block;
+	margin-top: 20px;
+	text-transform: uppercase;
+	background: #000;
+	font-weight: bold;
+}
+
+
+.menuitem {
+	display: inline;
+	padding: 5px 0px 3px 0px;
+	margin: 5px 5px 5px 10px;
+	background-color: inherit;
+	letter-spacing: 0;
+	float: left;
+	width: auto;
+	text-transform: uppercase;
+}
+
+.menuitem a.menuitem {
+	padding: 0px;
+	margin: 0px;
+	text-decoration: none;
+	color: #000 !important;
+	border: none;
+	width: auto;
+}
+
+.menuitem a, .menuitem:visited {
+	padding: 0px;
+	margin: 0px;
+	text-decoration: none;
+	color: #000;
+	border: none;
+	width: auto;
+}
+
+
+
+.menuitem:hover {
+	padding: 5px 0px 1px 0px;
+	margin: 5px 5px 5px 10px;
+	border-bottom: #000;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	width: auto;
+	background-color: inherit;
+}
+
+.selectedmenuitem {
+	display: inline;
+	float: left;
+	width: auto;
+	color: #000;
+	padding: 5px 0px 1px 0px;
+	margin: 5px 5px 5px 10px;
+	background-color: #fff;
+	letter-spacing: 0;
+	border-bottom: #000;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	text-transform: uppercase;
+}
+
+#pickUnit {
+  border-bottom: none;
+  padding-bottom: 3px;
+  color: #000;
+  float: none;
+  display: block;
+}
+
+#pickUnit:before,
+#pickUnit:after {
+  content:"";
+  display:table;
+}
+
+#pickUnit:after {
+  clear:both;
+}
+#pickUnit {
+  zoom:1; /* For IE 6/7 (trigger hasLayout) */
+}
+
+
+#pickUnit label {
+  display: block;
+}
+
+#pickUnit{
+  display: none;
+}
+
+#showGroupActivitiesBody #pickUnit{
+  display: block;
+}
+	
+td, p, p.bottom {
+  font-size: 12px;
+}
+
+th {
+	background-color: #000;
+	color: #fff;
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+	font-weight: normal;
+	height: auto;
+	padding-bottom: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 6px;
+	width: auto;
+}
+
+tr.alternaterow {
+	background: #ebebeb;
+	background-color: #ebebeb;
+}
+
+.ccentercontent {
+  border: none;
+  padding: 0px;
+}
+
+
+.centercontenttext {
+	padding: 0px;
+}
+
+#bookingInfoBody, #alreadyCustomerInfo {
+	max-width: 450px;
+}
+
+#forgotPassword {
+  margin: 2em 0;
+  display: block;
+}
+
+select#unitPicker {
+  width: 200px;
+}
+
+body {
+  margin: 0px;
+  font-size: 12px;
+}
+
+.wrapper {
+  padding-top: 1px;
+}
+
+.rubrik, .tabellrubrik {
+	display: block;
+	font-family: Georgia, serif;
+	font-size: 18px;
+	font-weight: bold;
+	height: initial;
+	margin-bottom: 25px;
+}
