@@ -5,7 +5,7 @@
 	Plugin URI: http://klasehnemark.com
 	Description: Detta plugin ger funktionalitet att integrera både BRP och PROFITs bokningssystem på en Friskis & Svettis Wordpress sajt. 
 	Author: Klas Ehnemark
-	Version: 1.0.4
+	Version: 1.0.5
 	Author URI: http://klasehnemark.com
 	
 	Copyright (C) 2013-2014 Klas Ehnemark (http://klasehnemark.com)

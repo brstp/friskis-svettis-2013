@@ -589,10 +589,17 @@ class fs_schema_profit {
 			
 			$status			= strtolower( (string) $activity->bookbuttonstatus );
 			
-			if ( $dropinslots != '0' && $dropinslots != '-1' && $dropinslots != '' && $totalslots == '0' ) {
+			// forced status change is only available when status is 'book' or 'reserve', not 'notbookable', 'cancelled', 'full' or 'closed'
 			
-				$status		= 'dropin';
-	
+			if ( $status == 'book'|| $status == 'reserve' ) {  
+			
+				// let's assume status is dropin if dropinslots are more then zero and totalslots are zero
+			
+				if ( $dropinslots != '0' && $dropinslots != '-1' && $dropinslots != '' && $totalslots == '0' ) {
+				
+					$status		= 'dropin';
+		
+				}
 			}
 			
 			

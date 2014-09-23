@@ -12,7 +12,7 @@
 
 class fs_schema_public {
 
-	private $version 			= 'version 1.0.4';
+	private $version 			= 'version 1.0.5';
 	
 	private $default_username	= ''; 
 	
@@ -303,7 +303,7 @@ class fs_schema_public {
 					
 					$end_minute				= (int) date ('i', $end_time );
 					
-					$before_now				= $start_time < $today_this_hour; 
+					$before_now				= $start_time < $today_this_hour; // set to false to debug all items
 					
 					if ( $end_hour == $start_hour  )			$end_hour++;
 					

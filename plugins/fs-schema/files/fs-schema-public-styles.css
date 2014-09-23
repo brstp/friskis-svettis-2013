@@ -89,9 +89,9 @@
 									       background: -moz-linear-gradient(top, #baddfb, #85c7ff); background: -ms-linear-gradient(top, #baddfb, #85c7ff); background: -o-linear-gradient(top, #baddfb, #85c7ff); 
 									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#baddfb', endColorstr='#85c7ff'); }
 
-.fs_schema .entries .entry.cancelled,
+.fs_schema .entries .entry.cancelled			{ text-decoration:line-through !important; }
 
-.fs_schema .entries .entry.notbookable			{ /*text-decoration:line-through !important;*/ }
+.fs_schema .entries .entry.notbookable			{ /*text-decoration:line-through !important; */}
 																
 .fs_schema .entries .entry.before_now 			{ color: #aaa; } 
 
