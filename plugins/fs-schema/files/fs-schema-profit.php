@@ -589,9 +589,9 @@ class fs_schema_profit {
 			
 			$status			= strtolower( (string) $activity->bookbuttonstatus );
 			
-			// forced status change is only available when status is 'book' or 'reserve', not 'notbookable', 'cancelled', 'full' or 'closed'
+			// forced status change is only available when status is 'book' or 'reserve' or 'notbookable', not, 'cancelled', 'full' or 'closed'
 			
-			if ( $status == 'book'|| $status == 'reserve' ) {  
+			if ( $status == 'book'|| $status == 'reserve' || $status == 'notbookable' ) {  
 			
 				// let's assume status is dropin if dropinslots are more then zero and totalslots are zero
 			
