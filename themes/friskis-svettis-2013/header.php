@@ -86,7 +86,7 @@
 		</div>
 		<div id="search">
 		<?php get_search_form(); ?>
-		<div id="mainMenuButton">Huvudmeny</div>
+			<div id="mainMenuButton"><?php _e('Huvudmeny', 'friskis-svettis'); ?></div>
 		</div>
 			<nav id="mainMenu">
 				<?php wp_nav_menu(); ?>

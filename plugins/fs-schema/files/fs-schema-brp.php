@@ -48,7 +48,6 @@ class fs_schema_brp {
 		
 		$sub_cache_name			= 'schema_' . $r['type'] . '_' . $r['facility'] . '_' . $r['date'];
 
-
 		// if username and password, don't cache this schema
 		if ( $r['username'] != '' || $r['password'] != '' ) {
 		
@@ -680,16 +679,26 @@ class fs_schema_brp {
 				$bookablelatest 				= (string) $activity->bookablelatest->timepoint->timestamp;
 				
 				
+				// get some integer values
+
+				$totalslots					= intval( isset ( $activity->totalslots ) 				? (string) $activity->totalslots : '-1' );
+				
+				$bookableslots					= intval( isset ( $activity->bookableslots ) 			? (string) $activity->bookableslots : '-1' );
+				
+				$dropinslots					= intval( isset ( $activity->slotsreservedfordropin ) 		? (string) $activity->slotsreservedfordropin : '-1' );
+				
+				
 				// build the status
 			
 				$entry_status 					= 'BOOK';  										// default: booking is possible
-	
 				
-				if ( (string) $activity->freeslots == '0' ) {										// entry has no free slots (no drop in either)
+				if ( $bookableslots == 0 && $totalslots == $dropinslots ) {
 				
-					$entry_status 				= 'reserve';											// only reserve booking is possible
-					
-																								// there is no way saying ONLY DROPIN
+					$entry_status 				= "dropin";										// only dropin
+
+				} else if ( (string) $activity->freeslots == '0' ) {									// entry has no free slots (no drop in either)
+
+					$entry_status 				= 'reserve';										// only reserve booking is possible
 				
 				} else if ( (string) $activity->cancelled == 'true' ) {								// entry is cancelled
 				
@@ -723,7 +732,7 @@ class fs_schema_brp {
 				$booking_id					= (string) $activity->id;
 				
 			}
-
+			
 			// put it together
 			array_push( $schema,
 			
@@ -761,7 +770,7 @@ class fs_schema_brp {
 					
 					'bookableslots'		=> (string) $activity->bookableslots,
 					
-					'dropinslots'			=> -1, //(int) $activity->bookableslots - (int) $activity->freeslots,
+					'dropinslots'			=> (string) $activity->slotsreservedfordropin,
 					
 					'waitinglistsize'		=> (string) $activity->waitinglistsize,
 					
@@ -771,7 +780,9 @@ class fs_schema_brp {
 					
 					'bookingtype'			=> $booking_type,
 					
-					'status'				=> strtolower( $entry_status )
+					'status'				=> strtolower( $entry_status ),
+					
+					'message'				=> (string) $activity->externalmessage
 				)
 			);
 		}	

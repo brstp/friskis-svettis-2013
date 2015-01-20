@@ -7,7 +7,7 @@ define('THEME_CSS', THEME_URI . '/css');
 define('THEME_JS', THEME_URI . '/js');
 define('THEMELIB', TEMPLATEPATH . '/lib');
 
-load_theme_textdomain( 'friskis-svettis', templatepath.'/languages' );
+load_theme_textdomain( 'friskis-svettis', TEMPLATEPATH.'/languages' );
 
 
 register_nav_menus( array(

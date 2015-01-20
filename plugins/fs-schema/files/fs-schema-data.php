@@ -385,8 +385,8 @@ class fs_schema_data {
 
 		$number_second_cache = $settings[ 'fs_schema_update_inteval' ];
 		
-		//$force_update = true;	
-		//$number_second_cache = 600;
+		// $force_update = true;	
+		// $number_second_cache = 600;
 		
 		$do_update = $force_update;
 
@@ -419,7 +419,7 @@ class fs_schema_data {
 		
 			$save_results = true;
 		
-			$cached_value = call_user_func( $update_function_name, &$args );
+			$cached_value = call_user_func( $update_function_name, $args );
 			
 			if ( isset ( $cached_value['error'] ) && isset ( $cached_value['xml'] )) {
 			
@@ -474,6 +474,8 @@ class fs_schema_data {
 		delete_option( 'fs_schema_objects_datestamp' );
 		
 		delete_option( 'fs_schema_objects_value' );
+		
+		delete_option( 'profit_session_key');
 	}
 
 	

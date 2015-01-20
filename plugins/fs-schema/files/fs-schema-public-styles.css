@@ -39,7 +39,8 @@
 									       background-color: #fbfbfb; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fbfbfb), to(#EBEBEB)); background: -webkit-linear-gradient(top, #fbfbfb, #EBEBEB); 
 									       background: -moz-linear-gradient(top, #f8f8f8, #EBEBEB); background: -ms-linear-gradient(top, #fbfbfb, #EBEBEB); background: -o-linear-gradient(top, #fbfbfb, #EBEBEB);
 									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8f8f8', endColorstr='#EBEBEB');
-									       transition: 0.1s; -moz-transition: 0.1s; -ms-transition: 0.1s; -webkit-transition: 0.1s; -o-transition: 0.1s; }
+									       transition: 0.1s; -moz-transition: 0.1s; -ms-transition: 0.1s; -webkit-transition: 0.1s; -o-transition: 0.1s; 
+									       -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; }
 
 .fs_schema .entries .entry.openable			{ cursor:pointer; }
 
@@ -71,9 +72,14 @@
 									       background: -moz-linear-gradient(top, #d1eed2, #c5e7c7); background: -ms-linear-gradient(top, #d1eed2, #c5e7c7); background: -o-linear-gradient(top, #d1eed2, #c5e7c7); 
 									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d1eed2', endColorstr='#c5e7c7');}
 
-.fs_schema .entry_info_dropin 				{ background-color: #fbe5a0; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcebb6), to(#fbe5a0)); background: -webkit-linear-gradient(top, #fcebb6, #fbe5a0); 
+/*.fs_schema .entries .entry.dropin,*/
+.fs_schema .entry_info_dropin					{ background-color: #fbe5a0; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fcebb6), to(#fbe5a0)); background: -webkit-linear-gradient(top, #fcebb6, #fbe5a0); 
 									       background: -moz-linear-gradient(top, #fcebb6, #fbe5a0); background: -ms-linear-gradient(top, #fcebb6, #fbe5a0); background: -o-linear-gradient(top, #fcebb6, #fbe5a0); 
 									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fcebb6', endColorstr='#fbe5a0');}
+
+.fs_schema .entry_message 					{ background-color: #aec3ff; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#aec3ff), to(#cfdbfe)); background: -webkit-linear-gradient(top, #aec3ff, #cfdbfe); 
+									       background: -moz-linear-gradient(top, #aec3ff, #cfdbfe); background: -ms-linear-gradient(top, #aec3ff, #cfdbfe); background: -o-linear-gradient(top, #aec3ff, #cfdbfe); 
+									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#aec3ff', endColorstr='#cfdbfe');}
 
 .fs_schema .entries .entry.reserve,
 
@@ -83,9 +89,9 @@
 									       background: -moz-linear-gradient(top, #baddfb, #85c7ff); background: -ms-linear-gradient(top, #baddfb, #85c7ff); background: -o-linear-gradient(top, #baddfb, #85c7ff); 
 									       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#baddfb', endColorstr='#85c7ff'); }
 
-.fs_schema .entries .entry.cancelled,
+.fs_schema .entries .entry.cancelled			{ text-decoration:line-through !important; }
 
-.fs_schema .entries .entry.notbookable			{ /*text-decoration:line-through !important;*/ }
+.fs_schema .entries .entry.notbookable			{ /*text-decoration:line-through !important; */}
 																
 .fs_schema .entries .entry.before_now 			{ color: #aaa; } 
 
