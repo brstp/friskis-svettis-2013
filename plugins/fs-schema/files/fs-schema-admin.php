@@ -325,7 +325,7 @@ class fs_schema_admin {
 								<p>Schemat är inte avsett att använda med den API-nyckel <span class="">och/eller anläggnings-ID </span>du angett. Om du tror att du angivit korrekt värden och vill 
 								använda schemat för den här API-nyckeln, vänligen kontakta <a href="mailto:hello@klasehnemark.com">Klas Ehnemark</a> som har utvecklat schemat så att han kan lägga in stöd för din API-nyckel.</p>
 								<p>FS-Schema är ett kommersiellt wordpressplugin som utvecklats och ägs av <a href="mailto:hello@klasehnemark.com">Klas Ehnemark</a>. Denna version av FS-Schema är licensierad till och får användas av 
-								Friskis&Svettis-föreningarna i Danderyd (BRP), Haninge (Profit), Huddinge (Profit), Lidingö (BRP), Norrtälje (BRP), Södertälje (BRP), Täby (BRP) och Åkersberga (Profit). Namnet inom parantes 
+								Friskis&Svettis-föreningarna i Danderyd (BRP), Haninge (Profit), Huddinge (Profit), Lidingö (BRP), Norrtälje (BRP), Södertälje (BRP), Täby (BRP), Åkersberga (Profit) och Skellefteå (BRP). Namnet inom parantes 
 								är vilket bokningssystem respektive förening använder. Kontakta <a href="mailto:hello@klasehnemark.com">Klas Ehnemark</a> om du har problem att använda schemat eller om du vill få en licens för att utvärdera schemat.</p>
 							</div>
 						</td>
@@ -388,7 +388,7 @@ class fs_schema_admin {
 			case 'BRP':
 			
 				// ..1.2..
-				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li5lYzY1YTVlNTZkZmQ0OTA4YjBhOTI4NDJkOThhMGRiYy4xYTA3ZmNlMWFjMjI0YTY2OWRjYWUwMjQxMmJjZDA4NC42YThhYTRjMWM2ZDg0ZTNmOWQxN2NlZDJhZTViZWM5My4zOTdmZGFlYzAwMGM0ZTMyODJiYzI1ODVkYjVmYTJiZS40OWY0YzhkNmI4OTg0NGEzYmJiMmEzYTgwMDg1NjE4Yi5lODVjMDYzYTI1MjQ0MmNjOTQ1MmIzMTA1MzM1NDkzZC4u'), '.'.$settings[ 'fs_booking_bpi_api_key' ].'.' ) );
+				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li5lYzY1YTVlNTZkZmQ0OTA4YjBhOTI4NDJkOThhMGRiYy4xYTA3ZmNlMWFjMjI0YTY2OWRjYWUwMjQxMmJjZDA4NC42YThhYTRjMWM2ZDg0ZTNmOWQxN2NlZDJhZTViZWM5My4zOTdmZGFlYzAwMGM0ZTMyODJiYzI1ODVkYjVmYTJiZS40OWY0YzhkNmI4OTg0NGEzYmJiMmEzYTgwMDg1NjE4Yi5lODVjMDYzYTI1MjQ0MmNjOTQ1MmIzMTA1MzM1NDkzZC4zZGI2NTQ4ODIxODM0NTEzYjc2MDZkZjBlYTIzZDQ2MS4u'), '.'.$settings[ 'fs_booking_bpi_api_key' ].'.' ) );
 				
 				break;
 				
@@ -396,7 +396,7 @@ class fs_schema_admin {
 			case 'PROFIT':
 			
 				// ..1.2..
-				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li4xNDM3LjEzODIuMTQ4MC4u'), '.'.$settings[ 'fs_booking_profit_organization_unit' ].'.' ) );
+				update_option( 'fs_schema_valid_key', strpos ( base64_decode ('Li4xNDM3LjEzODIuMTQ4MC4xMzQyLi4='), '.'.$settings[ 'fs_booking_profit_organization_unit' ].'.' ) );
 				
 				break;
 		}	

@@ -175,7 +175,9 @@ class fs_schema_brp {
 		
 		$result					= $this->check_brp_xml_errors ( $result );
 		
-		$activity_booking			= $result['xml']->xpath('/activitybooking' );
+		//echo '<pre>' . print_r($result, true) . '</pre>';
+		
+		$activity_booking			= @$result['xml']->xpath('/activitybooking' );
 		
 		if ( $result['error'] 	== '' && !isset ( $activity_booking[0] )) {
 			
@@ -376,10 +378,18 @@ class fs_schema_brp {
 			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 			
 		}
+		
+		/*curl_setopt_array($ch, array(
+			CURLOPT_HEADER			=> 1,
+			CURLINFO_HEADER_OUT		=> 1,
+			CURLOPT_VERBOSE         	=> 1
+		));*/
 
 		$curl_output = curl_exec($ch);
 		
 		$curl_info = curl_getinfo($ch);
+		
+		//die(print_r($curl_output , true));
 		
 		$this->debug .= 'CURL INFO: ' . print_r ($curl_info, true ) . '<br>CURL OUTPUT: ' . print_r ($curl_output, true ) . '<br>'; 
 		

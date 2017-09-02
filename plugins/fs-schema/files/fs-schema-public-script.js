@@ -1681,6 +1681,8 @@ fs_schema_public = {
 	ajax : function ( data, datatype, fn_success, fn_error ) {
 	
 		//data.nonce: fsschemavars.nonce;
+		
+		// jQuery( '.fs_schema .debug').html( fsschemavars.ajaxurl + JSON.stringify(data) );
 	
 		jQuery.ajax({
 		

@@ -678,6 +678,8 @@ class fs_schema_profit {
 		$this->add_debug ( 'Make soap call, session_key: ' . $session_key . ', username: ' . $username . ', password:' . $password );
 	
 		$output = array( 'error' => '', 'message' => '', 'xml' => false, 'new_session_key' => '', 'debug' => '' );
+		
+		//update_option('profit_session_key', 'test');  // For testing
 	
 		// login as guest, get current session_guid from database
 		if ( $username == '' && $password == '' ) {
@@ -850,6 +852,16 @@ class fs_schema_profit {
 			$dom->formatOutput = true;
 			
 			$this->add_debug ( 'Resultat från servern: ' . $dom->saveXML() );
+			
+			// check if profit is sending a ERROR out of the blue (this is very bad)
+			
+			if ((string)$xml_doc == 'ERROR') {
+			
+				$this->add_debug ( 'Profit skickar ett odokumenterat felmeddelande: "ERROR". Vad ska vi göra med det? Antag att det beror på att sessionen har utgått. ' );
+				
+				return new WP_Error('exec_soap_call_error', 'session maybe has expired' );
+			
+			} 
 		}
 		
 		return $xml_doc;	
